@@ -40,4 +40,4 @@ out/
 *.yml
 
 ### QClass ###
-build/generated/querydsl/**
+/src/main/generated/**
