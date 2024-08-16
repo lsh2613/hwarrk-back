@@ -40,4 +40,4 @@ out/
 *.yml
 
 ### QClass ###
-**/Q*.java
+build/generated/querydsl/**
