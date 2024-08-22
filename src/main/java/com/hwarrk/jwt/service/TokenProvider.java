@@ -9,7 +9,7 @@ import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorMessage;
 import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.global.common.constant.TokenType;
 import com.hwarrk.global.common.exception.GeneralHandler;
-import com.hwarrk.member.repository.MemberRepository;
+import com.hwarrk.domain.member.repository.MemberRepository;
 import com.hwarrk.redis.util.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;

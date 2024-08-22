@@ -1,7 +1,7 @@
-package com.hwarrk.member.repository;
+package com.hwarrk.domain.member.repository;
 
 import com.hwarrk.global.common.constant.OauthProvider;
-import com.hwarrk.member.entity.Member;
+import com.hwarrk.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

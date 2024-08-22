@@ -1,11 +1,11 @@
-package com.hwarrk.member.service;
+package com.hwarrk.domain.member.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hwarrk.domain.member.repository.MemberRepository;
 import com.hwarrk.global.EntityFacade;
 import com.hwarrk.global.common.exception.GeneralHandler;
 import com.hwarrk.jwt.service.TokenProvider;
-import com.hwarrk.member.entity.Member;
-import com.hwarrk.member.repository.MemberRepository;
+import com.hwarrk.domain.member.entity.Member;
 import com.hwarrk.redis.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

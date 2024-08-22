@@ -2,8 +2,8 @@ package com.hwarrk.oauth2.service;
 
 import com.hwarrk.global.common.constant.Role;
 import com.hwarrk.jwt.service.TokenProvider;
-import com.hwarrk.member.entity.Member;
-import com.hwarrk.member.repository.MemberRepository;
+import com.hwarrk.domain.member.entity.Member;
+import com.hwarrk.domain.member.repository.MemberRepository;
 import com.hwarrk.oauth2.dto.res.OauthLoginRes;
 import com.hwarrk.oauth2.member.OauthMember;
 import com.hwarrk.oauth2.param.OauthParams;
