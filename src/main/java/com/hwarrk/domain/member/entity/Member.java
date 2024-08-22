@@ -1,7 +1,9 @@
-package com.hwarrk.member.entity;
+package com.hwarrk.domain.member.entity;
 
 
+import com.hwarrk.global.common.constant.MemberStatus;
 import com.hwarrk.global.common.constant.OauthProvider;
+import com.hwarrk.global.common.constant.Position;
 import com.hwarrk.global.common.constant.Role;
 import com.hwarrk.global.common.entity.BaseEntity;
 import com.hwarrk.oauth2.member.OauthMember;
@@ -37,6 +39,22 @@ public class Member extends BaseEntity {
     private String profileImg;
 
     private Role role;
+
+    private String introduction;
+
+    private MemberStatus status;
+
+    private Integer career;
+
+    private Position position;
+
+    private String skill;
+
+    private String contract;
+
+    private Double embers;
+
+    private Boolean isVisible;
 
     public Member(OauthMember request) {
         this.socialId = request.getSocialId();

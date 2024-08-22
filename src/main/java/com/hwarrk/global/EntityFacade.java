@@ -2,8 +2,8 @@ package com.hwarrk.global;
 
 import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.global.common.exception.GeneralHandler;
-import com.hwarrk.member.entity.Member;
-import com.hwarrk.member.repository.MemberRepository;
+import com.hwarrk.domain.member.entity.Member;
+import com.hwarrk.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

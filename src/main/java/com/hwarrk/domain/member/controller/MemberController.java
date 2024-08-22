@@ -1,9 +1,9 @@
-package com.hwarrk.member.controller;
+package com.hwarrk.domain.member.controller;
 
 import com.hwarrk.global.common.apiPayload.CustomApiResponse;
 import com.hwarrk.global.common.constant.TokenType;
 import com.hwarrk.jwt.service.TokenProvider;
-import com.hwarrk.member.service.MemberService;
+import com.hwarrk.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
