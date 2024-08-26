@@ -56,6 +56,11 @@ public class Member extends BaseEntity {
 
     private Boolean isVisible;
 
+    public Member(String socialId, OauthProvider oauthProvider) {
+        this.socialId = socialId;
+        this.oauthProvider = oauthProvider;
+    }
+
     public Member(OauthMember request) {
         this.socialId = request.getSocialId();
         this.oauthProvider = request.getOauthProvider();
