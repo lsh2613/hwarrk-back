@@ -21,10 +21,9 @@ public class EntityFacade {
     private final ProjectRepository projectRepository;
 
     public Member getMember(Long memberId) {
-        Optional<Member> memberById = memberRepository.findById(memberId);
-        if (memberById.isEmpty())
-            throw new GeneralHandler(ErrorStatus.MEMBER_NOT_FOUND);
-        return memberById.get();
+        return memberRepository.findById(memberId).orElseThrow(
+                () -> new GeneralHandler(ErrorStatus.MEMBER_NOT_FOUND)
+        );
     }
 
     public Project getProject(Long projectId) {
