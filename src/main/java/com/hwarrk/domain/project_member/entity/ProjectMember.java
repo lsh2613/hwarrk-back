@@ -1,6 +1,6 @@
 package com.hwarrk.domain.project_member.entity;
 
-import com.hwarrk.global.common.constant.ProjectMemberRole;
+import com.hwarrk.global.common.constant.Position;
 import com.hwarrk.domain.member.entity.Member;
 import com.hwarrk.domain.project.entity.Project;
 import jakarta.persistence.*;
@@ -29,6 +29,5 @@ public class ProjectMember {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ProjectMemberRole role;
-
+    private Position position;
 }

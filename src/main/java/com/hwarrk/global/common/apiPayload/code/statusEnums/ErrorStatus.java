@@ -28,6 +28,10 @@ public enum ErrorStatus implements BaseCode {
     SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "USER4013", "존재하지 않는 유효한 세션입니다."),
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "USER4031", "사용자에게 권한이 없습니다."),
 
+    // 프로젝트
+    PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
+    PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더만 프로젝트를 삭제할 수 있습니다."),
+
     // S3 이미지 업로드
     FAIL_IMAGE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "S500", "S3에 이미지 업로드를 실패했습니다."),
     BAD_REQUEST_IMAGE(HttpStatus.BAD_REQUEST, "S400", "잘못된 이미지 데이터입니다."),
