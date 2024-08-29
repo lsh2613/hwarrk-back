@@ -22,11 +22,11 @@ public enum ErrorStatus implements BaseCode {
     TOKEN_ID_MISMATCH(HttpStatus.FORBIDDEN, "TOKEN4003", "토큰의 사용자와 로그인된 사용자가 일치하지 않습니다."),
 
     // 회원 관련
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자를 찾을 수 없습니다."),
-    DUPLICATED_MEMBERID(HttpStatus.UNAUTHORIZED, "USER4011", "이미 존재하는 사용자 ID입니다."),
-    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "USER4012", "사용자 비밀번호가 일치하지 않습니다"),
-    SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "USER4013", "존재하지 않는 유효한 세션입니다."),
-    MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "USER4031", "사용자에게 권한이 없습니다."),
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자를 찾을 수 없습니다."),
+    DUPLICATED_MEMBER_ID(HttpStatus.UNAUTHORIZED, "MEMBER4011", "이미 존재하는 사용자 ID입니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER4012", "사용자 비밀번호가 일치하지 않습니다"),
+    SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "MEMBER4013", "존재하지 않는 유효한 세션입니다."),
+    MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4031", "사용자에게 권한이 없습니다."),
 
     // 프로젝트
     PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
