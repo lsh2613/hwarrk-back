@@ -1,5 +1,7 @@
 package com.hwarrk.global;
 
+import com.hwarrk.domain.project.entity.Project;
+import com.hwarrk.domain.project.repository.ProjectRepository;
 import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.global.common.exception.GeneralHandler;
 import com.hwarrk.domain.member.entity.Member;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Service
 public class EntityFacade {
     private final MemberRepository memberRepository;
+    private final ProjectRepository projectRepository;
 
     public Member getMember(Long memberId) {
         Optional<Member> memberById = memberRepository.findById(memberId);
@@ -24,4 +27,9 @@ public class EntityFacade {
         return memberById.get();
     }
 
+    public Project getProject(Long projectId) {
+        return projectRepository.findById(projectId).orElseThrow(
+                () -> new GeneralHandler(ErrorStatus.PROJECT_NOT_FOUND)
+        );
+    }
 }
