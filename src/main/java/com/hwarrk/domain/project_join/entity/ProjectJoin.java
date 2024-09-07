@@ -1,8 +1,8 @@
 package com.hwarrk.domain.project_join.entity;
 
-import com.hwarrk.global.common.constant.JoinType;
 import com.hwarrk.domain.member.entity.Member;
 import com.hwarrk.domain.project.entity.Project;
+import com.hwarrk.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "PROJECT_JOIN")
-public class ProjectJoin {
+public class ProjectJoin extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +26,4 @@ public class ProjectJoin {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private JoinType joinType;
 }
