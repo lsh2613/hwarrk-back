@@ -2,7 +2,7 @@ package com.hwarrk.domain.project_join.service;
 
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinApplyReq;
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinDecideReq;
-import com.hwarrk.domain.project_join.dto.res.ProjectJoinPageRes;
+import com.hwarrk.global.page.PageRes;
 import org.springframework.data.domain.Pageable;
 
 public interface ProjectJoinService {
@@ -10,7 +10,7 @@ public interface ProjectJoinService {
 
     void decide(Long loginId,Long projectJoinId, ProjectJoinDecideReq projectJoinDecideReq);
 
-    ProjectJoinPageRes getProjectJoins(Long loginId, Long projectJoinId, Pageable pageable);
+    PageRes getProjectJoins(Long loginId, Long projectJoinId, Pageable pageable);
 
-    ProjectJoinPageRes getMyProjectJoins(Long loginId, Pageable pageable);
+    PageRes getMyProjectJoins(Long loginId, Pageable pageable);
 }

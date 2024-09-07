@@ -2,8 +2,9 @@ package com.hwarrk.domain.project_join.controller;
 
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinApplyReq;
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinDecideReq;
-import com.hwarrk.domain.project_join.dto.res.ProjectJoinPageRes;
+import com.hwarrk.domain.project_join.dto.res.ProjectJoinRes;
 import com.hwarrk.domain.project_join.service.ProjectJoinService;
+import com.hwarrk.global.page.PageRes;
 import com.hwarrk.global.common.apiPayload.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -40,15 +41,15 @@ public class ProjectJoinController {
     public CustomApiResponse getProjectJoins(@AuthenticationPrincipal Long loginId,
                                              @PathVariable Long projectJoinId,
                                              @PageableDefault Pageable pageable) {
-        ProjectJoinPageRes projectJoinPageRes = projectJoinService.getProjectJoins(loginId, projectJoinId, pageable);
-        return CustomApiResponse.onSuccess(projectJoinPageRes);
+        PageRes<ProjectJoinRes> pageRes = projectJoinService.getProjectJoins(loginId, projectJoinId, pageable);
+        return CustomApiResponse.onSuccess(pageRes);
     }
 
     // 내가 지원한 현황
     @GetMapping("my-application")
     public CustomApiResponse getMyProjectJoins(@AuthenticationPrincipal Long loginId,
                                                @PageableDefault Pageable pageable) {
-        ProjectJoinPageRes projectJoinPageRes = projectJoinService.getMyProjectJoins(loginId, pageable);
-        return CustomApiResponse.onSuccess(projectJoinPageRes);
+        PageRes<ProjectJoinRes> pageRes = projectJoinService.getMyProjectJoins(loginId, pageable);
+        return CustomApiResponse.onSuccess(pageRes);
     }
 }

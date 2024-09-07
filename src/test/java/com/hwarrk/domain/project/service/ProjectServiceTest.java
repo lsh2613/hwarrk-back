@@ -4,11 +4,11 @@ import com.hwarrk.domain.member.entity.Member;
 import com.hwarrk.domain.member.repository.MemberRepository;
 import com.hwarrk.domain.project.dto.req.ProjectCreateReq;
 import com.hwarrk.domain.project.dto.req.ProjectUpdateReq;
-import com.hwarrk.domain.project.dto.res.ProjectPageRes;
 import com.hwarrk.domain.project.dto.res.ProjectRes;
 import com.hwarrk.domain.project.entity.Project;
 import com.hwarrk.domain.project.repository.ProjectRepository;
 import com.hwarrk.global.EntityFacade;
+import com.hwarrk.global.page.PageRes;
 import com.hwarrk.global.common.constant.OauthProvider;
 import com.hwarrk.global.common.exception.GeneralHandler;
 import jakarta.transaction.Transactional;
@@ -98,13 +98,13 @@ class ProjectServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 2);
 
         //when
-        ProjectPageRes projectPageRes = projectService.getProjects(pageRequest);
+        PageRes<ProjectRes> pageRes = projectService.getProjects(pageRequest);
 
         //then
-        assertThat(projectPageRes.projectResList().size()).isEqualTo(2);
-        assertThat(projectPageRes.totalElements()).isEqualTo(2);
-        assertThat(projectPageRes.totalPages()).isEqualTo(1);
-        assertThat(projectPageRes.isLast()).isTrue();
+        assertThat(pageRes.content().size()).isEqualTo(2);
+        assertThat(pageRes.totalElements()).isEqualTo(2);
+        assertThat(pageRes.totalPages()).isEqualTo(1);
+        assertThat(pageRes.isLast()).isTrue();
 
     }
 
