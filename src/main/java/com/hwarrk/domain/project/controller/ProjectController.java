@@ -2,9 +2,9 @@ package com.hwarrk.domain.project.controller;
 
 import com.hwarrk.domain.project.dto.req.ProjectCreateReq;
 import com.hwarrk.domain.project.dto.req.ProjectUpdateReq;
-import com.hwarrk.domain.project.dto.res.ProjectPageRes;
 import com.hwarrk.domain.project.dto.res.ProjectRes;
 import com.hwarrk.domain.project.service.ProjectService;
+import com.hwarrk.global.page.PageRes;
 import com.hwarrk.global.common.apiPayload.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +34,8 @@ public class ProjectController {
 
     @GetMapping
     public CustomApiResponse getProjects(@PageableDefault Pageable pageable) {
-        ProjectPageRes projects = projectService.getProjects(pageable);
-        return CustomApiResponse.onSuccess(projects);
+        PageRes<ProjectRes> pageRes = projectService.getProjects(pageable);
+        return CustomApiResponse.onSuccess(pageRes);
     }
 
     @PostMapping("{projectId}")

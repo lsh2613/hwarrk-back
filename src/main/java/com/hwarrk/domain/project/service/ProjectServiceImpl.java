@@ -3,12 +3,11 @@ package com.hwarrk.domain.project.service;
 import com.hwarrk.domain.member.entity.Member;
 import com.hwarrk.domain.project.dto.req.ProjectCreateReq;
 import com.hwarrk.domain.project.dto.req.ProjectUpdateReq;
-import com.hwarrk.domain.project.dto.res.ProjectPageRes;
 import com.hwarrk.domain.project.dto.res.ProjectRes;
 import com.hwarrk.domain.project.entity.Project;
 import com.hwarrk.domain.project.repository.ProjectRepository;
 import com.hwarrk.global.EntityFacade;
-import com.hwarrk.global.Util;
+import com.hwarrk.global.page.PageRes;
 import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.global.common.exception.GeneralHandler;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.hwarrk.global.Util.*;
 
@@ -46,9 +43,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectPageRes getProjects(Pageable pageable) {
+    public PageRes<ProjectRes> getProjects(Pageable pageable) {
         Page<Project> projects = projectRepository.findAllByOrderByCreatedAtDesc(pageable);
-        return ProjectPageRes.mapPagesToRes(projects);
+        return PageRes.mapPageToPageRes(projects, ProjectRes::mapEntityToRes);
     }
 
     @Override
