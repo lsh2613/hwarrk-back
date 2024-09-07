@@ -6,13 +6,13 @@ import com.hwarrk.domain.project.entity.Project;
 import com.hwarrk.domain.project.repository.ProjectRepository;
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinApplyReq;
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinDecideReq;
-import com.hwarrk.domain.project_join.dto.res.ProjectJoinPageRes;
 import com.hwarrk.domain.project_join.dto.res.ProjectJoinRes;
 import com.hwarrk.domain.project_join.entity.ProjectJoin;
 import com.hwarrk.domain.project_join.repository.ProjectJoinRepository;
 import com.hwarrk.domain.project_member.entity.ProjectMember;
 import com.hwarrk.domain.project_member.repository.ProjectMemberRepository;
 import com.hwarrk.global.EntityFacade;
+import com.hwarrk.global.page.PageRes;
 import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.global.common.constant.JoinDecide;
 import com.hwarrk.global.common.constant.JoinType;
@@ -24,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -238,10 +237,10 @@ class ProjectJoinServiceTest {
         PageRequest pageable = PageRequest.of(0, 1);
 
         //when
-        ProjectJoinPageRes pageRes = projectJoinService.getProjectJoins(member_01.getId(), project.getId(), pageable);
+        PageRes<ProjectJoinRes> pageRes = projectJoinService.getProjectJoins(member_01.getId(), project.getId(), pageable);
 
         //then
-        List<ProjectJoinRes> contents = pageRes.ProjectJoinResList();
+        List<ProjectJoinRes> contents = pageRes.content();
         assertThat(contents.size()).isEqualTo(1);
         assertThat(contents.get(0).memberId()).isEqualTo(member_03.getId());
         assertThat(pageRes.totalPages()).isEqualTo(2);
@@ -260,10 +259,10 @@ class ProjectJoinServiceTest {
         PageRequest pageable = PageRequest.of(0, 1);
 
         //when
-        ProjectJoinPageRes pageRes = projectJoinService.getMyProjectJoins(member_01.getId(), pageable);
+        PageRes<ProjectJoinRes> pageRes = projectJoinService.getMyProjectJoins(member_01.getId(), pageable);
 
         //then
-        List<ProjectJoinRes> contents = pageRes.ProjectJoinResList();
+        List<ProjectJoinRes> contents = pageRes.content();
         assertThat(contents.size()).isEqualTo(1);
         assertThat(pageRes.totalPages()).isEqualTo(2);
         assertThat(pageRes.totalElements()).isEqualTo(2);

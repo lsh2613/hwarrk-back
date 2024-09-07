@@ -4,12 +4,13 @@ import com.hwarrk.domain.member.entity.Member;
 import com.hwarrk.domain.project.entity.Project;
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinApplyReq;
 import com.hwarrk.domain.project_join.dto.req.ProjectJoinDecideReq;
-import com.hwarrk.domain.project_join.dto.res.ProjectJoinPageRes;
+import com.hwarrk.domain.project_join.dto.res.ProjectJoinRes;
 import com.hwarrk.domain.project_join.entity.ProjectJoin;
 import com.hwarrk.domain.project_join.repository.ProjectJoinRepository;
 import com.hwarrk.domain.project_member.entity.ProjectMember;
 import com.hwarrk.domain.project_member.repository.ProjectMemberRepository;
 import com.hwarrk.global.EntityFacade;
+import com.hwarrk.global.page.PageRes;
 import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.global.common.constant.JoinDecide;
 import com.hwarrk.global.common.exception.GeneralHandler;
@@ -62,16 +63,15 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
     }
 
     @Override
-    public ProjectJoinPageRes getProjectJoins(Long loginId, Long projectJoinId, Pageable pageable) {
+    public PageRes<ProjectJoinRes> getProjectJoins(Long loginId, Long projectJoinId, Pageable pageable) {
         Page<ProjectJoin> projectJoinPages = projectJoinRepository.findAllByProject_IdOrderByCreatedAtDesc(projectJoinId, pageable);
-
-        return ProjectJoinPageRes.mapPageToPageRes(projectJoinPages);
+        return PageRes.mapPageToPageRes(projectJoinPages, ProjectJoinRes::mapEntityToRes);
     }
 
     @Override
-    public ProjectJoinPageRes getMyProjectJoins(Long loginId, Pageable pageable) {
+    public PageRes getMyProjectJoins(Long loginId, Pageable pageable) {
         Page<ProjectJoin> myProjectJoinPages = projectJoinRepository.findAllByMember_IdOrderByCreatedAtDesc(loginId, pageable);
-        return ProjectJoinPageRes.mapPageToPageRes(myProjectJoinPages);
+        return PageRes.mapPageToPageRes(myProjectJoinPages, ProjectJoinRes::mapEntityToRes);
     }
 
     private void verifyNotLeader(Long memberId, Long leaderId) {
