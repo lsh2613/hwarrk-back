@@ -32,6 +32,10 @@ public enum ErrorStatus implements BaseCode {
     PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
     PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더만 프로젝트를 삭제할 수 있습니다."),
 
+    // 프로젝트-조인
+    PROJECT_JOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_JOIN4041", "프로젝트 참가 신청을 찾을 수 없습니다."),
+    PROJECT_JOIN_CONFLICT(HttpStatus.CONFLICT, "PROJECT_JOIN4091", "프로젝트 참가 신청이 이미 존재합니다."),
+
     // S3 이미지 업로드
     FAIL_IMAGE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "S500", "S3에 이미지 업로드를 실패했습니다."),
     BAD_REQUEST_IMAGE(HttpStatus.BAD_REQUEST, "S400", "잘못된 이미지 데이터입니다."),
