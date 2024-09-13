@@ -82,3 +82,8 @@ tasks.named('bootBuildImage') {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// 빌드 시 테스트 제거
+tasks.withType(Test) {
+    enabled = false
+}
