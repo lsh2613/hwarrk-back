@@ -1,6 +1,6 @@
 package com.hwarrk.oauth2.param;
 
-import com.hwarrk.global.common.constant.OauthProvider;
+import com.hwarrk.common.constant.OauthProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.util.LinkedMultiValueMap;

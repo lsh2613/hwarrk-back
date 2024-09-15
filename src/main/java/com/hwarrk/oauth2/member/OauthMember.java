@@ -1,7 +1,7 @@
 package com.hwarrk.oauth2.member;
 
 
-import com.hwarrk.global.common.constant.OauthProvider;
+import com.hwarrk.common.constant.OauthProvider;
 
 public interface OauthMember {
     public String getSocialId();

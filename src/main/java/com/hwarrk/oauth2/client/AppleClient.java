@@ -1,8 +1,8 @@
 package com.hwarrk.oauth2.client;
 
-import com.hwarrk.global.common.apiPayload.code.statusEnums.ErrorStatus;
-import com.hwarrk.global.common.constant.OauthProvider;
-import com.hwarrk.global.common.exception.GeneralHandler;
+import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
+import com.hwarrk.common.constant.OauthProvider;
+import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.oauth2.member.AppleMember;
 import com.hwarrk.oauth2.member.OauthMember;
 import com.hwarrk.oauth2.param.OauthParams;

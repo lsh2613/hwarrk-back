@@ -2,7 +2,7 @@ package com.hwarrk.oauth2.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hwarrk.global.common.constant.OauthProvider;
+import com.hwarrk.common.constant.OauthProvider;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

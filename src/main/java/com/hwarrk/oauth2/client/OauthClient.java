@@ -1,6 +1,6 @@
 package com.hwarrk.oauth2.client;
 
-import com.hwarrk.global.common.constant.OauthProvider;
+import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.oauth2.member.OauthMember;
 import com.hwarrk.oauth2.param.OauthParams;
 
