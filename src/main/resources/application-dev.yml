@@ -1,0 +1,106 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+  output:
+    ansi:
+      enabled: always
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: false
+  config:
+    activate:
+      on-profile: dev
+  freemarker:
+    cache: false
+    enabled: true
+    template-loader-path: classpath:/templates
+
+  datasource:
+    url: jdbc:h2:mem:test # h2 url ex_): jdbc:h2:tcp://localhost/~/test
+    driver-class-name: org.h2.Driver
+    username: sa # h2 id
+    password: # h2 password
+  h2:
+    console:
+      enabled: true
+
+  redis:
+    host: localhost
+    port: 6379
+
+oauth:
+  kakao:
+    token_url: "https://kauth.kakao.com/oauth/token"
+    user_url: "https://kapi.kakao.com/v2/user/me"
+    grant_type: authorization_code
+    client_id: 47fe7aff98cf882892387fe4b65d3279 #kakao client id
+    client_secret: #kakao secret key
+    redirect_uri: https://localhost:8080/login #kakao redirect uri
+# https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=47fe7aff98cf882892387fe4b65d3279&redirect_uri=https://localhost:8080/login
+# mariaDB, mysqlㅈ
+  google:
+    token_url: "https://oauth2.googleapis.com/token"
+    user_url: "https://www.googleapis.com/oauth2/v3/userinfo"
+    grant_type: authorization_code
+    client_id: #google client id
+    client_secret: #google secret key
+    redirect_uri: #google redirect uri
+
+  apple:
+    token_url: https://appleid.apple.com/auth/token
+    user_url: #apple user url
+    grant_type: authorization_code
+    client_id: #apple client id
+    redirect_uri: #apple redirect uri
+
+jwt:
+  secret: lsh2613 #jwt secret key
+
+  access:
+    expiration: 1800000
+    header: Authorization
+
+  refresh:
+    expiration: 259200000
+    header: Authorization-Refresh
+
+cloud:
+  aws:
+    s3:
+      url: <url>
+      bucket: <버킷이름>
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: <발급받은 accessKey>
+      secretKey: <발급받은 secretKey>
+
+
+## Swagger springdoc-ui Configuration
+#springdoc:
+#  packages-to-scan: com.simbongsa
+#  default-consumes-media-type: application/json;charset=UTF-8
+#  default-produces-media-type: application/json;charset=UTF-8
+#  swagger-ui:
+#    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+#    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+#  api-docs:
+#    path: /api-docs/json
+#    groups:
+#      enabled: true
+#  cache:
+#    disabled: true
+#
+#logging:
+#  level:
+#    root: info

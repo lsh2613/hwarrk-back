@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    group:
+      "dev-profile": "dev"
+      "prod-profile": "prod"
+    active: dev-profile
