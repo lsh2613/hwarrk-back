@@ -1,5 +1,6 @@
 package com.hwarrk.service;
 
+import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.entity.Member;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.entity.Project;
@@ -17,7 +18,6 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.JoinDecide;
 import com.hwarrk.common.constant.JoinType;
 import com.hwarrk.common.constant.OauthProvider;
-import com.hwarrk.common.constant.Position;
 import com.hwarrk.common.exception.GeneralHandler;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -157,7 +157,7 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, Position.PM);
+        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, PositionType.PM);
 
         //when
         /**
@@ -185,7 +185,7 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, Position.PM);
+        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, PositionType.PM);
 
         //when
 
@@ -199,7 +199,7 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, Position.PM);
+        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
         projectJoinService.decide(member_01.getId(), project.getId(), req);
@@ -217,7 +217,7 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, Position.PM);
+        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
 

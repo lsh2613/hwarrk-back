@@ -1,6 +1,6 @@
 package com.hwarrk.entity;
 
-import com.hwarrk.common.constant.Position;
+import com.hwarrk.common.constant.PositionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +27,5 @@ public class ProjectMember {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Position position;
+    private PositionType position;
 }
