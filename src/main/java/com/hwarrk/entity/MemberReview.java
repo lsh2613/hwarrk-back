@@ -9,17 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "REVIEW")
-public class Review {
+@Table(name = "MEMBER_REVIEW")
+public class MemberReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
+    @Column(name = "member_review_id")
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_member_id")
@@ -30,7 +26,6 @@ public class Review {
     private Member toMember;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private MemberTag tag;
 
 }

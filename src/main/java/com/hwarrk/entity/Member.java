@@ -3,11 +3,13 @@ package com.hwarrk.entity;
 
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
-import com.hwarrk.common.constant.Position;
 import com.hwarrk.common.constant.Role;
 import com.hwarrk.oauth2.member.OauthMember;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,32 +30,68 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private OauthProvider oauthProvider;
 
-    private String email;
+    private Role role;
+
+    private MemberStatus status;
+
+    private String image;
 
     // 중복 여부 체크 필요!
     private String nickname;
 
-    private Integer age;
+    private String birth;
 
-    private String profileImg;
+    private String email;
 
-    private Role role;
+    private String phone;
 
-    private String introduction;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Portfolio> portfolios = new ArrayList<>();
 
-    private MemberStatus status;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Position> positions = new ArrayList<>();
 
-    private Integer career;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills = new ArrayList<>();
 
-    private Position position;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Degree> degrees = new ArrayList<>();
 
-    private String skill;
-
-    private String contract;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Career> careers = new ArrayList<>();
 
     private Double embers;
 
     private Boolean isVisible;
+
+    private Integer views;
+
+    public <T extends MemberAssignable> void addItems(List<T> targetList, List<T> items) {
+        items.forEach(item -> {
+            item.setMember(this);
+            targetList.add(item);
+        });
+    }
+
+    public void addPortfolios(List<Portfolio> portfolios) {
+        addItems(this.portfolios, portfolios);
+    }
+
+    public void addPositions(List<Position> positions) {
+        addItems(this.positions, positions);
+    }
+
+    public void addSkills(List<Skill> skills) {
+        addItems(this.skills, skills);
+    }
+
+    public void addDegrees(List<Degree> degrees) {
+        addItems(this.degrees, degrees);
+    }
+
+    public void addCareers(List<Career> careers) {
+        addItems(this.careers, careers);
+    }
 
     public Member(String socialId, OauthProvider oauthProvider) {
         this.socialId = socialId;
@@ -68,4 +106,18 @@ public class Member extends BaseEntity {
         this.role = Role.GUEST;
     }
 
+    @Builder
+    public Member(MemberStatus status, String image, String nickname, String birth, String email, String phone, List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees, List<Career> careers) {
+        this.status = status;
+        this.image = image;
+        this.nickname = nickname;
+        this.birth = birth;
+        this.email = email;
+        this.phone = phone;
+        this.portfolios = portfolios;
+        this.positions = positions;
+        this.skills = skills;
+        this.degrees = degrees;
+        this.careers = careers;
+    }
 }
