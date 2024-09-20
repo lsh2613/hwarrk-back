@@ -9,12 +9,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "PROJECT_MEMBER")
-public class ProjectMember {
+@Table(name = "PROJECT_DESCRIPTION")
+public class ProjectDescription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "project_member_id")
+    @Column(name = "project_description_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,7 +25,5 @@ public class ProjectMember {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PositionType position;
+    private String description;
 }

@@ -1,6 +1,5 @@
 package com.hwarrk.entity;
 
-import com.hwarrk.common.constant.PositionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,23 +8,19 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "PROJECT_MEMBER")
-public class ProjectMember {
+@Table(name = "NOTIFICATION")
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "project_member_id")
+    @Column(name = "notification_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
+    private String message;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PositionType position;
+    private boolean isRead;
 }

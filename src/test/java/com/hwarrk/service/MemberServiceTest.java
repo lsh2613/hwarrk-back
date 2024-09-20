@@ -7,6 +7,7 @@ import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,9 +31,12 @@ class MemberServiceTest {
     @Autowired
     private RedisUtil redisUtil;
 
-    Member createMember(String socialId, OauthProvider oauthProvider) {
-        Member member = new Member(socialId, oauthProvider);
-        return member;
+    Member member_01;
+
+    @BeforeEach
+    void setup() {
+        member_01 = new Member("test_01", OauthProvider.KAKAO);
+        member_01 = memberRepository.save(member_01);
     }
 
     @Test
@@ -42,10 +46,10 @@ class MemberServiceTest {
         Member saveMember = memberRepository.save(member);
 
         //when
-        memberService.deleteMember(saveMember.getId());
+        memberService.deleteMember(member_01.getId());
 
         //then
-        assertThrows(GeneralHandler.class, () -> entityFacade.getMember(saveMember.getId()));
+        assertThrows(GeneralHandler.class, () -> entityFacade.getMember(member_01.getId()));
     }
 
     @Test
@@ -57,14 +61,11 @@ class MemberServiceTest {
     @Test
     void 로그아웃_성공() {
         //given
-        Member member = createMember("test_01", OauthProvider.KAKAO);
-        Member saveMember = memberRepository.save(member);
-
-        String accessToken = tokenProvider.issueAccessToken(saveMember.getId());
-        String refreshToken = tokenProvider.issueRefreshToken(saveMember.getId());
+        String accessToken = tokenProvider.issueAccessToken(member_01.getId());
+        String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
         //when
-        memberService.logout(accessToken, refreshToken, saveMember.getId());
+        memberService.logout(accessToken, refreshToken, member_01.getId());
 
         //then
         assertThat(redisUtil.getData(refreshToken)).isNull();
@@ -74,14 +75,11 @@ class MemberServiceTest {
     @Test
     void 블랙리스트_검증_성공() {
         //given
-        Member member = createMember("test_01", OauthProvider.KAKAO);
-        Member saveMember = memberRepository.save(member);
-
-        String accessToken = tokenProvider.issueAccessToken(saveMember.getId());
-        String refreshToken = tokenProvider.issueRefreshToken(saveMember.getId());
+        String accessToken = tokenProvider.issueAccessToken(member_01.getId());
+        String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
         //when
-        memberService.logout(accessToken, refreshToken, saveMember.getId());
+        memberService.logout(accessToken, refreshToken, member_01.getId());
 
         //then
         assertThat(redisUtil.getData(refreshToken)).isNull();

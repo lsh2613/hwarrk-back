@@ -55,7 +55,7 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
 
         if (projectJoinDecideReq.joinDecide() == JoinDecide.ACCEPT) {
             // todo 프로젝트 전체 인원 및 포지션 인원 비교 후
-            ProjectMember projectMember = new ProjectMember(null, projectJoin.getMember(), projectJoin.getProject(), projectJoinDecideReq.position());
+            ProjectMember projectMember = new ProjectMember(null, projectJoin.getMember(), projectJoin.getProject(), projectJoinDecideReq.positionType());
             projectMemberRepository.save(projectMember);
         }
 

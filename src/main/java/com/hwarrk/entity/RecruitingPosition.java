@@ -9,23 +9,20 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "PROJECT_MEMBER")
-public class ProjectMember {
+@Table(name = "RECRUITING_POSITION")
+public class RecruitingPosition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "project_member_id")
+    @Column(name = "recruiting_position_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private PositionType position;
+
+    private Integer cnt; // 모집 인원
 }
