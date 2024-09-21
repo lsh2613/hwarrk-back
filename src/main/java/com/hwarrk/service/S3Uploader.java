@@ -26,6 +26,26 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    public void deleteImg(String fileName) {
+        try {
+            amazonS3.deleteObject(bucket, fileName);
+            log.debug("S3에서 파일이 삭제되었습니다. 파일명: " + fileName);
+        } catch (AmazonServiceException e) {
+            switch (e.getStatusCode()) {
+                case 400:
+                    throw new GeneralHandler(ErrorStatus.BAD_REQUEST_IMAGE);
+                case 401:
+                    throw new GeneralHandler(ErrorStatus.UNAUTHORIZED_S3);
+                case 403:
+                    throw new GeneralHandler(ErrorStatus.FORBIDDEN_S3);
+                case 500:
+                    throw new GeneralHandler(ErrorStatus.FAIL_IMAGE_DELETE);
+                case 503:
+                    throw new GeneralHandler(ErrorStatus.UNAVAILABLE_S3);
+            }
+        }
+    }
+
     /* MultipartFile을 전달받아 File로 전환 후 S3에 업로드 */
     public Map<String, String> uploadImg(MultipartFile file) {
         Map<String, String> map = new HashMap<>();
