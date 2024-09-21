@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
         DecodedJWT decodedRefreshToken = tokenProvider.decodedJWT(refreshToken);
         Long refreshTokenId = decodedRefreshToken.getClaim("id").asLong();
 
-        if (accessTokenId != memberId || refreshTokenId != memberId) {
+        if (!accessTokenId.equals(memberId) || !refreshTokenId.equals(memberId)) {
             throw new GeneralHandler(TOKEN_ID_MISMATCH);
         }
 

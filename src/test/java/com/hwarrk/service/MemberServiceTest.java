@@ -42,8 +42,6 @@ class MemberServiceTest {
     @Test
     void 회원_삭제_성공() {
         //given
-        Member member = createMember("test_01", OauthProvider.KAKAO);
-        Member saveMember = memberRepository.save(member);
 
         //when
         memberService.deleteMember(member_01.getId());
