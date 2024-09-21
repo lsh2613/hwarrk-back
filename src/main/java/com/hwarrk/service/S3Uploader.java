@@ -49,11 +49,14 @@ public class S3Uploader {
     /* MultipartFile을 전달받아 File로 전환 후 S3에 업로드 */
     public Map<String, String> uploadImg(MultipartFile file) {
         Map<String, String> map = new HashMap<>();
+        File uploadFile = null;
+
         try {
-            Optional<File> uploadFile = convert(file);
-            String imgUrl = upload(uploadFile.get());
+            Optional<File> optionalFile = convert(file);
+            uploadFile = optionalFile.get();
+            String imgUrl = upload(uploadFile);
             map.put("imgUrl", imgUrl);
-        } catch (AmazonServiceException e){
+        } catch (AmazonServiceException e) {
             switch (e.getStatusCode()) {
                 case 400:
                     throw new GeneralHandler(ErrorStatus.BAD_REQUEST_IMAGE);
@@ -66,6 +69,9 @@ public class S3Uploader {
                 case 503:
                     throw new GeneralHandler(ErrorStatus.UNAVAILABLE_S3);
             }
+        } finally {
+            if (uploadFile.exists())
+                removeNewFile(uploadFile);
         }
         return map;
     }
@@ -73,8 +79,6 @@ public class S3Uploader {
     private String upload(File uploadFile) {
         String fileName = UUID.randomUUID().toString();
         String uploadImgUrl = putS3(uploadFile, fileName);
-
-        removeNewFile(uploadFile);
 
         return uploadImgUrl;
     }
@@ -99,11 +103,12 @@ public class S3Uploader {
         File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             if (convertFile.createNewFile()) {
-                FileOutputStream fileOutputStream = new FileOutputStream(convertFile);
-                fileOutputStream.write(file.getBytes());
+                try (FileOutputStream fileOutputStream = new FileOutputStream(convertFile)) {
+                    fileOutputStream.write(file.getBytes());
+                }
                 return Optional.of(convertFile);
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new GeneralHandler(ErrorStatus.FAIL_FILE_CONVERT);
         }
         return Optional.empty();
