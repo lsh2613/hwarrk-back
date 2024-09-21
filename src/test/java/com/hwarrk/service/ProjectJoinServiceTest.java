@@ -33,13 +33,10 @@ import static java.lang.Thread.sleep;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @Transactional
 class ProjectJoinServiceTest {
 
-    @Autowired
-    private EntityFacade entityFacade;
     @Autowired
     private ProjectJoinService projectJoinService;
     @Autowired
@@ -72,13 +69,6 @@ class ProjectJoinServiceTest {
         memberRepository.save(member_02);
         memberRepository.save(member_03);
     }
-
-    /**
-     * 1. join 신청
-     * 2. join 결정
-     * 3. pj 조회
-     * 4. 나의 pj 조회
-     */
 
     @Test
     void 프로젝트_지원_신청_성공() {
@@ -157,17 +147,12 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+
+        ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
         ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, PositionType.PM);
 
         //when
-        /**
-         * todo
-         *  다른 테스트 메소드와 같이 실행 시 트랜잭션으로 인해 decide() -> entityfacade.getProjectJoin()에서 엔티티를 찾아오지 못함
-         *  getProjectJoin는 jpaRepository.find() 함수를 사용한다. 이는 context에서 먼저 조회(1차 캐시)하고 없으면 db에서 직접 조회한다.
-         *  @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)를 사용하여 각 테스트 메소드가 시작할 떄 context를 새로 생성해주면 위 이슈가 해결된다
-         *  이유가 뭘까?
-         */
-        projectJoinService.decide(member_01.getId(), project.getId(), req);
+        projectJoinService.decide(member_01.getId(), projectJoin.getId(), req);
 
         //then
         List<ProjectJoin> projectJoins= projectJoinRepository.findAll();
@@ -185,12 +170,14 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, PositionType.PM);
+
+        ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
+        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
 
         //then
-        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), project.getId(), req));
+        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), projectJoin.getId(), req));
         assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.MEMBER_FORBIDDEN);
     }
 
@@ -199,10 +186,12 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+
+        ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
         ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
-        projectJoinService.decide(member_01.getId(), project.getId(), req);
+        projectJoinService.decide(member_01.getId(), projectJoin.getId(), req);
 
         //then
         List<ProjectJoin> projectJoins= projectJoinRepository.findAll();
@@ -217,12 +206,14 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+
+        ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
         ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
 
         //then
-        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), project.getId(), req));
+        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), projectJoin.getId(), req));
         assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.MEMBER_FORBIDDEN);
     }
 
