@@ -1,6 +1,5 @@
 package com.hwarrk.entity;
 
-import com.hwarrk.common.constant.PositionType;
 import jakarta.persistence.*;
 import lombok.*;
 
