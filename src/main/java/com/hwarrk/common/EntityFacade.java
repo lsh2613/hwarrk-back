@@ -1,6 +1,8 @@
 package com.hwarrk.common;
 
+import com.hwarrk.entity.Notification;
 import com.hwarrk.entity.Project;
+import com.hwarrk.repository.NotificationRepository;
 import com.hwarrk.repository.ProjectRepository;
 import com.hwarrk.entity.ProjectJoin;
 import com.hwarrk.repository.ProjectJoinRepository;
@@ -20,6 +22,7 @@ public class EntityFacade {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final ProjectJoinRepository projectJoinRepository;
+    private final NotificationRepository notificationRepository;
 
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(
@@ -36,6 +39,12 @@ public class EntityFacade {
     public ProjectJoin getProjectJoin(Long projectJoinId) {
         return projectJoinRepository.findById(projectJoinId).orElseThrow(
                 () -> new GeneralHandler(ErrorStatus.PROJECT_JOIN_NOT_FOUND)
+        );
+    }
+
+    public Notification getNotification(Long notificationId) {
+        return notificationRepository.findById(notificationId).orElseThrow(
+                () -> new GeneralHandler(ErrorStatus.NOTIFICATION_NOT_FOUND)
         );
     }
 }
