@@ -2,7 +2,6 @@ package com.hwarrk.repository;
 
 import com.hwarrk.common.util.PageUtil;
 import com.hwarrk.entity.Notification;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

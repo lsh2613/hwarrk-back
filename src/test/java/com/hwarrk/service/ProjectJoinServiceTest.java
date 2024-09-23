@@ -1,37 +1,35 @@
 package com.hwarrk.service;
 
-import com.hwarrk.common.constant.PositionType;
-import com.hwarrk.entity.Member;
-import com.hwarrk.repository.MemberRepository;
-import com.hwarrk.entity.Project;
-import com.hwarrk.repository.ProjectRepository;
-import com.hwarrk.common.dto.req.ProjectJoinApplyReq;
-import com.hwarrk.common.dto.req.ProjectJoinDecideReq;
-import com.hwarrk.common.dto.res.ProjectJoinRes;
-import com.hwarrk.entity.ProjectJoin;
-import com.hwarrk.repository.ProjectJoinRepository;
-import com.hwarrk.entity.ProjectMember;
-import com.hwarrk.repository.ProjectMemberRepository;
-import com.hwarrk.common.EntityFacade;
-import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.JoinDecide;
 import com.hwarrk.common.constant.JoinType;
 import com.hwarrk.common.constant.OauthProvider;
+import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.dto.req.ProjectJoinApplyReq;
+import com.hwarrk.common.dto.req.ProjectJoinDecideReq;
+import com.hwarrk.common.dto.res.PageRes;
+import com.hwarrk.common.dto.res.ProjectJoinRes;
 import com.hwarrk.common.exception.GeneralHandler;
+import com.hwarrk.entity.Member;
+import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectJoin;
+import com.hwarrk.entity.ProjectMember;
+import com.hwarrk.repository.MemberRepository;
+import com.hwarrk.repository.ProjectJoinRepository;
+import com.hwarrk.repository.ProjectMemberRepository;
+import com.hwarrk.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static java.lang.Thread.sleep;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
