@@ -28,6 +28,10 @@ public enum ErrorStatus implements BaseCode {
     SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "MEMBER4013", "존재하지 않는 유효한 세션입니다."),
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4031", "사용자에게 권한이 없습니다."),
 
+    // 회원 찜
+    MEMBER_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_LIKE4041", "찜을 찾을 수 없습니다."),
+    MEMBER_LIKE_CONFLICT(HttpStatus.CONFLICT, "MEMBER_LIKE4091", "찜이 이미 존재합니다."),
+
     // 프로젝트
     PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
     PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더만 프로젝트를 삭제할 수 있습니다."),
