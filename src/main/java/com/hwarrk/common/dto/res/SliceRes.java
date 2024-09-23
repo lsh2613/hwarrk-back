@@ -1,5 +1,6 @@
 package com.hwarrk.common.dto.res;
 
+import com.hwarrk.common.SliceCustomImpl;
 import com.hwarrk.common.util.PageUtil;
 import com.hwarrk.entity.HasId;
 import lombok.Builder;
@@ -23,4 +24,11 @@ public record SliceRes<R>(
                 .build();
     }
 
+    public static <E, R> SliceRes<R> mapSliceCustomToSliceRes(SliceCustomImpl slice, Function<E, R> mapper) {
+        return SliceRes.<R>builder()
+                .content(slice.getContent().stream().map(mapper).toList())
+                .lastElementId(slice.getLastElementId())
+                .hasNext(slice.hasNext())
+                .build();
+    }
 }

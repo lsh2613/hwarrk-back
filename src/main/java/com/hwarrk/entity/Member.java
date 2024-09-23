@@ -45,6 +45,8 @@ public class Member extends BaseEntity {
 
     private String phone;
 
+    private String description;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
 
