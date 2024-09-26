@@ -30,8 +30,8 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: 4. Copy Application-dev.yml
-        if: contains(github.ref, 'dev')
         run: |
+          mkdir -p ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
           echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application.yml
@@ -41,7 +41,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: 6. Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build -Dspring.config.location=./src/main/resources/application.yml -x test
 
   CD:
     if: github.event.pull_request.merged == true
@@ -82,8 +82,8 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: 6. Copy Application-dev.yml
-        if: contains(github.ref, 'dev')
         run: |
+          mkdir -p ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
           echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application.yml
@@ -92,8 +92,8 @@ jobs:
       - name: 7. Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: 8. Build with Gradle
-        run: ./gradlew clean build -x test
+      - name: 6. Build with Gradle
+        run: ./gradlew clean build -Dspring.config.location=./src/main/resources/application.yml -x test
 
       - name: 9. docker build & push
         run: |
