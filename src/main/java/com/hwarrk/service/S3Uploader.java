@@ -26,10 +26,11 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public void deleteImg(String fileName) {
+    public void deleteImg(String imageURL) {
         try {
-            amazonS3.deleteObject(bucket, fileName);
-            log.debug("S3에서 파일이 삭제되었습니다. 파일명: " + fileName);
+            String key = getBucketKey(imageURL);
+            amazonS3.deleteObject(bucket, key);
+            log.debug("S3에서 파일이 삭제되었습니다. 파일명: " + key);
         } catch (AmazonServiceException e) {
             switch (e.getStatusCode()) {
                 case 400:
@@ -44,6 +45,10 @@ public class S3Uploader {
                     throw new GeneralHandler(ErrorStatus.UNAVAILABLE_S3);
             }
         }
+    }
+
+    private String getBucketKey(String imageURL) {
+        return imageURL.substring(imageURL.lastIndexOf("/") + 1);
     }
 
     /* MultipartFile을 전달받아 File로 전환 후 S3에 업로드 */
