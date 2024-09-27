@@ -1,4 +1,4 @@
-package com.hwarrk.service;
+package com.hwarrk.repository;
 
 import com.hwarrk.common.SliceCustomImpl;
 import com.hwarrk.common.util.PageUtil;

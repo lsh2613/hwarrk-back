@@ -51,4 +51,15 @@ public class Post extends BaseEntity {
         positions.forEach(this::addRecruitingPosition);
     }
 
+    @Builder
+    public Post(Project project, Member member, List<RecruitingPosition> positions, String title, String body, Integer views, Integer likes, boolean isVisible) {
+        this.project = project;
+        this.member = member;
+        this.positions = positions;
+        this.title = title;
+        this.body = body;
+        this.views = views;
+        this.likes = likes;
+        this.isVisible = isVisible;
+    }
 }
