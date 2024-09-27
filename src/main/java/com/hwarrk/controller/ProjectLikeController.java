@@ -26,7 +26,7 @@ public class ProjectLikeController {
                     @ApiResponse(responseCode = "PROJECT_LIKE4041", description = "찜을 찾을 수 없습니다")
             }
     )
-    @PostMapping("{projectId}")
+    @PostMapping("/projects/{projectId}")
     public CustomApiResponse likeProject(@AuthenticationPrincipal Long loginId,
                                         @PathVariable("projectId") Long projectId,
                                         @RequestParam LikeType likeType) {

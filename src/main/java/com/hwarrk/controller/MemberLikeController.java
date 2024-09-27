@@ -28,7 +28,7 @@ public class MemberLikeController {
                     @ApiResponse(responseCode = "MEMBER_LIKE4041", description = "찜을 찾을 수 없습니다")
             }
     )
-    @PostMapping("{memberId}")
+    @PostMapping("/members/{memberId}")
     public CustomApiResponse likeMember(@AuthenticationPrincipal Long loginId,
                                         @PathVariable("memberId") Long memberId,
                                         @RequestParam LikeType likeType) {
