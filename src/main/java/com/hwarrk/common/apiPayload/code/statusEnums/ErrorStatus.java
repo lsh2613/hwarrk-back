@@ -44,6 +44,13 @@ public enum ErrorStatus implements BaseCode {
     PROJECT_JOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_JOIN4041", "프로젝트 참가 신청을 찾을 수 없습니다."),
     PROJECT_JOIN_CONFLICT(HttpStatus.CONFLICT, "PROJECT_JOIN4091", "프로젝트 참가 신청이 이미 존재합니다."),
 
+    // 구인글
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_4041", "구인글을 찾을 수 없습니다"),
+
+    // 구인글 찜
+    POST_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_LIKE4041", "구인글 찜을 찾을 수 없습니다."),
+    POST_LIKE_CONFLICT(HttpStatus.CONFLICT, "POST_LIKE4091", "구인글 찜이 이미 존재합니다."),
+
     // 알림
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4041", "알림을 찾을 수 없습니다"),
 

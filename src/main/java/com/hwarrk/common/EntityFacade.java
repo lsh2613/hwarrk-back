@@ -1,15 +1,9 @@
 package com.hwarrk.common;
 
-import com.hwarrk.entity.Notification;
-import com.hwarrk.entity.Project;
-import com.hwarrk.repository.NotificationRepository;
-import com.hwarrk.repository.ProjectRepository;
-import com.hwarrk.entity.ProjectJoin;
-import com.hwarrk.repository.ProjectJoinRepository;
+import com.hwarrk.entity.*;
+import com.hwarrk.repository.*;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.entity.Member;
-import com.hwarrk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +17,7 @@ public class EntityFacade {
     private final ProjectRepository projectRepository;
     private final ProjectJoinRepository projectJoinRepository;
     private final NotificationRepository notificationRepository;
+    private final PostRepository postRepository;
 
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(
@@ -45,6 +40,12 @@ public class EntityFacade {
     public Notification getNotification(Long notificationId) {
         return notificationRepository.findById(notificationId).orElseThrow(
                 () -> new GeneralHandler(ErrorStatus.NOTIFICATION_NOT_FOUND)
+        );
+    }
+
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                () -> new GeneralHandler(ErrorStatus.POST_NOT_FOUND)
         );
     }
 }

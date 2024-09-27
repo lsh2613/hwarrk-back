@@ -11,6 +11,7 @@ import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectLike;
 import com.hwarrk.repository.ProjectLikeRepository;
+import com.hwarrk.repository.ProjectLikeRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
