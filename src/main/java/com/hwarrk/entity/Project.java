@@ -19,7 +19,7 @@ public class Project extends BaseEntity {
     @Column(name = "project_id")
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member leader;
 
