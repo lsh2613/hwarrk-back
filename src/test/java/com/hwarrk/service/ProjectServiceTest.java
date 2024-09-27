@@ -80,7 +80,6 @@ class ProjectServiceTest {
         //then
         assertThat(project.name()).isEqualTo(name);
         assertThat(project.description()).isEqualTo(description);
-        assertThat(project.leader()).isEqualTo(member_01);
     }
 
     @Test

@@ -36,6 +36,10 @@ public enum ErrorStatus implements BaseCode {
     PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
     PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더만 프로젝트를 삭제할 수 있습니다."),
 
+    // 프로젝트 찜
+    PROJECT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_LIKE4041", "프로젝트 찜을 찾을 수 없습니다."),
+    PROJECT_LIKE_CONFLICT(HttpStatus.CONFLICT, "PROJECT_LIKE4091", "프로젝트 찜이 이미 존재합니다."),
+
     // 프로젝트-조인
     PROJECT_JOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_JOIN4041", "프로젝트 참가 신청을 찾을 수 없습니다."),
     PROJECT_JOIN_CONFLICT(HttpStatus.CONFLICT, "PROJECT_JOIN4091", "프로젝트 참가 신청이 이미 존재합니다."),
@@ -76,4 +80,5 @@ public enum ErrorStatus implements BaseCode {
                 .httpStatus(httpStatus)
                 .build();
     }
+
 }
