@@ -69,7 +69,7 @@ public class S3Uploader {
                     throw new GeneralHandler(ErrorStatus.UNAVAILABLE_S3);
             }
         } finally {
-            if (uploadFile.exists())
+            if (uploadFile != null && uploadFile.exists())
                 removeNewFile(uploadFile);
         }
         return imageURL;
