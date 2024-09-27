@@ -47,15 +47,14 @@ public class S3Uploader {
     }
 
     /* MultipartFile을 전달받아 File로 전환 후 S3에 업로드 */
-    public Map<String, String> uploadImg(MultipartFile file) {
-        Map<String, String> map = new HashMap<>();
+    public String uploadImg(MultipartFile file) {
         File uploadFile = null;
+        String imageURL = null;
 
         try {
             Optional<File> optionalFile = convert(file);
             uploadFile = optionalFile.get();
-            String imgUrl = upload(uploadFile);
-            map.put("imgUrl", imgUrl);
+            imageURL = upload(uploadFile);
         } catch (AmazonServiceException e) {
             switch (e.getStatusCode()) {
                 case 400:
@@ -73,7 +72,7 @@ public class S3Uploader {
             if (uploadFile.exists())
                 removeNewFile(uploadFile);
         }
-        return map;
+        return imageURL;
     }
 
     private String upload(File uploadFile) {
