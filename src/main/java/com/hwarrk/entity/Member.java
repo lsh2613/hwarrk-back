@@ -5,11 +5,27 @@ import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
 import com.hwarrk.oauth2.member.OauthMember;
-import jakarta.persistence.*;
-import lombok.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -18,6 +34,9 @@ import java.util.List;
 @Entity
 @Table(name = "MEMBER")
 public class Member extends BaseEntity {
+
+    private static final String NO_LAST_COMPANY_INFO = "없음";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -109,7 +128,9 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(MemberStatus status, String image, String nickname, String birth, String email, String phone, List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees, List<Career> careers) {
+    public Member(MemberStatus status, String image, String nickname, String birth, String email, String phone,
+                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees,
+                  List<Career> careers) {
         this.status = status;
         this.image = image;
         this.nickname = nickname;
@@ -121,5 +142,35 @@ public class Member extends BaseEntity {
         this.skills = skills;
         this.degrees = degrees;
         this.careers = careers;
+    }
+
+    public CareerInfo loadCareer() {
+        if (careers.isEmpty()) {
+            return CareerInfo.createEntryCareerInfo();
+        }
+        return getExperienceCareerInfo();
+    }
+
+    private CareerInfo getExperienceCareerInfo() {
+        Period totalExperience = Period.ZERO;
+
+        String lastCareer = NO_LAST_COMPANY_INFO;
+        LocalDate lastLocalDate = LocalDate.MIN;
+
+        for (Career career : this.careers) {
+            totalExperience.plus(career.calculateExperience());
+
+            LocalDate endDate = career.getEndDate();
+            if (endDate.isAfter(lastLocalDate)) {
+                lastLocalDate = endDate;
+                lastCareer = career.getCompany();
+            }
+        }
+
+        if (lastCareer.equals(NO_LAST_COMPANY_INFO)) {
+            throw new IllegalStateException("최신 회사 정보가 존재하지 않습니다.");
+        }
+
+        return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer);
     }
 }

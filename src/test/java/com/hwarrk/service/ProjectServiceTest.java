@@ -75,7 +75,7 @@ class ProjectServiceTest {
         Long projectId = createProject(name, description, member_01);
 
         //when
-        ProjectRes project = projectService.getProject(projectId);
+        ProjectRes project = projectService.getSpecificProjectInfo(projectId);
 
         //then
         assertThat(project.name()).isEqualTo(name);
@@ -85,7 +85,7 @@ class ProjectServiceTest {
     @Test
     void 프로젝트_상세조회_실패() {
         //then
-        assertThrows(GeneralHandler.class, () -> projectService.getProject(Long.MAX_VALUE));
+        assertThrows(GeneralHandler.class, () -> projectService.getSpecificProjectInfo(Long.MAX_VALUE));
     }
 
     @Test

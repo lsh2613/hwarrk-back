@@ -3,6 +3,7 @@ package com.hwarrk.controller;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.ProjectRes;
+import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.service.ProjectService;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.apiPayload.CustomApiResponse;
@@ -28,7 +29,7 @@ public class ProjectController {
 
     @GetMapping("{projectId}")
     public CustomApiResponse getProject(@PathVariable Long projectId) {
-        ProjectRes project = projectService.getProject(projectId);
+        SpecificProjectInfoRes project = projectService.getSpecificProjectInfo(projectId);
         return CustomApiResponse.onSuccess(project);
     }
 

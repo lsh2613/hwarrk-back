@@ -3,6 +3,8 @@ package com.hwarrk.entity;
 import com.hwarrk.common.constant.StepType;
 import com.hwarrk.common.constant.WayType;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.*;
 
 @Getter
@@ -44,6 +46,12 @@ public class Project extends BaseEntity {
     private String image;
 
     private boolean isVisible;
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    private List<ProjectMember> projectMembers = new ArrayList<>();
+
+    @OneToOne(mappedBy = "project", fetch = FetchType.LAZY)
+    private Post post;
 
     @Builder
     public Project(String name, String description, Member leader) {

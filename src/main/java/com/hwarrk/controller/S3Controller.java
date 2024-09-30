@@ -20,7 +20,8 @@ public class S3Controller {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CustomApiResponse<Map<String, String>> uploadImg(@RequestPart(value = "image") MultipartFile multipartFile) {
-        Map<String, String> img = s3Uploader.uploadImg(multipartFile);
-        return CustomApiResponse.onSuccess(img);
+//        Map<String, String> img = s3Uploader.uploadImg(multipartFile);
+//        return CustomApiResponse.onSuccess(img);
+        return null;
     }
 }

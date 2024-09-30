@@ -1,14 +1,18 @@
 package com.hwarrk.service;
 
-import com.hwarrk.entity.Member;
-import com.hwarrk.entity.Project;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectRes;
+import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.common.exception.GeneralHandler;
+import com.hwarrk.entity.CareerInfo;
+import com.hwarrk.entity.Member;
+import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectMember;
+import com.hwarrk.repository.CareerInfoRepository;
 import com.hwarrk.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final EntityFacade entityFacade;
     private final ProjectRepository projectRepository;
+    private final CareerInfoRepository careerInfoRepository;
 
     @Override
     public Long createProject(Long loginId, ProjectCreateReq req) {
@@ -35,9 +40,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectRes getProject(Long projectId) {
-        Project project = entityFacade.getProject(projectId);
-        return ProjectRes.mapEntityToRes(project);
+    public SpecificProjectInfoRes getSpecificProjectInfo(Long projectId) {
+        Project project = projectRepository.findSpecificProjectInfoById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("프로젝트가 존재하지 않습니다."));
+
+        for (ProjectMember projectMember : project.getProjectMembers()) {
+            if (!projectMember.isCareerInfoPresent()) {
+                CareerInfo careerInfo = projectMember.loadCareerInfo();
+                careerInfo.addProjectMember(projectMember);
+                careerInfoRepository.save(careerInfo);
+            }
+        }
+
+        return SpecificProjectInfoRes.mapEntityToRes(project);
     }
 
     @Override
@@ -51,8 +66,9 @@ public class ProjectServiceImpl implements ProjectService {
         Member member = entityFacade.getMember(loginId);
         Project project = entityFacade.getProject(projectId);
 
-        if (project.getLeader() != member)
+        if (project.getLeader() != member) {
             throw new GeneralHandler(ErrorStatus.PROJECT_LEADER_REQUIRED);
+        }
 
         projectRepository.delete(project);
     }
@@ -68,7 +84,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void verifyIsReader(Long memberId, Long leaderId) {
-        if (memberId != leaderId)
+        if (memberId != leaderId) {
             throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
+        }
     }
 }
