@@ -1,13 +1,11 @@
 package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
-import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
-import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
@@ -75,5 +73,11 @@ public class ProjectServiceImpl implements ProjectService {
         if (project.isProjectLeader(loginId)) {
             project.updateProject(req.mapUpdateReqToProject());
         }
+    }
+
+    @Override
+    public void completeProject(Long projectId) {
+        Project project = entityFacade.getProject(projectId);
+        project.completeProject();
     }
 }

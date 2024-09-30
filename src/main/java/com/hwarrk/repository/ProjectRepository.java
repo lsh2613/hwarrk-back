@@ -13,12 +13,13 @@ import org.springframework.stereotype.Repository;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    @Query("SELECT p FROM Project p " +
+    @Query("SELECT DISTINCT p FROM Project p " +
             "JOIN FETCH p.post ps " +
             "JOIN FETCH p.projectMembers pm " +
             "JOIN FETCH pm.careerInfo c " +
             "JOIN FETCH pm.member m " +
-            "JOIN FETCH m.careers " +
+            "JOIN FETCH m.projectLikes pl " +
+            "JOIN FETCH m.careers cs " +
             "WHERE p.id = :id")
     Optional<Project> findSpecificProjectInfoById(@Param("id") Long id);
 }

@@ -6,6 +6,8 @@ import com.hwarrk.common.constant.WayType;
 import com.hwarrk.common.exception.GeneralHandler;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -65,6 +67,9 @@ public class Project extends BaseEntity {
 
     private boolean isVisible;
 
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus projectStatus;
+
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
@@ -111,5 +116,9 @@ public class Project extends BaseEntity {
             throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
         }
         return true;
+    }
+
+    public void completeProject() {
+        this.projectStatus = ProjectStatus.COMPLETE;
     }
 }
