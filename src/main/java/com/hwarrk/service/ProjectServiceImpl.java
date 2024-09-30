@@ -63,14 +63,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProject(Long loginId, Long projectId) {
-        Member member = entityFacade.getMember(loginId);
         Project project = entityFacade.getProject(projectId);
-
-        if (project.getLeader() != member) {
-            throw new GeneralHandler(ErrorStatus.PROJECT_LEADER_REQUIRED);
+        if (project.isProjectLeader(loginId)) {
+            projectRepository.delete(project);
         }
-
-        projectRepository.delete(project);
     }
 
     @Override
