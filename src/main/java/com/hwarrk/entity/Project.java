@@ -3,12 +3,13 @@ package com.hwarrk.entity;
 import com.hwarrk.common.constant.StepType;
 import com.hwarrk.common.constant.WayType;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
-@Getter
 @Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,9 +32,9 @@ public class Project extends BaseEntity {
 
     private String domain;
 
-    private String startDate;
+    private LocalDate startDate;
 
-    private String endDate;
+    private LocalDate endDate;
 
     private WayType way;
 
@@ -58,5 +59,20 @@ public class Project extends BaseEntity {
         this.name = name;
         this.description = description;
         this.leader = leader;
+    }
+
+    @Builder
+    public Project(String name, StepType step, String domain, LocalDate startDate, LocalDate endDate, WayType way,
+                   String area, String subject, String image, String description) {
+        this.name = name;
+        this.step = step;
+        this.domain = domain;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.way = way;
+        this.area = area;
+        this.subject = subject;
+        this.image = image;
+        this.description = description;
     }
 }

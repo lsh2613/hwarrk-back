@@ -87,33 +87,6 @@ public class Member extends BaseEntity {
 
     private Integer views;
 
-    public <T extends MemberAssignable> void addItems(List<T> targetList, List<T> items) {
-        items.forEach(item -> {
-            item.setMember(this);
-            targetList.add(item);
-        });
-    }
-
-    public void addPortfolios(List<Portfolio> portfolios) {
-        addItems(this.portfolios, portfolios);
-    }
-
-    public void addPositions(List<Position> positions) {
-        addItems(this.positions, positions);
-    }
-
-    public void addSkills(List<Skill> skills) {
-        addItems(this.skills, skills);
-    }
-
-    public void addDegrees(List<Degree> degrees) {
-        addItems(this.degrees, degrees);
-    }
-
-    public void addCareers(List<Career> careers) {
-        addItems(this.careers, careers);
-    }
-
     public Member(String socialId, OauthProvider oauthProvider) {
         this.socialId = socialId;
         this.oauthProvider = oauthProvider;
@@ -142,6 +115,33 @@ public class Member extends BaseEntity {
         this.skills = skills;
         this.degrees = degrees;
         this.careers = careers;
+    }
+
+    public <T extends MemberAssignable> void addItems(List<T> targetList, List<T> items) {
+        items.forEach(item -> {
+            item.setMember(this);
+            targetList.add(item);
+        });
+    }
+
+    public void addPortfolios(List<Portfolio> portfolios) {
+        addItems(this.portfolios, portfolios);
+    }
+
+    public void addPositions(List<Position> positions) {
+        addItems(this.positions, positions);
+    }
+
+    public void addSkills(List<Skill> skills) {
+        addItems(this.skills, skills);
+    }
+
+    public void addDegrees(List<Degree> degrees) {
+        addItems(this.degrees, degrees);
+    }
+
+    public void addCareers(List<Career> careers) {
+        addItems(this.careers, careers);
     }
 
     public CareerInfo loadCareer() {
