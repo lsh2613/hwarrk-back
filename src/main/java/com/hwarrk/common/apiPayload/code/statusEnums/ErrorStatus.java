@@ -28,6 +28,9 @@ public enum ErrorStatus implements BaseCode {
     SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "MEMBER4013", "존재하지 않는 유효한 세션입니다."),
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4031", "사용자에게 권한이 없습니다."),
 
+    // 프로필 관련
+    PROFILE_NOT_VISIBLE(HttpStatus.FORBIDDEN, "PROFILE4031", "조회하려는 사용자의 프로필이 비공개 상태입니다."),
+
     // 회원 찜
     MEMBER_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_LIKE4041", "찜을 찾을 수 없습니다."),
     MEMBER_LIKE_CONFLICT(HttpStatus.CONFLICT, "MEMBER_LIKE4091", "찜이 이미 존재합니다."),
@@ -87,5 +90,4 @@ public enum ErrorStatus implements BaseCode {
                 .httpStatus(httpStatus)
                 .build();
     }
-
 }

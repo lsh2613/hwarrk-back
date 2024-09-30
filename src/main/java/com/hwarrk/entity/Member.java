@@ -4,6 +4,7 @@ package com.hwarrk.entity;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.dto.req.UpdateProfileReq;
 import com.hwarrk.oauth2.member.OauthMember;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "MEMBER")
@@ -32,20 +32,17 @@ public class Member extends BaseEntity {
 
     private Role role;
 
-    private MemberStatus status;
+    private MemberStatus memberStatus;
 
     private String image;
 
     // 중복 여부 체크 필요!
     private String nickname;
 
-    private String birth;
-
     private String email;
 
-    private String phone;
 
-    private String description;
+    private String introduction;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
@@ -62,37 +59,43 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Career> careers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectDescription> projectDescriptions = new ArrayList<>();
+
     private Double embers;
 
     private Boolean isVisible;
 
-    private Integer views;
-
-    public <T extends MemberAssignable> void addItems(List<T> targetList, List<T> items) {
-        items.forEach(item -> {
-            item.setMember(this);
-            targetList.add(item);
-        });
-    }
+    private Integer views = 0;
 
     public void addPortfolios(List<Portfolio> portfolios) {
-        addItems(this.portfolios, portfolios);
+        this.portfolios.clear();
+        this.portfolios.addAll(portfolios);
     }
 
     public void addPositions(List<Position> positions) {
-        addItems(this.positions, positions);
+        this.positions.clear();
+        this.positions.addAll(positions);
     }
 
     public void addSkills(List<Skill> skills) {
-        addItems(this.skills, skills);
+        this.skills.clear();
+        this.skills.addAll(skills);
     }
 
     public void addDegrees(List<Degree> degrees) {
-        addItems(this.degrees, degrees);
+        this.degrees.clear();
+        this.degrees.addAll(degrees);
     }
 
     public void addCareers(List<Career> careers) {
-        addItems(this.careers, careers);
+        this.careers.clear();
+        this.careers.addAll(careers);
+    }
+
+    public void addProjectDescriptions(List<ProjectDescription> projectDescriptions) {
+        this.projectDescriptions.clear();
+        this.projectDescriptions.addAll(projectDescriptions);
     }
 
     public Member(String socialId, OauthProvider oauthProvider) {
@@ -109,17 +112,28 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(MemberStatus status, String image, String nickname, String birth, String email, String phone, List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees, List<Career> careers) {
-        this.status = status;
+    public Member(MemberStatus memberStatus, String image, String nickname, String email, List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees, List<Career> careers) {
+        this.memberStatus = memberStatus;
         this.image = image;
         this.nickname = nickname;
-        this.birth = birth;
         this.email = email;
-        this.phone = phone;
         this.portfolios = portfolios;
         this.positions = positions;
         this.skills = skills;
         this.degrees = degrees;
         this.careers = careers;
+    }
+
+    public void updateProfile(UpdateProfileReq updateProfileReq) {
+        this.nickname = updateProfileReq.nickname();
+        this.memberStatus = updateProfileReq.memberStatus();
+        this.email = updateProfileReq.email();
+        this.introduction = updateProfileReq.introduction();
+        addPositions(updateProfileReq.mapReqToPositions(this));
+        addPortfolios(updateProfileReq.mapReqToPortfolios(this));
+        addSkills(updateProfileReq.mapReqToSkills(this));
+        this.isVisible = updateProfileReq.isVisible();
+        addDegrees(updateProfileReq.mapReqToDegrees(this));
+        addCareers(updateProfileReq.mapReqToCareers(this));
     }
 }
