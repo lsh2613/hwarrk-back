@@ -8,12 +8,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "DEGREE")
-public class Degree implements MemberAssignable {
+public class Degree {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "degree_id")
     private Long id;
-    private String degree;
+    private String degreeType;
     private String universityType;
     private String school;
     private String major;
@@ -26,8 +26,8 @@ public class Degree implements MemberAssignable {
     private Member member;
 
     @Builder
-    public Degree(String degree, String universityType, String school, String major, String graduationType, String entranceDate, String graduationDate, Member member) {
-        this.degree = degree;
+    public Degree(String degreeType, String universityType, String school, String major, String graduationType, String entranceDate, String graduationDate, Member member) {
+        this.degreeType = degreeType;
         this.universityType = universityType;
         this.school = school;
         this.major = major;
