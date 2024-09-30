@@ -1,6 +1,8 @@
 package com.hwarrk.repository;
 
+import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.entity.Project;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +24,11 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "JOIN FETCH m.careers cs " +
             "WHERE p.id = :id")
     Optional<Project> findSpecificProjectInfoById(@Param("id") Long id);
+
+    @Query("SELECT new com.hwarrk.common.dto.dto.ProjectWithLikeDto(p, " +
+            "CASE WHEN pl.id IS NOT NULL THEN true ELSE false END) " +
+            "FROM Project p " +
+            "LEFT JOIN ProjectLike pl ON pl.project.id = p.id AND pl.member.id = :memberId " +
+            "WHERE p IN (SELECT pl.project FROM ProjectLike pl WHERE pl.member.id = :memberId)")
+    List<ProjectWithLikeDto> findProjectsAndIsLikedByMember(@Param("memberId") Long memberId);
 }

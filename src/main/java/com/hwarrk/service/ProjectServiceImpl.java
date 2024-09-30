@@ -1,8 +1,10 @@
 package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
+import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
+import com.hwarrk.common.dto.res.CompleteProjectsRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
@@ -12,6 +14,7 @@ import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectMember;
 import com.hwarrk.repository.CareerInfoRepository;
 import com.hwarrk.repository.ProjectRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -79,5 +82,11 @@ public class ProjectServiceImpl implements ProjectService {
     public void completeProject(Long projectId) {
         Project project = entityFacade.getProject(projectId);
         project.completeProject();
+    }
+
+    @Override
+    public List<CompleteProjectsRes> getCompleteProjects(Long loginId) {
+        List<ProjectWithLikeDto> projectWithLikeDtos = projectRepository.findProjectsAndIsLikedByMember(loginId);
+        return projectWithLikeDtos.stream().map(CompleteProjectsRes::createRes).toList();
     }
 }
