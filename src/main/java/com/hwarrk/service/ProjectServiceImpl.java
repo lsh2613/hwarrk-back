@@ -5,6 +5,7 @@ import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.CompleteProjectsRes;
+import com.hwarrk.common.dto.res.MyProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
@@ -96,5 +97,11 @@ public class ProjectServiceImpl implements ProjectService {
         if (project.isProjectLeader(loginId) && project.isComplete()) {
             projectRepository.delete(project);
         }
+    }
+
+    @Override
+    public List<MyProjectRes> getMyProjects(Long loginId) {
+        List<Project> myProjects = projectRepository.findByLeaderOrderByCreatedAtDesc(loginId);
+        return myProjects.stream().map(MyProjectRes::createRes).toList();
     }
 }

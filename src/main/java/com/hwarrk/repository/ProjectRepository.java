@@ -1,6 +1,7 @@
 package com.hwarrk.repository;
 
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
+import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +32,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "LEFT JOIN ProjectLike pl ON pl.project.id = p.id AND pl.member.id = :memberId " +
             "WHERE p IN (SELECT pl.project FROM ProjectLike pl WHERE pl.member.id = :memberId)")
     List<ProjectWithLikeDto> findProjectsAndIsLikedByMember(@Param("memberId") Long memberId);
+
+    @Query("SELECT p FROM Project p "
+            + "JOIN FETCH p.post ps "
+            + "JOIN FETCH ps.positions pss "
+            + "WHERE p.leader.id = :member")
+    List<Project> findByLeaderOrderByCreatedAtDesc(@Param("memberId") Long memberId);
 }
