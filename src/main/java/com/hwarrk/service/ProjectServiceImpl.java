@@ -76,16 +76,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateProject(Long loginId, Long projectId, ProjectUpdateReq req) {
         Project project = entityFacade.getProject(projectId);
-
-        verifyIsReader(loginId, project.getLeader().getId());
-
-        project.setName(req.name());
-        project.setDescription(req.description());
-    }
-
-    private void verifyIsReader(Long memberId, Long leaderId) {
-        if (memberId != leaderId) {
-            throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
+        if (project.isProjectLeader(loginId)) {
+            project.updateProject(req.mapUpdateReqToProject());
         }
     }
 }

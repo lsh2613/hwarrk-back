@@ -1,12 +1,29 @@
 package com.hwarrk.entity;
 
+import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.StepType;
 import com.hwarrk.common.constant.WayType;
-import jakarta.persistence.*;
+import com.hwarrk.common.exception.GeneralHandler;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -74,5 +91,25 @@ public class Project extends BaseEntity {
         this.subject = subject;
         this.image = image;
         this.description = description;
+    }
+
+    public void updateProject(Project project) {
+        this.name = project.getName();
+        this.step = project.getStep();
+        this.domain = project.getDomain();
+        this.startDate = project.getStartDate();
+        this.endDate = project.getEndDate();
+        this.way = project.getWay();
+        this.area = project.getArea();
+        this.subject = project.getSubject();
+        this.image = project.getImage();
+        this.description = project.getDescription();
+    }
+
+    public boolean isProjectLeader(Long loginId) {
+        if (!leader.isSameId(loginId)) {
+            throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
+        }
+        return true;
     }
 }

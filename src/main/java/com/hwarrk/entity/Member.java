@@ -173,4 +173,8 @@ public class Member extends BaseEntity {
 
         return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer);
     }
+
+    public boolean isSameId(Long loginId) {
+        return id.equals(loginId);
+    }
 }
