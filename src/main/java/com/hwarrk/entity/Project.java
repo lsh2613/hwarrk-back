@@ -121,4 +121,11 @@ public class Project extends BaseEntity {
     public void completeProject() {
         this.projectStatus = ProjectStatus.COMPLETE;
     }
+
+    public boolean isComplete() {
+        if (!projectStatus.isComplete()) {
+            throw new IllegalStateException("완료된 프로젝트가 아닙니다.");
+        }
+        return true;
+    }
 }

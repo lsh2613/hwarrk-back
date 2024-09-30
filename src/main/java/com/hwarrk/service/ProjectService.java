@@ -23,4 +23,6 @@ public interface ProjectService {
     void completeProject(Long projectId);
 
     List<CompleteProjectsRes> getCompleteProjects(Long loginId);
+
+    void deleteCompleteProject(Long loginId, Long projectId);
 }

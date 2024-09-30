@@ -89,4 +89,12 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectWithLikeDto> projectWithLikeDtos = projectRepository.findProjectsAndIsLikedByMember(loginId);
         return projectWithLikeDtos.stream().map(CompleteProjectsRes::createRes).toList();
     }
+
+    @Override
+    public void deleteCompleteProject(Long loginId, Long projectId) {
+        Project project = entityFacade.getProject(projectId);
+        if (project.isProjectLeader(loginId) && project.isComplete()) {
+            projectRepository.delete(project);
+        }
+    }
 }

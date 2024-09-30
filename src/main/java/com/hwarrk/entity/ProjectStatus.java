@@ -9,4 +9,8 @@ public enum ProjectStatus {
     ProjectStatus(String name) {
         this.name = name;
     }
+
+    public boolean isComplete() {
+        return this == COMPLETE;
+    }
 }
