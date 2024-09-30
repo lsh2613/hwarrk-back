@@ -8,6 +8,7 @@ import com.hwarrk.common.dto.res.CompleteProjectsRes;
 import com.hwarrk.common.dto.res.MyProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectRes;
+import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
@@ -103,5 +104,12 @@ public class ProjectServiceImpl implements ProjectService {
     public List<MyProjectRes> getMyProjects(Long loginId) {
         List<Project> myProjects = projectRepository.findByLeaderOrderByCreatedAtDesc(loginId);
         return myProjects.stream().map(MyProjectRes::createRes).toList();
+    }
+
+    @Override
+    public SpecificProjectDetailRes getSpecificProjectDetails(Long projectId) {
+        Project project = projectRepository.findSpecificProjectDetailsById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다."));
+        return SpecificProjectDetailRes.createRes(project);
     }
 }

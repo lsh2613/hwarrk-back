@@ -6,6 +6,7 @@ import com.hwarrk.common.dto.res.CompleteProjectsRes;
 import com.hwarrk.common.dto.res.MyProjectRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
+import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +29,6 @@ public interface ProjectService {
     void deleteCompleteProject(Long loginId, Long projectId);
 
     List<MyProjectRes> getMyProjects(Long loginId);
+
+    SpecificProjectDetailRes getSpecificProjectDetails(Long projectId);
 }

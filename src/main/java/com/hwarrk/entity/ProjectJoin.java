@@ -1,5 +1,6 @@
 package com.hwarrk.entity;
 
+import com.hwarrk.common.constant.PositionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +16,9 @@ public class ProjectJoin extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_join_id")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private PositionType positionType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")

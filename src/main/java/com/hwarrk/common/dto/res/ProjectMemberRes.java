@@ -17,6 +17,7 @@ public class ProjectMemberRes {
     private String image;
     private String nickname;
     private CareerInfoRes career;
+    private double embers;
     private MemberStatus memberStatus;
     private boolean isLiked;
     private String introduction;
@@ -28,6 +29,7 @@ public class ProjectMemberRes {
         projectMemberRes.image = member.getImage();
         projectMemberRes.nickname = member.getNickname();
         projectMemberRes.career = CareerInfoRes.mapEntityToRes(projectMember.getCareerInfo());
+        projectMemberRes.embers = member.getEmbers();
         projectMemberRes.memberStatus = member.getStatus();
         projectMemberRes.introduction = member.getDescription();
         return projectMemberRes;

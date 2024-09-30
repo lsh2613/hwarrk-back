@@ -70,11 +70,14 @@ public class Project extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
 
+    @OneToOne(mappedBy = "project", fetch = FetchType.LAZY)
+    private Post post;
+
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
-    @OneToOne(mappedBy = "project", fetch = FetchType.LAZY)
-    private Post post;
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    private List<ProjectJoin> projectJoins = new ArrayList<>();
 
     @Builder
     public Project(String name, String description, Member leader) {
