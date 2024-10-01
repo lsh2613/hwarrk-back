@@ -161,8 +161,7 @@ public class Member extends BaseEntity {
         LocalDate lastLocalDate = LocalDate.MIN;
 
         for (Career career : this.careers) {
-            totalExperience.plus(career.calculateExperience());
-
+            totalExperience = totalExperience.plus(career.calculateExperience());
             LocalDate endDate = career.getEndDate();
             if (endDate.isAfter(lastLocalDate)) {
                 lastLocalDate = endDate;
