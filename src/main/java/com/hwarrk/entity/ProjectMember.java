@@ -55,12 +55,18 @@ public class ProjectMember {
         this.position = position;
     }
 
+    public void addMember(Member member) {
+        this.member = member;
+    }
+
     public void addCareerInfo(CareerInfo careerInfo) {
         this.careerInfo = careerInfo;
     }
 
     public CareerInfo loadCareerInfo() {
-        return member.loadCareer();
+        CareerInfo careerInfo = member.loadCareer();
+        addCareerInfo(careerInfo);
+        return careerInfo;
     }
 
     public boolean isCareerInfoPresent() {

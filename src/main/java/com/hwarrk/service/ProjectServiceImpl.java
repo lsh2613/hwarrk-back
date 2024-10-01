@@ -59,7 +59,6 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectMember projectMember : project.getProjectMembers()) {
             if (!projectMember.isCareerInfoPresent()) {
                 CareerInfo careerInfo = projectMember.loadCareerInfo();
-                careerInfo.addProjectMember(projectMember);
                 careerInfoRepository.save(careerInfo);
             }
         }
