@@ -9,6 +9,7 @@ import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.RecommendProjectRes;
+import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import java.util.List;
@@ -35,7 +36,7 @@ public interface ProjectService {
 
     SpecificProjectDetailRes getSpecificProjectDetails(Long projectId);
 
-    List<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req);
+    SliceRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req, Pageable pageable);
 
     List<RecommendProjectRes> getRecommendedProjects(Long loginId);
 }

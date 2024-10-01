@@ -13,6 +13,7 @@ import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.RecommendProjectRes;
+import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.entity.CareerInfo;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,16 +123,17 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req) {
+    public SliceRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req,
+                                                                      Pageable pageable) {
         RecruitingType recruitingType = RecruitingType.findType(req.getRecruitingType());
         ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
         String keyWord = req.getKeyWord();
 
         // login 한 사용자만 필터링을 할 수 있게 해야 하나?
-        List<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
-                keyWord, loginId);
+        Slice<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
+                keyWord, loginId, pageable);
 
-        return projects.stream().map(ProjectFilterSearchRes::createRes).toList();
+        return SliceRes.mapSliceToSliceRes(projects, ProjectFilterSearchRes::createRes);
     }
 
     @Override

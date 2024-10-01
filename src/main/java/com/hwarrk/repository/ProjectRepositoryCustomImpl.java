@@ -9,10 +9,14 @@ import static com.hwarrk.entity.QRecruitingPosition.recruitingPosition;
 
 import com.hwarrk.common.constant.ProjectFilterType;
 import com.hwarrk.common.constant.RecruitingType;
+import com.hwarrk.common.util.PageUtil;
 import com.hwarrk.entity.Project;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -25,32 +29,31 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public List<Project> findFilteredProjects(RecruitingType recruitingType, ProjectFilterType filterType,
-                                              String keyWord, Long memberId) {
+    public Slice<Project> findFilteredProjects(RecruitingType recruitingType, ProjectFilterType filterType,
+                                               String keyWord, Long memberId, Pageable pageable) {
 
         JPQLQuery<Project> query = queryFactory.selectFrom(project)
                 .join(project.post, post)
                 .where(post.recruitingType.eq(recruitingType));
 
-        switch (filterType) {
-            case TRENDING:
-                // TODO: 인기 급상승 기준 추가
-                break;
-
-            case LATEST:
-                query.orderBy(project.startDate.desc());
-                break;
-
-            case FAVORITE:
-                query.join(project.projectLikes, projectLike)
-                        .on(projectLike.member.id.eq(memberId));
-                break;
-
-            default:
-                throw new IllegalArgumentException("프로젝트 허브 필터링 조건이 올바르지 않습니다.");
+        if (filterType == ProjectFilterType.TRENDING) {
+            // TODO: 인기 급상승 기준 추가
         }
 
-        return query.fetch();
+        if (filterType == ProjectFilterType.LATEST) {
+            query.orderBy(project.createdAt.desc());
+        }
+
+        if (filterType == ProjectFilterType.FAVORITE) {
+            query.join(project.projectLikes, projectLike)
+                    .on(projectLike.member.id.eq(memberId));
+        }
+
+        List<Project> projects = query
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(projects, pageable, PageUtil.hasNextPage(projects, pageable));
     }
 
 
