@@ -90,6 +90,10 @@ public class Member extends BaseEntity {
 
     private Integer views;
 
+    public Member(Long id) {
+        this.id = id;
+    }
+
     public Member(String socialId, OauthProvider oauthProvider) {
         this.socialId = socialId;
         this.oauthProvider = oauthProvider;
