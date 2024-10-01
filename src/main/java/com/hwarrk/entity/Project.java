@@ -4,6 +4,8 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.StepType;
 import com.hwarrk.common.constant.WayType;
 import com.hwarrk.common.exception.GeneralHandler;
+import com.querydsl.core.annotations.QueryInit;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -70,14 +72,24 @@ public class Project extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
 
-    @OneToOne(mappedBy = "project", fetch = FetchType.LAZY)
+    @QueryInit("*")
+    @OneToOne(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Post post;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @QueryInit("*")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @QueryInit("*")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ProjectJoin> projectJoins = new ArrayList<>();
+
+    @QueryInit("*")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProjectLike> projectLikes = new ArrayList<>();
 
     @Builder
     public Project(String name, String description, Member leader) {

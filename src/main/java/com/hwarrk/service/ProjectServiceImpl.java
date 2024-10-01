@@ -1,13 +1,18 @@
 package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
+import com.hwarrk.common.constant.ProjectFilterType;
+import com.hwarrk.common.constant.RecruitingType;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
+import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.CompleteProjectsRes;
 import com.hwarrk.common.dto.res.MyProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
+import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
 import com.hwarrk.common.dto.res.ProjectRes;
+import com.hwarrk.common.dto.res.RecommendProjectRes;
 import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.entity.CareerInfo;
@@ -16,6 +21,7 @@ import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectMember;
 import com.hwarrk.repository.CareerInfoRepository;
 import com.hwarrk.repository.ProjectRepository;
+import com.hwarrk.repository.ProjectRepositoryCustom;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final EntityFacade entityFacade;
     private final ProjectRepository projectRepository;
     private final CareerInfoRepository careerInfoRepository;
+    private final ProjectRepositoryCustom projectRepositoryCustom;
 
     @Override
     public Long createProject(Long loginId, ProjectCreateReq req) {
@@ -111,5 +118,24 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findSpecificProjectDetailsById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다."));
         return SpecificProjectDetailRes.createRes(project);
+    }
+
+    @Override
+    public List<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req) {
+        RecruitingType recruitingType = RecruitingType.findType(req.getRecruitingType());
+        ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
+        String keyWord = req.getKeyWord();
+
+        // login 한 사용자만 필터링을 할 수 있게 해야 하나?
+        List<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
+                keyWord, loginId);
+
+        return projects.stream().map(ProjectFilterSearchRes::createRes).toList();
+    }
+
+    @Override
+    public List<RecommendProjectRes> getRecommendedProjects(Long loginId) {
+        List<Project> recommendedProjects = projectRepositoryCustom.findRecommendedProjects(loginId);
+        return recommendedProjects.stream().map(RecommendProjectRes::createRes).toList();
     }
 }
