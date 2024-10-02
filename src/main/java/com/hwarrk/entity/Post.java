@@ -60,10 +60,19 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitingPosition> positions = new ArrayList<>();
 
+    public Post(String title) {
+        this.title = title;
+    }
+
     public Post(Project project, Member member, boolean isVisible) {
         this.project = project;
         this.member = member;
         this.isVisible = isVisible;
+    }
+
+    public void addProject(Project project) {
+        this.project = project;
+        project.addPost(this);
     }
 
     public void addRecruitingPosition(RecruitingPosition recruitingPosition) {

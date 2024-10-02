@@ -50,6 +50,13 @@ public class Career implements MemberAssignable {
         this.member = member;
     }
 
+    public Career(String company, LocalDate startDate, LocalDate endDate, Member member) {
+        this.company = company;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.member = member;
+    }
+
     public Period calculateExperience() {
         return Period.between(startDate, endDate);
     }

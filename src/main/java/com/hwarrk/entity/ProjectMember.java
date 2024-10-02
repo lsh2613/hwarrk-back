@@ -55,6 +55,12 @@ public class ProjectMember {
         this.position = position;
     }
 
+    public ProjectMember(Member member, Project project, PositionType position) {
+        this.member = member;
+        this.project = project;
+        this.position = position;
+    }
+
     public void addMember(Member member) {
         this.member = member;
     }

@@ -20,14 +20,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Setter
 @Getter
@@ -79,17 +81,33 @@ public class Project extends BaseEntity {
     @QueryInit("*")
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ProjectMember> projectMembers = new ArrayList<>();
+    @BatchSize(size = 10)
+    private Set<ProjectMember> projectMembers = new LinkedHashSet<>();
 
     @QueryInit("*")
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ProjectJoin> projectJoins = new ArrayList<>();
+    @BatchSize(size = 10)
+    private Set<ProjectJoin> projectJoins = new LinkedHashSet<>();
 
     @QueryInit("*")
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ProjectLike> projectLikes = new ArrayList<>();
+    @BatchSize(size = 10)
+    private Set<ProjectLike> projectLikes = new LinkedHashSet<>();
+
+    public Project(Long id, String name, Member leader, LocalDate startDate) {
+        this.id = id;
+        this.name = name;
+        this.leader = leader;
+        this.startDate = startDate;
+    }
+
+    public Project(String name, Member leader, LocalDate startDate) {
+        this.name = name;
+        this.leader = leader;
+        this.startDate = startDate;
+    }
 
     @Builder
     public Project(String name, String description, Member leader) {
@@ -124,6 +142,24 @@ public class Project extends BaseEntity {
         this.subject = project.getSubject();
         this.image = project.getImage();
         this.description = project.getDescription();
+    }
+
+    public void addPost(Post post) {
+        this.post = post;
+    }
+
+    public void addProjectJoin(ProjectJoin projectJoin) {
+        if (Optional.ofNullable(this.projectJoins).isEmpty()) {
+            this.projectJoins = new LinkedHashSet<>();
+        }
+        this.projectJoins.add(projectJoin);
+    }
+
+    public void addProjectLike(ProjectLike projectLike) {
+        if (Optional.ofNullable(projectLikes).isEmpty()) {
+            projectLikes = new LinkedHashSet<>();
+        }
+        this.projectLikes.add(projectLike);
     }
 
     public boolean isProjectLeader(Long loginId) {

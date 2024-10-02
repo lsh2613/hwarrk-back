@@ -20,12 +20,14 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
@@ -79,9 +81,11 @@ public class Member extends BaseEntity {
     private List<Degree> degrees = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 10)
     private List<Career> careers = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 10)
     private List<ProjectLike> projectLikes = new ArrayList<>();
 
     private Double embers;
@@ -92,6 +96,12 @@ public class Member extends BaseEntity {
 
     public Member(Long id) {
         this.id = id;
+    }
+
+    public Member(String nickname, String socialId, OauthProvider oauthProvider) {
+        this.nickname = nickname;
+        this.socialId = socialId;
+        this.oauthProvider = oauthProvider;
     }
 
     public Member(String socialId, OauthProvider oauthProvider) {
@@ -149,6 +159,13 @@ public class Member extends BaseEntity {
 
     public void addCareers(List<Career> careers) {
         addItems(this.careers, careers);
+    }
+
+    public void addProjectLike(ProjectLike projectLike) {
+        if (Optional.ofNullable(projectLikes).isEmpty()) {
+            projectLikes = new ArrayList<>();
+        }
+        this.projectLikes.add(projectLike);
     }
 
     public CareerInfo loadCareer() {

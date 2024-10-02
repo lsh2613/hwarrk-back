@@ -27,4 +27,13 @@ public class ProjectJoin extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public ProjectJoin(PositionType positionType) {
+        this.positionType = positionType;
+    }
+
+    public void addProject(Project project) {
+        this.project = project;
+        project.addProjectJoin(this);
+    }
 }
