@@ -85,6 +85,7 @@ class ProjectTest {
 
         // when & then
         assertThatThrownBy(givenProject::isComplete)
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(GeneralHandler.class)
+                .hasMessage("완료된 프로젝트가 아닙니다.");
     }
 }

@@ -35,6 +35,7 @@ public enum ErrorStatus implements BaseCode {
     // 프로젝트
     PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
     PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더만 프로젝트를 삭제할 수 있습니다."),
+    PROJECT_INCOMPLETE(HttpStatus.BAD_REQUEST, "PROJECT4002", "완료된 프로젝트가 아닙니다."),
 
     // 프로젝트 찜
     PROJECT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_LIKE4041", "프로젝트 찜을 찾을 수 없습니다."),

@@ -1,5 +1,7 @@
 package com.hwarrk.service;
 
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.PROJECT_NOT_FOUND;
+
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.constant.ProjectFilterType;
 import com.hwarrk.common.constant.RecruitingType;
@@ -16,6 +18,7 @@ import com.hwarrk.common.dto.res.RecommendProjectRes;
 import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
+import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
@@ -54,7 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public SpecificProjectInfoRes getSpecificProjectInfo(Long projectId) {
         Project project = projectRepository.findSpecificProjectInfoById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("프로젝트가 존재하지 않습니다."));
+                .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
 
         for (ProjectMember projectMember : project.getProjectMembers()) {
             if (!projectMember.isCareerInfoPresent()) {
@@ -117,7 +120,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public SpecificProjectDetailRes getSpecificProjectDetails(Long projectId) {
         Project project = projectRepository.findSpecificProjectDetailsById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
         return SpecificProjectDetailRes.createRes(project);
     }
 
