@@ -1,9 +1,12 @@
 package com.hwarrk.entity;
 
 
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
+
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.oauth2.member.OauthMember;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -191,7 +194,7 @@ public class Member extends BaseEntity {
         }
 
         if (lastCareer.equals(NO_LAST_COMPANY_INFO)) {
-            throw new IllegalStateException("최신 회사 정보가 존재하지 않습니다.");
+            throw new GeneralHandler(LAST_CAREER_NOT_FOUND);
         }
 
         return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer);
