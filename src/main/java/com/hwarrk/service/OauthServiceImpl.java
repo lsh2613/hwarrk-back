@@ -1,5 +1,6 @@
 package com.hwarrk.service;
 
+import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.dto.res.OauthLoginRes;
 import com.hwarrk.entity.Member;
 import com.hwarrk.jwt.TokenProvider;
@@ -29,17 +30,16 @@ public class OauthServiceImpl implements OauthService {
         OauthMember request = requestOauthInfoService.request(oauthParams);
         Optional<Member> byOauthProviderAndSocialId = memberRepository.findByOauthProviderAndSocialId(request.getOauthProvider(), request.getSocialId());
 
-        // 기존 유저
-        if (byOauthProviderAndSocialId.isPresent()) {
-            return new OauthLoginRes(
-                    byOauthProviderAndSocialId.get().getId(),
-                    byOauthProviderAndSocialId.get().getRole(),
-                    tokenProvider.issueAccessToken(byOauthProviderAndSocialId.get().getId()),
-                    tokenProvider.issueRefreshToken(byOauthProviderAndSocialId.get().getId()));
+        Member member = byOauthProviderAndSocialId.orElseGet(() -> memberRepository.save(new Member(request)));
+
+        String accessToken = null;
+        String refreshToken = null;
+
+        if (member.getRole() == Role.USER) {
+            accessToken = tokenProvider.issueAccessToken(member.getId());
+            refreshToken = tokenProvider.issueRefreshToken(member.getId());
         }
 
-        //신규 유저 DB에 저장
-        Member savedMember = memberRepository.save(new Member(request));
-        return new OauthLoginRes(savedMember.getId(), savedMember.getRole(), null, null);
+        return new OauthLoginRes(member.getId(), member.getRole(), accessToken, refreshToken);
     }
 }
