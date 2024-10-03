@@ -53,8 +53,9 @@ public class MemberServiceImpl implements MemberService {
         Member member = entityFacade.getMember(loginId);
 
         updateMemberImage(image, member);
-        member.updateProfile(updateProfileReq);
-        updateProjectDescriptions(updateProfileReq, member);
+
+        List<ProjectDescription> projectDescriptions = getProjectDescriptions(updateProfileReq, member);
+        updateProfileReq.updateMember(member, projectDescriptions);
     }
 
     @Override
@@ -84,8 +85,11 @@ public class MemberServiceImpl implements MemberService {
         return PageRes.mapResToPageRes(memberPage);
     }
 
-    private void updateProjectDescriptions(UpdateProfileReq updateProfileReq, Member member) {
-        List<ProjectDescription> projectDescriptions = updateProfileReq.projectDescriptions().stream()
+    private List<ProjectDescription> getProjectDescriptions(UpdateProfileReq updateProfileReq, Member member) {
+        if (updateProfileReq.projectDescriptions() == null)
+            return null;
+
+        return updateProfileReq.projectDescriptions().stream()
                 .map(updateProjectDescriptionReq -> {
                     Project project = entityFacade.getProject(updateProjectDescriptionReq.projectId());
                     return updateProjectDescriptionReq.mapReqToEntity(member, project);

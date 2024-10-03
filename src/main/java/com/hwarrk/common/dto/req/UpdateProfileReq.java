@@ -30,6 +30,24 @@ public record UpdateProfileReq(
         List<UpdateCareerReq> careers,
         List<UpdateProjectDescriptionReq> projectDescriptions
 ) {
+    public void updateMember(Member member, List<ProjectDescription> projectDescriptions) {
+        member.setNickname(nickname);
+        member.setMemberStatus(memberStatus);
+        member.setEmail(email);
+        member.setIntroduction(introduction);
+        member.setIsVisible(isVisible);
+
+        member.addPositions(mapReqToPositions(member));
+        member.addPortfolios(mapReqToPortfolios(member));
+        member.addSkills(mapReqToSkills(member));
+        member.addDegrees(mapReqToDegrees(member));
+        member.addCareers(mapReqToCareers(member));
+
+        if (projectDescriptions != null) {
+            member.addProjectDescriptions(projectDescriptions);
+        }
+    }
+
     public List<Portfolio> mapReqToPortfolios(Member member) {
         return portfolios == null ?
                 Collections.emptyList() : portfolios.stream().map(portfolioLink -> new Portfolio(portfolioLink, member)).toList();

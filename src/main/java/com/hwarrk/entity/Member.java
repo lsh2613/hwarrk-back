@@ -4,7 +4,6 @@ package com.hwarrk.entity;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
-import com.hwarrk.common.dto.req.UpdateProfileReq;
 import com.hwarrk.oauth2.member.OauthMember;
 import jakarta.persistence.*;
 import lombok.*;
@@ -111,29 +110,4 @@ public class Member extends BaseEntity {
         this.role = Role.GUEST;
     }
 
-    @Builder
-    public Member(MemberStatus memberStatus, String image, String nickname, String email, List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees, List<Career> careers) {
-        this.memberStatus = memberStatus;
-        this.image = image;
-        this.nickname = nickname;
-        this.email = email;
-        this.portfolios = portfolios;
-        this.positions = positions;
-        this.skills = skills;
-        this.degrees = degrees;
-        this.careers = careers;
-    }
-
-    public void updateProfile(UpdateProfileReq updateProfileReq) {
-        this.nickname = updateProfileReq.nickname();
-        this.memberStatus = updateProfileReq.memberStatus();
-        this.email = updateProfileReq.email();
-        this.introduction = updateProfileReq.introduction();
-        addPositions(updateProfileReq.mapReqToPositions(this));
-        addPortfolios(updateProfileReq.mapReqToPortfolios(this));
-        addSkills(updateProfileReq.mapReqToSkills(this));
-        this.isVisible = updateProfileReq.isVisible();
-        addDegrees(updateProfileReq.mapReqToDegrees(this));
-        addCareers(updateProfileReq.mapReqToCareers(this));
-    }
 }
