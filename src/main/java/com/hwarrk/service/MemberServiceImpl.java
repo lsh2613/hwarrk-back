@@ -3,6 +3,7 @@ package com.hwarrk.service;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
+import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
 import com.hwarrk.common.dto.res.MemberRes;
@@ -68,7 +69,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ProfileRes getProfile(Long fromMemberId, Long toMemberId) {
+        Member fromMember = entityFacade.getMember(fromMemberId);
         Member toMember = entityFacade.getMember(toMemberId);
+
+        if (fromMember.getRole() == Role.GUEST)
+            throw new GeneralHandler(ErrorStatus.GUEST_ROLE_FORBIDDEN);
 
         if (toMember.getIsVisible() == false)
             throw new GeneralHandler(ErrorStatus.PROFILE_NOT_VISIBLE);
@@ -95,8 +100,6 @@ public class MemberServiceImpl implements MemberService {
                     return updateProjectDescriptionReq.mapReqToEntity(member, project);
                 })
                 .toList();
-
-        member.addProjectDescriptions(projectDescriptions);
     }
 
     private void updateMemberImage(MultipartFile image, Member member) {

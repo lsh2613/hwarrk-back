@@ -2,6 +2,7 @@ package com.hwarrk.common.dto.req;
 
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.constant.Role;
 import com.hwarrk.entity.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,6 +32,9 @@ public record UpdateProfileReq(
         List<UpdateProjectDescriptionReq> projectDescriptions
 ) {
     public void updateMember(Member member, List<ProjectDescription> projectDescriptions) {
+        if (member.getRole() == Role.GUEST)
+            member.setRole(Role.USER);
+
         member.setNickname(nickname);
         member.setMemberStatus(memberStatus);
         member.setEmail(email);

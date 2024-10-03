@@ -27,6 +27,8 @@ public enum ErrorStatus implements BaseCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER4012", "사용자 비밀번호가 일치하지 않습니다"),
     SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "MEMBER4013", "존재하지 않는 유효한 세션입니다."),
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4031", "사용자에게 권한이 없습니다."),
+    GUEST_ROLE_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4032", "게스트 회원은 이용할 수 없는 기능입니다."),
+
 
     // 프로필 관련
     PROFILE_NOT_VISIBLE(HttpStatus.FORBIDDEN, "PROFILE4031", "조회하려는 사용자의 프로필이 비공개 상태입니다."),

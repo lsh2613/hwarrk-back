@@ -100,6 +100,7 @@ public class Member extends BaseEntity {
     public Member(String socialId, OauthProvider oauthProvider) {
         this.socialId = socialId;
         this.oauthProvider = oauthProvider;
+        this.role = Role.GUEST;
     }
 
     public Member(OauthMember request) {
