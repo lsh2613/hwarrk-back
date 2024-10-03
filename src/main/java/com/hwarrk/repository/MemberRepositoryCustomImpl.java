@@ -122,7 +122,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private OrderSpecifier<?> filterType(FilterType filterType) {
         switch (filterType) {
-            case LATEST -> member.createdAt.desc();
+            case LATEST -> member.updatedAt.desc();
             case HOTTEST -> member.views.desc();
         }
         return member.createdAt.desc();
