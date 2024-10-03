@@ -191,6 +191,7 @@ class MemberServiceTest {
         assertThat(member_01.getDegrees().size()).isEqualTo(degrees.size());
         assertThat(member_01.getCareers().size()).isEqualTo(careers.size());
         assertThat(member_01.getProjectDescriptions().size()).isEqualTo(projectDescriptions.size());
+        assertThat(member_01.getRole()).isEqualTo(Role.USER);
     }
 
     @Test
@@ -228,6 +229,7 @@ class MemberServiceTest {
         assertThat(member_01.getDegrees().size()).isEqualTo(0);
         assertThat(member_01.getCareers().size()).isEqualTo(0);
         assertThat(member_01.getProjectDescriptions().size()).isEqualTo(updateProjectDescriptions.size());
+        assertThat(member_01.getRole()).isEqualTo(Role.USER);
     }
 
     @Test
@@ -263,7 +265,7 @@ class MemberServiceTest {
     void 남의_프로필_조회_성공() {
         //given
         Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
-
+        member_02.setRole(Role.USER);
         UpdateProfileReq req = new UpdateProfileReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
@@ -290,9 +292,22 @@ class MemberServiceTest {
     }
 
     @Test
-    void 남의_프로필_조회_실패() {
+    void 남의_프로필_조회_실패_01() {
         //given
         Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
+
+        //when
+
+        //then
+        GeneralHandler e = assertThrows(GeneralHandler.class, () -> memberService.getProfile(member_02.getId(), member_01.getId()));
+        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.GUEST_ROLE_FORBIDDEN);
+    }
+
+    @Test
+    void 남의_프로필_조회_실패_02() {
+        //given
+        Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
+        member_01.setRole(Role.USER);
         member_02.setIsVisible(false);
 
         //when
