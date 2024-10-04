@@ -23,8 +23,8 @@ public record MemberRes(
                 .nickname(member.getNickname())
 //                .career() // todo 기획 마무리 후 수정 예정
                 .embers(member.getEmbers())
-                .status(member.getStatus())
-                .description(member.getDescription())
+                .status(member.getMemberStatus())
+                .description(member.getIntroduction())
                 .build();
     }
 }

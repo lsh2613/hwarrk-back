@@ -2,31 +2,38 @@ package com.hwarrk.common.dto.res;
 
 import com.hwarrk.entity.Career;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-public class CareerRes {
-    private long careerId;
-    private String company;
-    private String domain;
-    private String job;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String description;
+@Builder
+public record CareerRes(
+        long careerId,
+        String company,
+        String domain, // 직군
+        String job, // 직무
+        LocalDate startDate,
+        LocalDate endDate,
+        String description
+) {
+    public static CareerRes mapEntityToRes(Career careerEntity) {
+        return CareerRes.builder()
+                .company(careerEntity.getCompany())
+                .domain(careerEntity.getDomain())
+                .job(careerEntity.getJob())
+                .startDate(careerEntity.getStartDate())
+                .endDate(careerEntity.getEndDate())
+                .description(careerEntity.getDescription())
+                .build();
+    }
 
     public static CareerRes createRes(Career career) {
-        CareerRes careerRes = new CareerRes();
-        careerRes.careerId = career.getId();
-        careerRes.company = career.getCompany();
-        careerRes.domain = career.getDomain();
-        careerRes.job = career.getJob();
-        careerRes.startDate = career.getStartDate();
-        careerRes.endDate = career.getEndDate();
-        careerRes.description = career.getDescription();
-        return careerRes;
+        return CareerRes.builder()
+                .careerId(career.getId())
+                .company(career.getCompany())
+                .domain(career.getDomain())
+                .job(career.getJob())
+                .startDate(career.getStartDate())
+                .endDate(career.getEndDate())
+                .description(career.getDescription())
+                .build();
     }
 }

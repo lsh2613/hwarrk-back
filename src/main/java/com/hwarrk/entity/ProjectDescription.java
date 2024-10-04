@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "PROJECT_DESCRIPTION")
+@Builder
 public class ProjectDescription {
 
     @Id

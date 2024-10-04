@@ -22,15 +22,18 @@ import lombok.Setter;
 @Getter
 @Table(name = "CAREER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Career implements MemberAssignable {
+public class Career {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "career_id")
     private Long id;
+    @Column(nullable = false)
     private String company;
     private String domain; //직군
     private String job; //직무
+    @Column(nullable = false)
     private LocalDate startDate;
+    @Column(nullable = false)
     private LocalDate endDate;
     private String description;
 

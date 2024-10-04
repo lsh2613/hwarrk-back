@@ -1,20 +1,22 @@
 package com.hwarrk.service;
 
-import com.hwarrk.entity.Member;
-import com.hwarrk.repository.MemberRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.exception.GeneralHandler;
+import com.hwarrk.entity.Member;
 import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.repository.MemberLikeRepository;
+import com.hwarrk.repository.MemberRepository;
+import com.hwarrk.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -22,6 +24,10 @@ class MemberServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
+    @Autowired
+    private MemberLikeRepository memberLikeRepository;
     @Autowired
     private MemberService memberService;
     @Autowired

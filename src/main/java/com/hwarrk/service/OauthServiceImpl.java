@@ -1,5 +1,6 @@
 package com.hwarrk.service;
 
+import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.dto.res.OauthLoginRes;
 import com.hwarrk.entity.Member;
 import com.hwarrk.jwt.TokenProvider;
