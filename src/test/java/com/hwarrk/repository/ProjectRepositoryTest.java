@@ -25,6 +25,7 @@ import com.hwarrk.entity.RecruitingPosition;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +163,10 @@ public class ProjectRepositoryTest {
         assertThat(foundProject.get().getName()).isEqualTo("Project 1");
         assertThat(foundProject.get().getPost()).isNotNull();
         assertThat(foundProject.get().getProjectMembers()).isNotEmpty();
+        Set<ProjectMember> projectMembers = foundProject.get().getProjectMembers();
+        for (ProjectMember projectMember : projectMembers) {
+            assertThat(projectMember.getMember()).isNotNull();
+        }
     }
 
     @Test

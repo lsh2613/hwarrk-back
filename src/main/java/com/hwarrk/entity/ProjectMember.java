@@ -11,9 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,7 +44,7 @@ public class ProjectMember {
     private PositionType position;
 
     public ProjectMember(Member member, Project project, PositionType position) {
-        this.member = member;
+        addMember(member);
         this.project = project;
         this.position = position;
     }
