@@ -36,7 +36,7 @@ public interface ProjectService {
 
     SpecificProjectDetailRes getSpecificProjectDetails(Long projectId);
 
-    SliceRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req, Pageable pageable);
+    PageRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req, Pageable pageable);
 
     List<RecommendProjectRes> getRecommendedProjects(Long loginId);
 }

@@ -97,7 +97,7 @@ public class ProjectController {
     public CustomApiResponse getFilteredSearchProjects(@AuthenticationPrincipal Long loginId,
                                                        @RequestBody ProjectFilterSearchReq req,
                                                        @PageableDefault Pageable pageable) {
-        SliceRes<ProjectFilterSearchRes> projects = projectService.getFilteredSearchProjects(loginId, req,
+        PageRes<ProjectFilterSearchRes> projects = projectService.getFilteredSearchProjects(loginId, req,
                 pageable);
         return CustomApiResponse.onSuccess(projects);
     }

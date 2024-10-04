@@ -30,6 +30,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -125,17 +126,17 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public SliceRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req,
+    public PageRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req,
                                                                       Pageable pageable) {
         RecruitingType recruitingType = RecruitingType.findType(req.getRecruitingType());
         ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
         String keyWord = req.getKeyWord();
 
         // login 한 사용자만 필터링을 할 수 있게 해야 하나?
-        Slice<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
+        PageImpl<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
                 keyWord, loginId, pageable);
 
-        return SliceRes.mapSliceToSliceRes(projects, ProjectFilterSearchRes::createRes);
+        return PageRes.mapPageToPageRes(projects, ProjectFilterSearchRes::createRes);
     }
 
     @Override

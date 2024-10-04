@@ -14,6 +14,7 @@ import com.hwarrk.entity.Project;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -29,7 +30,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public Slice<Project> findFilteredProjects(RecruitingType recruitingType, ProjectFilterType filterType,
+    public PageImpl<Project> findFilteredProjects(RecruitingType recruitingType, ProjectFilterType filterType,
                                                String keyWord, Long memberId, Pageable pageable) {
 
         JPQLQuery<Project> query = queryFactory.selectFrom(project)
@@ -53,7 +54,11 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return new SliceImpl<>(projects, pageable, PageUtil.hasNextPage(projects, pageable));
+        long totalProjectCount = queryFactory.selectFrom(project)
+                .where(post.recruitingType.eq(recruitingType))
+                .fetchCount();
+
+        return new PageImpl<>(projects, pageable, totalProjectCount);
     }
 
 
