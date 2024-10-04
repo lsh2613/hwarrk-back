@@ -32,16 +32,17 @@ jobs:
       - name: 4. Copy Application-dev.yml
         run: |
           mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application.yml
+          touch ./src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./src/main/resources/application.yml
+          touch ./src/main/resources/application-dev.yml
+          echo "${{ secrets.APPLICATION_DEV_YML }}" | base64 --decode > ./src/main/resources/application-dev.yml
         shell: bash
 
       - name: 5. Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: 6. Build with Gradle
-        run: ./gradlew clean build -Dspring.config.location=./src/main/resources/application.yml -x test
+        run: ./gradlew clean build -x test
 
   CD:
     if: github.event.pull_request.merged == true
@@ -84,16 +85,17 @@ jobs:
       - name: 6. Copy Application-dev.yml
         run: |
           mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application.yml
+          touch ./src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./src/main/resources/application.yml
+          touch ./src/main/resources/application-dev.yml
+          echo "${{ secrets.APPLICATION_DEV_YML }}" | base64 --decode > ./src/main/resources/application-dev.yml
         shell: bash
 
       - name: 7. Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: 6. Build with Gradle
-        run: ./gradlew clean build -Dspring.config.location=./src/main/resources/application.yml -x test
+      - name: 8. Build with Gradle
+        run: ./gradlew clean build -x test
 
       - name: 9. docker build & push
         run: |

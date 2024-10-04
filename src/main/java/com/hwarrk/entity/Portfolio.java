@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "PORTFOLIO")
-public class Portfolio implements MemberAssignable {
+public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "portfolio_id")

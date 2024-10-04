@@ -25,4 +25,11 @@ public class ProjectDescription {
     private Project project;
 
     private String description;
+
+    @Builder
+    public ProjectDescription(Member member, Project project, String description) {
+        this.member = member;
+        this.project = project;
+        this.description = description;
+    }
 }
