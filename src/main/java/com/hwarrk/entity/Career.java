@@ -3,21 +3,26 @@ package com.hwarrk.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Setter
 @Entity
 @Getter
 @Table(name = "CAREER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Career implements MemberAssignable {
+public class Career {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "career_id")
     private Long id;
+    @Column(nullable = false)
     private String company;
     private String domain; //직군
     private String job; //직무
-    private String startDate;
-    private String endDate;
+    @Column(nullable = false)
+    private LocalDate startDate;
+    @Column(nullable = false)
+    private LocalDate endDate;
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,7 +30,7 @@ public class Career implements MemberAssignable {
     private Member member;
 
     @Builder
-    public Career(String company, String domain, String job, String startDate, String endDate, String description, Member member) {
+    public Career(String company, String domain, String job, LocalDate startDate, LocalDate endDate, String description, Member member) {
         this.company = company;
         this.domain = domain;
         this.job = job;

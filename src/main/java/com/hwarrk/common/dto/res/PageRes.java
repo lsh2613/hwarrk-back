@@ -22,4 +22,15 @@ public record PageRes<R>(
                 .isLast(page.isLast())
                 .build();
     }
+
+    // Page<xxxRes>처럼 Entity가 아니라 Res가 들어와서 mapper가 필요 없음
+    public static <R> PageRes<R> mapResToPageRes(Page<R> page) {
+        return PageRes.<R>builder()
+                .content(page.getContent())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .isLast(page.isLast())
+                .build();
+    }
+
 }

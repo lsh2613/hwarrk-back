@@ -3,7 +3,6 @@ package com.hwarrk.controller;
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.res.NotificationRes;
 import com.hwarrk.common.dto.res.SliceRes;
-import com.hwarrk.entity.Notification;
 import com.hwarrk.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
