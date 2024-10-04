@@ -2,10 +2,7 @@ package com.hwarrk.entity;
 
 import com.hwarrk.common.constant.PositionType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter

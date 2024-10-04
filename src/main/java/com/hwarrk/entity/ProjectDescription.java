@@ -9,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "PROJECT_DESCRIPTION")
-@Builder
 public class ProjectDescription {
 
     @Id
@@ -26,4 +25,11 @@ public class ProjectDescription {
     private Project project;
 
     private String description;
+
+    @Builder
+    public ProjectDescription(Member member, Project project, String description) {
+        this.member = member;
+        this.project = project;
+        this.description = description;
+    }
 }

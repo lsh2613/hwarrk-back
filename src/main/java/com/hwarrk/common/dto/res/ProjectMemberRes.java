@@ -4,7 +4,6 @@ import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.ProjectMember;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +30,8 @@ public class ProjectMemberRes {
         projectMemberRes.nickname = member.getNickname();
         projectMemberRes.career = CareerInfoRes.mapEntityToRes(careerInfo);
         projectMemberRes.embers = member.getEmbers();
-        projectMemberRes.memberStatus = member.getStatus();
-        projectMemberRes.introduction = member.getDescription();
+        projectMemberRes.memberStatus = member.getMemberStatus();
+        projectMemberRes.introduction = member.getIntroduction();
         return projectMemberRes;
     }
 }

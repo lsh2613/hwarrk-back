@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "MEMBER")
@@ -61,7 +63,11 @@ public class Member extends BaseEntity {
     // 중복 여부 체크 필요!
     private String nickname;
 
+    private String birth;
+
     private String email;
+
+    private String phone;
 
     private String introduction;
 
@@ -102,40 +108,6 @@ public class Member extends BaseEntity {
         this.id = id;
     }
 
-    public Member(String nickname, String socialId, OauthProvider oauthProvider) {
-        this.nickname = nickname;
-        this.socialId = socialId;
-        this.oauthProvider = oauthProvider;
-    }
-
-    public Member(String socialId, OauthProvider oauthProvider) {
-        this.socialId = socialId;
-        this.oauthProvider = oauthProvider;
-    }
-
-    public Member(OauthMember request) {
-        this.socialId = request.getSocialId();
-        this.oauthProvider = request.getOauthProvider();
-        this.email = request.getEmail();
-        this.nickname = request.getNickname();
-        this.role = Role.GUEST;
-    }
-
-    @Builder
-    public Member(MemberStatus status, String image, String nickname, String email, String phone,
-                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, List<Degree> degrees,
-                  List<Career> careers) {
-        this.memberStatus = status;
-        this.image = image;
-        this.nickname = nickname;
-        this.email = email;
-        this.portfolios = portfolios;
-        this.positions = positions;
-        this.skills = skills;
-        this.degrees = degrees;
-        this.careers = careers;
-    }
-
     public void addPortfolios(List<Portfolio> portfolios) {
         this.portfolios.clear();
         this.portfolios.addAll(portfolios);
@@ -156,6 +128,12 @@ public class Member extends BaseEntity {
         this.degrees.addAll(degrees);
     }
 
+    public Member(String nickname, String socialId, OauthProvider oauthProvider) {
+        this.nickname = nickname;
+        this.socialId = socialId;
+        this.oauthProvider = oauthProvider;
+    }
+
     public void addCareers(List<Career> careers) {
         this.careers.clear();
         this.careers.addAll(careers);
@@ -164,6 +142,38 @@ public class Member extends BaseEntity {
     public void addProjectDescriptions(List<ProjectDescription> projectDescriptions) {
         this.projectDescriptions.clear();
         this.projectDescriptions.addAll(projectDescriptions);
+    }
+
+    public Member(String socialId, OauthProvider oauthProvider) {
+        this.socialId = socialId;
+        this.oauthProvider = oauthProvider;
+        this.role = Role.GUEST;
+    }
+
+    public Member(OauthMember request) {
+        this.socialId = request.getSocialId();
+        this.oauthProvider = request.getOauthProvider();
+        this.email = request.getEmail();
+        this.nickname = request.getNickname();
+        this.role = Role.GUEST;
+    }
+
+    @Builder
+    public Member(MemberStatus memberStatus, String image, String nickname, String birth, String email, String phone,
+                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills,
+                  List<Degree> degrees,
+                  List<Career> careers) {
+        this.memberStatus = memberStatus;
+        this.image = image;
+        this.nickname = nickname;
+        this.birth = birth;
+        this.email = email;
+        this.phone = phone;
+        this.portfolios = portfolios;
+        this.positions = positions;
+        this.skills = skills;
+        this.degrees = degrees;
+        this.careers = careers;
     }
 
     public void addProjectLike(ProjectLike projectLike) {

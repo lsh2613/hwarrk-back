@@ -60,8 +60,8 @@ public class SpecificProjectDetailRes {
                     .map(CareerRes::createRes)
                     .toList();
             projectMemberRes.embers = member.getEmbers();
-            projectMemberRes.memberStatus = member.getStatus();
-            projectMemberRes.introduction = member.getDescription();
+            projectMemberRes.memberStatus = member.getMemberStatus();
+            projectMemberRes.introduction = member.getIntroduction();
             return projectMemberRes;
         }
     }
@@ -92,8 +92,8 @@ public class SpecificProjectDetailRes {
                     .map(CareerRes::createRes)
                     .toList();
             projectJoinRes.embers = member.getEmbers();
-            projectJoinRes.memberStatus = member.getStatus();
-            projectJoinRes.introduction = member.getDescription();
+            projectJoinRes.memberStatus = member.getMemberStatus();
+            projectJoinRes.introduction = member.getIntroduction();
             return projectJoinRes;
         }
     }
