@@ -48,44 +48,45 @@ class ProjectMemberTest {
                 .build();
     }
 
-    @Test
-    @DisplayName("경력이 있는 회원은 이전에 경력 불러오기를 한 경우, 경력 요약 정보가 존재한다.")
-    void isCareerInfoPresent_true() {
-        // given
-        ProjectMember givenMember = createExperiencedProjectMember();
-        givenMember.loadCareerInfo();
-
-        // when
-        boolean result = givenMember.isCareerInfoPresent();
-
-        // then
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    @DisplayName("경력이 있는 회원은 이전에 경력 불러오기를 하지 않은 경우, 경력 요약 정보가 존재하지 않는다.")
-    void isCareerInfoPresent_false1() {
-        // given
-        ProjectMember givenMember = createExperiencedProjectMember();
-
-        // when
-        boolean result = givenMember.isCareerInfoPresent();
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    @DisplayName("신입의 경우 경력 요약 정보가 존재하지 않는다.")
-    void isCareerInfoPresent_false2() {
-        // given
-        ProjectMember givenMember = new ProjectMember();
-        givenMember.addMember(new Member());
-
-        // when
-        boolean result = givenMember.isCareerInfoPresent();
-
-        // then
-        assertThat(result).isFalse();
-    }
+    // TODO 추후에 사용될 수 있으므로 남겨두기
+//    @Test
+//    @DisplayName("경력이 있는 회원은 이전에 경력 불러오기를 한 경우, 경력 요약 정보가 존재한다.")
+//    void isCareerInfoPresent_true() {
+//        // given
+//        ProjectMember givenMember = createExperiencedProjectMember();
+//        givenMember.loadCareerInfo();
+//
+//        // when
+//        boolean result = givenMember.isCareerInfoPresent();
+//
+//        // then
+//        assertThat(result).isTrue();
+//    }
+//
+//    @Test
+//    @DisplayName("경력이 있는 회원은 이전에 경력 불러오기를 하지 않은 경우, 경력 요약 정보가 존재하지 않는다.")
+//    void isCareerInfoPresent_false1() {
+//        // given
+//        ProjectMember givenMember = createExperiencedProjectMember();
+//
+//        // when
+//        boolean result = givenMember.isCareerInfoPresent();
+//
+//        // then
+//        assertThat(result).isFalse();
+//    }
+//
+//    @Test
+//    @DisplayName("신입의 경우 경력 요약 정보가 존재하지 않는다.")
+//    void isCareerInfoPresent_false2() {
+//        // given
+//        ProjectMember givenMember = new ProjectMember();
+//        givenMember.addMember(new Member());
+//
+//        // when
+//        boolean result = givenMember.isCareerInfoPresent();
+//
+//        // then
+//        assertThat(result).isFalse();
+//    }
 }

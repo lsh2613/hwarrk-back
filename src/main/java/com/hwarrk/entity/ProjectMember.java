@@ -45,16 +45,6 @@ public class ProjectMember {
     @Column(nullable = false)
     private PositionType position;
 
-    @OneToOne(mappedBy = "projectMember", fetch = FetchType.LAZY)
-    private CareerInfo careerInfo;
-
-    public ProjectMember(Long id, Member member, Project project, PositionType position) {
-        this.id = id;
-        this.member = member;
-        this.project = project;
-        this.position = position;
-    }
-
     public ProjectMember(Member member, Project project, PositionType position) {
         this.member = member;
         this.project = project;
@@ -63,19 +53,10 @@ public class ProjectMember {
 
     public void addMember(Member member) {
         this.member = member;
-    }
-
-    public void addCareerInfo(CareerInfo careerInfo) {
-        this.careerInfo = careerInfo;
+        member.addProjectMember(this);
     }
 
     public CareerInfo loadCareerInfo() {
-        CareerInfo careerInfo = member.loadCareer();
-        addCareerInfo(careerInfo);
-        return careerInfo;
-    }
-
-    public boolean isCareerInfoPresent() {
-        return Optional.ofNullable(careerInfo).isPresent();
+        return member.loadCareer(this);
     }
 }

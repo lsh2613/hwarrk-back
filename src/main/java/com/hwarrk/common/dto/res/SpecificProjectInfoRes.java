@@ -21,17 +21,19 @@ public class SpecificProjectInfoRes {
     private long postId;
     private List<ProjectMemberRes> projectMemberResList = new ArrayList<>();
 
-    public static SpecificProjectInfoRes mapEntityToRes(Project project) {
+    public static SpecificProjectInfoRes mapEntityToRes(Project project, List<CareerInfo> careerInfos) {
         SpecificProjectInfoRes specificProjectInfoRes = new SpecificProjectInfoRes();
         specificProjectInfoRes.image = project.getImage();
         specificProjectInfoRes.name = project.getName();
         specificProjectInfoRes.stepType = project.getStep();
         specificProjectInfoRes.postId = project.getPost().getId();
-        specificProjectInfoRes.projectMemberResList =
-                project.getProjectMembers()
-                        .stream()
-                        .map(ProjectMemberRes::mapEntityToRes)
-                        .toList();
+
+        specificProjectInfoRes.projectMemberResList = project.getProjectMembers().stream()
+                .flatMap(projectMember -> careerInfos.stream()
+                        .filter(careerInfo -> careerInfo.isSamePerson(projectMember))
+                        .map(careerInfo -> ProjectMemberRes.mapEntityToRes(projectMember, careerInfo)))
+                .toList();
+
         return specificProjectInfoRes;
     }
 }

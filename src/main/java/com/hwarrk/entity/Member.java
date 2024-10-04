@@ -91,6 +91,10 @@ public class Member extends BaseEntity {
     @BatchSize(size = 10)
     private List<ProjectLike> projectLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 10)
+    private List<ProjectMember> projectMembers = new ArrayList<>();
+
     private Double embers;
 
     private Boolean isVisible;
@@ -171,14 +175,31 @@ public class Member extends BaseEntity {
         this.projectLikes.add(projectLike);
     }
 
-    public CareerInfo loadCareer() {
-        if (careers.isEmpty()) {
-            return CareerInfo.createEntryCareerInfo();
+    public void addProjectMember(ProjectMember projectMember) {
+        if (Optional.ofNullable(projectMembers).isEmpty()) {
+            projectMembers = new ArrayList<>();
         }
-        return getExperienceCareerInfo();
+        this.projectMembers.add(projectMember);
+
     }
 
-    private CareerInfo getExperienceCareerInfo() {
+    public CareerInfo loadCareer(ProjectMember projectMember) {
+        ProjectMember findProjectMember = findMatchedProjectMember(projectMember);
+        if (careers.isEmpty()) {
+            return CareerInfo.createEntryCareerInfo(findProjectMember);
+        }
+        return getExperienceCareerInfo(findProjectMember);
+    }
+
+    private ProjectMember findMatchedProjectMember(ProjectMember projectMember) {
+        return this.projectMembers
+                .stream()
+                .filter(pm -> pm.equals(projectMember))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private CareerInfo getExperienceCareerInfo(ProjectMember projectMember) {
         Period totalExperience = Period.ZERO;
 
         String lastCareer = NO_LAST_COMPANY_INFO;
@@ -197,7 +218,7 @@ public class Member extends BaseEntity {
             throw new GeneralHandler(LAST_CAREER_NOT_FOUND);
         }
 
-        return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer);
+        return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer, projectMember);
     }
 
     public boolean isSameId(Long loginId) {

@@ -15,7 +15,6 @@ import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.dto.res.RecommendProjectRes;
-import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.common.exception.GeneralHandler;
@@ -23,7 +22,6 @@ import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectMember;
-import com.hwarrk.repository.CareerInfoRepository;
 import com.hwarrk.repository.ProjectRepository;
 import com.hwarrk.repository.ProjectRepositoryCustom;
 import java.util.List;
@@ -32,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +41,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final EntityFacade entityFacade;
     private final ProjectRepository projectRepository;
-    private final CareerInfoRepository careerInfoRepository;
     private final ProjectRepositoryCustom projectRepositoryCustom;
 
     @Override
@@ -60,14 +56,12 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findSpecificProjectInfoById(projectId)
                 .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
 
-        for (ProjectMember projectMember : project.getProjectMembers()) {
-            if (!projectMember.isCareerInfoPresent()) {
-                CareerInfo careerInfo = projectMember.loadCareerInfo();
-                careerInfoRepository.save(careerInfo);
-            }
-        }
+        List<CareerInfo> careerInfos = project.getProjectMembers()
+                .stream()
+                .map(ProjectMember::loadCareerInfo)
+                .toList();
 
-        return SpecificProjectInfoRes.mapEntityToRes(project);
+        return SpecificProjectInfoRes.mapEntityToRes(project, careerInfos);
     }
 
     @Override
@@ -127,7 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public PageRes<ProjectFilterSearchRes> getFilteredSearchProjects(Long loginId, ProjectFilterSearchReq req,
-                                                                      Pageable pageable) {
+                                                                     Pageable pageable) {
         RecruitingType recruitingType = RecruitingType.findType(req.getRecruitingType());
         ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
         String keyWord = req.getKeyWord();

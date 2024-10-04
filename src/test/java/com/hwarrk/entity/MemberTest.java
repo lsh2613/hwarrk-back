@@ -15,6 +15,8 @@ class MemberTest {
     void loadExperienceCareerInfo() {
         // given
         Member member = new Member();
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.addMember(member);
         List<Career> careers = List.of(
                 createCareer(member, "AComp", LocalDate.of(2023, 8, 1), LocalDate.of(2024, 8, 1)),
                 createCareer(member, "BComp", LocalDate.of(2021, 6, 1), LocalDate.of(2023, 6, 4))
@@ -22,7 +24,7 @@ class MemberTest {
         member.addCareers(careers);
 
         // when
-        CareerInfo result = member.loadCareer();
+        CareerInfo result = member.loadCareer(projectMember);
 
         // then
         assertThat(result.getCareerType()).isEqualTo(CareerType.EXPERIENCE);
@@ -44,9 +46,11 @@ class MemberTest {
     void loadEntryCareerInfo() {
         // given
         Member member = new Member();
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.addMember(member);
 
         // when
-        CareerInfo result = member.loadCareer();
+        CareerInfo result = member.loadCareer(projectMember);
 
         // then
         assertThat(result.getCareerType()).isEqualTo(CareerType.ENTRY_LEVEL);

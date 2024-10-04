@@ -4,6 +4,7 @@ import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.ProjectMember;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +23,13 @@ public class ProjectMemberRes {
     private boolean isLiked;
     private String introduction;
 
-    public static ProjectMemberRes mapEntityToRes(ProjectMember projectMember) {
+    public static ProjectMemberRes mapEntityToRes(ProjectMember projectMember, CareerInfo careerInfo) {
         ProjectMemberRes projectMemberRes = new ProjectMemberRes();
         Member member = projectMember.getMember();
         projectMemberRes.memberId = member.getId();
         projectMemberRes.image = member.getImage();
         projectMemberRes.nickname = member.getNickname();
-        projectMemberRes.career = CareerInfoRes.mapEntityToRes(projectMember.getCareerInfo());
+        projectMemberRes.career = CareerInfoRes.mapEntityToRes(careerInfo);
         projectMemberRes.embers = member.getEmbers();
         projectMemberRes.memberStatus = member.getStatus();
         projectMemberRes.introduction = member.getDescription();
