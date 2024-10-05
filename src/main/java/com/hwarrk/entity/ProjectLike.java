@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "PROJECT_LIKE")
 public class ProjectLike extends BaseEntity {
@@ -26,5 +26,15 @@ public class ProjectLike extends BaseEntity {
     public ProjectLike(Member member, Project project) {
         this.member = member;
         this.project = project;
+    }
+
+    public void addMember(Member member) {
+        this.member = member;
+        member.addProjectLike(this);
+    }
+
+    public void addProject(Project project) {
+        this.project = project;
+        project.addProjectLike(this);
     }
 }
