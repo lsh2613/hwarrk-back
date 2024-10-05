@@ -1,14 +1,14 @@
 package com.hwarrk.common.dto.res;
 
 import com.hwarrk.common.constant.StepType;
-import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Project;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,19 +20,17 @@ public class SpecificProjectInfoRes {
     private StepType stepType;
     private String subject;
     private long postId;
-    private List<ProjectMemberRes> projectMemberResList = new ArrayList<>();
+    private List<MemberRes> memberResList = new ArrayList<>();
 
-    public static SpecificProjectInfoRes mapEntityToRes(Project project, List<CareerInfo> careerInfos) {
+    public static SpecificProjectInfoRes mapEntityToRes(Project project) {
         SpecificProjectInfoRes specificProjectInfoRes = new SpecificProjectInfoRes();
         specificProjectInfoRes.image = project.getImage();
         specificProjectInfoRes.name = project.getName();
         specificProjectInfoRes.stepType = project.getStep();
         specificProjectInfoRes.postId = project.getPost().getId();
 
-        specificProjectInfoRes.projectMemberResList = project.getProjectMembers().stream()
-                .flatMap(projectMember -> careerInfos.stream()
-                        .filter(careerInfo -> careerInfo.isSamePerson(projectMember))
-                        .map(careerInfo -> ProjectMemberRes.mapEntityToRes(projectMember, careerInfo)))
+        specificProjectInfoRes.memberResList = project.getProjectMembers().stream()
+                .map(pm -> MemberRes.mapEntityToRes(pm.getMember()))
                 .toList();
 
         return specificProjectInfoRes;
@@ -49,11 +47,11 @@ public class SpecificProjectInfoRes {
         SpecificProjectInfoRes that = (SpecificProjectInfoRes) o;
         return postId == that.postId && Objects.equals(image, that.image) && Objects.equals(name,
                 that.name) && stepType == that.stepType && Objects.equals(subject, that.subject)
-                && Objects.equals(projectMemberResList, that.projectMemberResList);
+                && Objects.equals(memberResList, that.memberResList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(image, name, stepType, subject, postId, projectMemberResList);
+        return Objects.hash(image, name, stepType, subject, postId, memberResList);
     }
 }

@@ -1,24 +1,23 @@
 package com.hwarrk.common.dto.res;
 
 import com.hwarrk.common.constant.MemberStatus;
-import com.hwarrk.entity.Career;
+import com.hwarrk.entity.CareerType;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.MemberLike;
 import com.querydsl.core.annotations.QueryProjection;
-import java.time.Period;
-import java.util.Comparator;
-import java.util.List;
 import lombok.Builder;
+
+import java.time.Period;
 
 @Builder
 public record MemberRes(
         Long memberId,
         String image,
         String nickname,
-        String career,
+        CareerInfo career,
         Double embers,
         MemberStatus status,
-        String description,
+        String introduction,
         boolean isLiked
 ) {
 
@@ -27,10 +26,10 @@ public record MemberRes(
                 .memberId(member.getId())
                 .image(member.getImage())
                 .nickname(member.getNickname())
-                .career(getRepresentativeCareer(member.getCareers()))
+                .career(member.loadCareer())
                 .embers(member.getEmbers())
                 .status(member.getMemberStatus())
-                .description(member.getIntroduction())
+                .introduction(member.getIntroduction())
                 .build();
     }
 
@@ -40,7 +39,7 @@ public record MemberRes(
                 member.getId(),
                 member.getImage(),
                 member.getNickname(),
-                getRepresentativeCareer(member.getCareers()),
+                member.loadCareer(),
                 member.getEmbers(),
                 member.getMemberStatus(),
                 member.getIntroduction(),
@@ -48,32 +47,32 @@ public record MemberRes(
         );
     }
 
-    public static String getRepresentativeCareer(List<Career> careers) {
-        if (careers == null || careers.isEmpty()) {
-            return "경력 없음";
-        }
-
-        int totalYears = getTotalYears(careers);
-        String mostRecentCompany = getMostRecentCompany(careers);
-
-        return String.format("%d년차 %s", totalYears, mostRecentCompany);
-    }
-
-    private static String getMostRecentCompany(List<Career> careers) {
-        return careers.stream()
-                .max(Comparator.comparing(Career::getEndDate))
-                .map(Career::getCompany)
-                .get();
-    }
-
-    private static int getTotalYears(List<Career> careers) {
-        return careers.stream()
-                .mapToInt(career -> Period.between(career.getStartDate(), career.getEndDate()).getYears())
-                .sum();
-    }
-
-
     private static boolean isLiked(MemberLike memberLike) {
         return memberLike == null ? false : true;
+    }
+
+    @Builder
+    public record CareerInfo(
+            CareerType careerType,
+            Period totalExperience,
+            String lastCareer
+    ) {
+
+        public static CareerInfo createEntryCareerInfo() {
+            return CareerInfo.builder()
+                    .careerType(CareerType.ENTRY_LEVEL)
+                    .totalExperience(Period.ZERO)
+                    .lastCareer("없음")
+                    .build();
+        }
+
+        public static CareerInfo createExperienceCareerInfo(Period totalExperience, String lastCareer) {
+            return CareerInfo.builder()
+                    .careerType(CareerType.EXPERIENCE)
+                    .totalExperience(totalExperience)
+                    .lastCareer(lastCareer)
+                    .build();
+        }
+
     }
 }

@@ -1,12 +1,14 @@
 package com.hwarrk.entity;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import static com.hwarrk.common.dto.res.MemberRes.CareerInfo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {
 
@@ -24,12 +26,12 @@ class MemberTest {
         member.addCareers(careers);
 
         // when
-        CareerInfo result = member.loadCareer(projectMember);
+        CareerInfo result = member.loadCareer();
 
         // then
-        assertThat(result.getCareerType()).isEqualTo(CareerType.EXPERIENCE);
-        assertThat(result.getLastCareer()).isEqualTo("AComp");
-        assertThat(result.getTotalExperience()).isEqualTo(Period.of(3, 0, 3));
+        assertThat(result.careerType()).isEqualTo(CareerType.EXPERIENCE);
+        assertThat(result.lastCareer()).isEqualTo("AComp");
+        assertThat(result.totalExperience()).isEqualTo(Period.of(3, 0, 3));
     }
 
     private static Career createCareer(Member member, String jobName, LocalDate startDate, LocalDate endDate) {
@@ -50,9 +52,9 @@ class MemberTest {
         projectMember.addMember(member);
 
         // when
-        CareerInfo result = member.loadCareer(projectMember);
+        CareerInfo result = member.loadCareer();
 
         // then
-        assertThat(result.getCareerType()).isEqualTo(CareerType.ENTRY_LEVEL);
+        assertThat(result.careerType()).isEqualTo(CareerType.ENTRY_LEVEL);
     }
 }

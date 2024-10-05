@@ -1,13 +1,14 @@
 package com.hwarrk.entity;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
+
+import static com.hwarrk.common.dto.res.MemberRes.CareerInfo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectMemberTest {
 
@@ -18,12 +19,12 @@ class ProjectMemberTest {
         ProjectMember projectMember = createExperiencedProjectMember();
 
         // when
-        CareerInfo result = projectMember.loadCareerInfo();
+        CareerInfo result = projectMember.getMember().loadCareer();
 
         // then
-        assertThat(result.getCareerType()).isEqualTo(CareerType.EXPERIENCE);
-        assertThat(result.getLastCareer()).isEqualTo("AComp");
-        assertThat(result.getTotalExperience()).isEqualTo(Period.of(3, 0, 3));
+        assertThat(result.careerType()).isEqualTo(CareerType.EXPERIENCE);
+        assertThat(result.lastCareer()).isEqualTo("AComp");
+        assertThat(result.totalExperience()).isEqualTo(Period.of(3, 0, 3));
     }
 
     private ProjectMember createExperiencedProjectMember() {
