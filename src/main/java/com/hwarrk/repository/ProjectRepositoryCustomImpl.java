@@ -9,15 +9,15 @@ import static com.hwarrk.entity.QRecruitingPosition.recruitingPosition;
 
 import com.hwarrk.common.constant.ProjectFilterType;
 import com.hwarrk.common.constant.RecruitingType;
-import com.hwarrk.common.util.PageUtil;
 import com.hwarrk.entity.Project;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -31,11 +31,11 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
 
     @Override
     public PageImpl<Project> findFilteredProjects(RecruitingType recruitingType, ProjectFilterType filterType,
-                                               String keyWord, Long memberId, Pageable pageable) {
+                                                  String keyWord, Long memberId, Pageable pageable) {
 
         JPQLQuery<Project> query = queryFactory.selectFrom(project)
                 .join(project.post, post)
-                .where(post.recruitingType.eq(recruitingType));
+                .where(eqRecruitingType(recruitingType));
 
         if (filterType == ProjectFilterType.TRENDING) {
             // TODO: 인기 급상승 기준 추가
@@ -51,14 +51,26 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         }
 
         List<Project> projects = query
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .fetch();
 
         long totalProjectCount = queryFactory.selectFrom(project)
-                .where(post.recruitingType.eq(recruitingType))
+                .where(eqRecruitingType(recruitingType), containsKeyWord(keyWord))
                 .fetchCount();
 
         return new PageImpl<>(projects, pageable, totalProjectCount);
+    }
+
+    private BooleanExpression eqRecruitingType(RecruitingType recruitingType) {
+        return post.recruitingType.eq(recruitingType);
+    }
+
+    private BooleanExpression containsKeyWord(String keyWord) {
+        if (Optional.ofNullable(keyWord).isPresent()) {
+            return post.title.containsIgnoreCase(keyWord);
+        }
+        return Expressions.TRUE;
     }
 
 
