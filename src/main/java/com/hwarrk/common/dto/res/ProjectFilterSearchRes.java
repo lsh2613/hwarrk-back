@@ -3,12 +3,14 @@ package com.hwarrk.common.dto.res;
 import com.hwarrk.common.constant.StepType;
 import com.hwarrk.entity.Project;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class ProjectFilterSearchRes {
 
     private long projectId;

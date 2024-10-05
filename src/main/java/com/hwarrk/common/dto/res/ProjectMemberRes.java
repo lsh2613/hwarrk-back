@@ -4,6 +4,7 @@ import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.ProjectMember;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,25 @@ public class ProjectMemberRes {
         projectMemberRes.memberStatus = member.getMemberStatus();
         projectMemberRes.introduction = member.getIntroduction();
         return projectMemberRes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProjectMemberRes that = (ProjectMemberRes) o;
+        return memberId == that.memberId && Double.compare(embers, that.embers) == 0 && isLiked == that.isLiked
+                && Objects.equals(image, that.image) && Objects.equals(nickname, that.nickname)
+                && Objects.equals(career, that.career) && memberStatus == that.memberStatus
+                && Objects.equals(introduction, that.introduction);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId, image, nickname, career, embers, memberStatus, isLiked, introduction);
     }
 }

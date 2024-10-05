@@ -5,6 +5,7 @@ import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Project;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,5 +36,24 @@ public class SpecificProjectInfoRes {
                 .toList();
 
         return specificProjectInfoRes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SpecificProjectInfoRes that = (SpecificProjectInfoRes) o;
+        return postId == that.postId && Objects.equals(image, that.image) && Objects.equals(name,
+                that.name) && stepType == that.stepType && Objects.equals(subject, that.subject)
+                && Objects.equals(projectMemberResList, that.projectMemberResList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(image, name, stepType, subject, postId, projectMemberResList);
     }
 }
