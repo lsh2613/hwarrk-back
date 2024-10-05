@@ -1,5 +1,13 @@
 package com.hwarrk.repository;
 
+import static com.hwarrk.entity.QCareer.career;
+import static com.hwarrk.entity.QDegree.degree;
+import static com.hwarrk.entity.QMember.member;
+import static com.hwarrk.entity.QMemberLike.memberLike;
+import static com.hwarrk.entity.QPortfolio.portfolio;
+import static com.hwarrk.entity.QPosition.position;
+import static com.hwarrk.entity.QSkill.skill;
+
 import com.hwarrk.common.constant.FilterType;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
@@ -13,22 +21,12 @@ import com.hwarrk.entity.Member;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-import static com.hwarrk.entity.QCareer.career;
-import static com.hwarrk.entity.QDegree.degree;
-import static com.hwarrk.entity.QMember.member;
-import static com.hwarrk.entity.QMemberLike.memberLike;
-import static com.hwarrk.entity.QPortfolio.portfolio;
-import static com.hwarrk.entity.QPosition.position;
-import static com.hwarrk.entity.QProjectDescription.projectDescription;
-import static com.hwarrk.entity.QSkill.skill;
 
 @Repository
 @AllArgsConstructor
@@ -45,7 +43,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.skills, skill)
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
-                .leftJoin(member.projectDescriptions, projectDescription)
+//                .leftJoin(member.projectDescriptions, projectDescription)
                 .where(eqMemberId(memberId))
                 .fetchOne();
 
@@ -65,7 +63,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.skills, skill)
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
-                .leftJoin(member.projectDescriptions, projectDescription)
+//                .leftJoin(member.projectDescriptions, projectDescription)
                 .leftJoin(memberLike)
                 .on(memberLike.fromMember.id.eq(fromMemberId).and(memberLike.toMember.id.eq(member.id)))
                 .where(eqMemberId(toMemberId))

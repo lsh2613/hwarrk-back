@@ -1,19 +1,18 @@
 package com.hwarrk.repository;
 
+import static com.hwarrk.entity.QProject.project;
+import static com.hwarrk.entity.QProjectLike.projectLike;
+
 import com.hwarrk.common.SliceCustomImpl;
 import com.hwarrk.common.util.PageUtil;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectLike;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-import static com.hwarrk.entity.QProject.project;
-import static com.hwarrk.entity.QProjectLike.projectLike;
 
 @Repository
 @RequiredArgsConstructor

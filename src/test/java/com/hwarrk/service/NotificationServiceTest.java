@@ -60,7 +60,7 @@ class NotificationServiceTest {
     void 알림_보내기_성공() {
         //given
         Project project = projectRepository.save(new Project("name", "description", member_01));
-        Post post = postRepository.save(new Post(null, project, member_01, null, null, null, null, null, false));
+        Post post = postRepository.save(new Post(project, member_01, false));
 
         //when
         // 프로젝트 신청 및 수락은 생략..

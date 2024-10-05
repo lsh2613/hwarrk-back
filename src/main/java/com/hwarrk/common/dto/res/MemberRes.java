@@ -5,11 +5,10 @@ import com.hwarrk.entity.Career;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.MemberLike;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Builder;
-
 import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
+import lombok.Builder;
 
 @Builder
 public record MemberRes(
@@ -50,8 +49,9 @@ public record MemberRes(
     }
 
     public static String getRepresentativeCareer(List<Career> careers) {
-        if (careers == null || careers.isEmpty())
+        if (careers == null || careers.isEmpty()) {
             return "경력 없음";
+        }
 
         int totalYears = getTotalYears(careers);
         String mostRecentCompany = getMostRecentCompany(careers);

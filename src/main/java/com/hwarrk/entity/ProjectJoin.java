@@ -1,5 +1,6 @@
 package com.hwarrk.entity;
 
+import com.hwarrk.common.constant.PositionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,9 @@ public class ProjectJoin extends BaseEntity {
     @Column(name = "project_join_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private PositionType positionType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
@@ -23,4 +27,13 @@ public class ProjectJoin extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public ProjectJoin(PositionType positionType) {
+        this.positionType = positionType;
+    }
+
+    public void addProject(Project project) {
+        this.project = project;
+        project.addProjectJoin(this);
+    }
 }

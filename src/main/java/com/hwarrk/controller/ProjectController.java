@@ -1,11 +1,20 @@
 package com.hwarrk.controller;
 
 import com.hwarrk.common.dto.req.ProjectCreateReq;
+import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
+import com.hwarrk.common.dto.res.CompleteProjectsRes;
+import com.hwarrk.common.dto.res.MyProjectRes;
+import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
 import com.hwarrk.common.dto.res.ProjectRes;
+import com.hwarrk.common.dto.res.RecommendProjectRes;
+import com.hwarrk.common.dto.res.SliceRes;
+import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
+import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.service.ProjectService;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.apiPayload.CustomApiResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,9 +35,9 @@ public class ProjectController {
         return CustomApiResponse.onSuccess(projectId);
     }
 
-    @GetMapping("{projectId}")
-    public CustomApiResponse getProject(@PathVariable Long projectId) {
-        ProjectRes project = projectService.getProject(projectId);
+    @GetMapping("/{projectId}")
+    public CustomApiResponse getSpecificProjectInfo(@PathVariable Long projectId) {
+        SpecificProjectInfoRes project = projectService.getSpecificProjectInfo(projectId);
         return CustomApiResponse.onSuccess(project);
     }
 
@@ -38,7 +47,7 @@ public class ProjectController {
         return CustomApiResponse.onSuccess(pageRes);
     }
 
-    @PostMapping("{projectId}")
+    @PostMapping("/{projectId}")
     public CustomApiResponse updateProject(@AuthenticationPrincipal Long loginId,
                                            @PathVariable Long projectId,
                                            @RequestBody ProjectUpdateReq req) {
@@ -46,10 +55,56 @@ public class ProjectController {
         return CustomApiResponse.onSuccess();
     }
 
-    @DeleteMapping("{projectId}")
+    @DeleteMapping("/{projectId}")
     public CustomApiResponse deleteProject(@AuthenticationPrincipal Long loginId,
                                            @PathVariable Long projectId) {
         projectService.deleteProject(loginId, projectId);
         return CustomApiResponse.onSuccess();
+    }
+
+    @PostMapping("/complete/{projectId}")
+    public CustomApiResponse completeProject(@PathVariable Long projectId) {
+        projectService.completeProject(projectId);
+        return CustomApiResponse.onSuccess();
+    }
+
+    @GetMapping("/complete")
+    public CustomApiResponse getCompleteProjects(@AuthenticationPrincipal Long loginId) {
+        List<CompleteProjectsRes> projects = projectService.getCompleteProjects(loginId);
+        return CustomApiResponse.onSuccess(projects);
+    }
+
+    @DeleteMapping("/complete/{projectId}")
+    public CustomApiResponse deleteCompleteProject(@AuthenticationPrincipal Long loginId,
+                                                   @PathVariable Long projectId) {
+        projectService.deleteCompleteProject(loginId, projectId);
+        return CustomApiResponse.onSuccess();
+    }
+
+    @GetMapping("/leader")
+    public CustomApiResponse getMyProjects(@AuthenticationPrincipal Long loginId) {
+        List<MyProjectRes> projects = projectService.getMyProjects(loginId);
+        return CustomApiResponse.onSuccess(projects);
+    }
+
+    @GetMapping("/details/{projectId}")
+    public CustomApiResponse getSpecificProjectDetails(@PathVariable Long projectId) {
+        SpecificProjectDetailRes projectDetails = projectService.getSpecificProjectDetails(projectId);
+        return CustomApiResponse.onSuccess(projectDetails);
+    }
+
+    @GetMapping("/filter")
+    public CustomApiResponse getFilteredSearchProjects(@AuthenticationPrincipal Long loginId,
+                                                       @RequestBody ProjectFilterSearchReq req,
+                                                       @PageableDefault Pageable pageable) {
+        PageRes<ProjectFilterSearchRes> projects = projectService.getFilteredSearchProjects(loginId, req,
+                pageable);
+        return CustomApiResponse.onSuccess(projects);
+    }
+
+    @GetMapping("/recommend")
+    public CustomApiResponse getRecommendedProjects(@AuthenticationPrincipal Long loginId) {
+        List<RecommendProjectRes> projects = projectService.getRecommendedProjects(loginId);
+        return CustomApiResponse.onSuccess(projects);
     }
 }
