@@ -204,7 +204,10 @@ public class Member extends BaseEntity {
             throw new GeneralHandler(LAST_CAREER_NOT_FOUND);
         }
 
-        return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer);
+        int totalMonths = totalExperience.getMonths() + totalExperience.getDays() / 30;
+        int totalYears = totalExperience.getYears() + totalMonths / 12;
+
+        return CareerInfo.createExperienceCareerInfo(totalYears, lastCareer);
     }
 
     public boolean isSameId(Long loginId) {

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 
 import static com.hwarrk.common.dto.res.MemberRes.CareerInfo;
@@ -21,7 +20,8 @@ class MemberTest {
         projectMember.addMember(member);
         List<Career> careers = List.of(
                 createCareer(member, "AComp", LocalDate.of(2023, 8, 1), LocalDate.of(2024, 8, 1)),
-                createCareer(member, "BComp", LocalDate.of(2021, 6, 1), LocalDate.of(2023, 6, 4))
+                createCareer(member, "BComp", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 8, 4)),
+                createCareer(member, "BComp", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 10, 4))
         );
         member.addCareers(careers);
 
@@ -31,7 +31,7 @@ class MemberTest {
         // then
         assertThat(result.careerType()).isEqualTo(CareerType.EXPERIENCE);
         assertThat(result.lastCareer()).isEqualTo("AComp");
-        assertThat(result.totalExperience()).isEqualTo(Period.of(3, 0, 3));
+        assertThat(result.totalExperienceYears()).isEqualTo(2);
     }
 
     private static Career createCareer(Member member, String jobName, LocalDate startDate, LocalDate endDate) {

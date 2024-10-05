@@ -24,7 +24,7 @@ class ProjectMemberTest {
         // then
         assertThat(result.careerType()).isEqualTo(CareerType.EXPERIENCE);
         assertThat(result.lastCareer()).isEqualTo("AComp");
-        assertThat(result.totalExperience()).isEqualTo(Period.of(3, 0, 3));
+        assertThat(result.totalExperienceYears()).isEqualTo(Period.of(3, 0, 3));
     }
 
     private ProjectMember createExperiencedProjectMember() {

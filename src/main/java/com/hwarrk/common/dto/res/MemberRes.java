@@ -54,22 +54,22 @@ public record MemberRes(
     @Builder
     public record CareerInfo(
             CareerType careerType,
-            Period totalExperience,
+            int totalExperienceYears,
             String lastCareer
     ) {
 
         public static CareerInfo createEntryCareerInfo() {
             return CareerInfo.builder()
                     .careerType(CareerType.ENTRY_LEVEL)
-                    .totalExperience(Period.ZERO)
+                    .totalExperienceYears(Period.ZERO.getYears())
                     .lastCareer("없음")
                     .build();
         }
 
-        public static CareerInfo createExperienceCareerInfo(Period totalExperience, String lastCareer) {
+        public static CareerInfo createExperienceCareerInfo(int totalYears, String lastCareer) {
             return CareerInfo.builder()
                     .careerType(CareerType.EXPERIENCE)
-                    .totalExperience(totalExperience)
+                    .totalExperienceYears(totalYears)
                     .lastCareer(lastCareer)
                     .build();
         }
