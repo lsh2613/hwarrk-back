@@ -105,6 +105,6 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
 
         // todo: 프로젝트 모집 여부 확인 로직 추가
         Member member = entityFacade.getMember(memberId);
-//        projectJoinRepository.save(new ProjectJoin(null, project, member));
+        projectJoinRepository.save(new ProjectJoin(null, project, member));
     }
 }

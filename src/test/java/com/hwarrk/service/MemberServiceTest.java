@@ -64,7 +64,7 @@ class MemberServiceTest {
     String introduction = "My introduction";
     List<String> portfolios = List.of("Portfolio_01", "Portfolio_02");
     List<PositionType> positions = List.of(PositionType.PM, PositionType.BACKEND);
-    List<String> skills = List.of("Java", "Spring");
+    List<SkillType> skills = List.of(SkillType.JAVA, SkillType.SPRING);
     boolean isVisible = true;
     List<UpdateDegreeReq> degrees = List.of(
             new UpdateDegreeReq(

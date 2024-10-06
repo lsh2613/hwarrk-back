@@ -1,32 +1,33 @@
 package com.hwarrk.repository;
 
+import com.hwarrk.common.constant.FilterType;
+import com.hwarrk.common.constant.MemberStatus;
+import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.constant.SkillType;
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
+import com.hwarrk.common.dto.dto.QMemberWithLikeDto;
+import com.hwarrk.common.dto.req.ProfileCond;
+import com.hwarrk.common.dto.res.ProfileRes;
+import com.hwarrk.common.dto.res.QProfileRes;
+import com.hwarrk.entity.Member;
+import com.hwarrk.common.dto.dto.ContentWithTotalDto;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
 import static com.hwarrk.entity.QCareer.career;
 import static com.hwarrk.entity.QDegree.degree;
 import static com.hwarrk.entity.QMember.member;
 import static com.hwarrk.entity.QMemberLike.memberLike;
 import static com.hwarrk.entity.QPortfolio.portfolio;
 import static com.hwarrk.entity.QPosition.position;
+import static com.hwarrk.entity.QProjectDescription.projectDescription;
 import static com.hwarrk.entity.QSkill.skill;
-
-import com.hwarrk.common.constant.FilterType;
-import com.hwarrk.common.constant.MemberStatus;
-import com.hwarrk.common.constant.PositionType;
-import com.hwarrk.common.constant.SkillType;
-import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.res.MemberRes;
-import com.hwarrk.common.dto.res.ProfileRes;
-import com.hwarrk.common.dto.res.QMemberRes;
-import com.hwarrk.common.dto.res.QProfileRes;
-import com.hwarrk.entity.Member;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
@@ -43,7 +44,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.skills, skill)
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
-//                .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.projectDescriptions, projectDescription)
                 .where(eqMemberId(memberId))
                 .fetchOne();
 
@@ -55,7 +56,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         ProfileRes res = queryFactory
                 .selectDistinct(new QProfileRes(
                         member,
-                        memberLike
+                        memberLike.isNotNull()
                 ))
                 .from(member)
                 .leftJoin(member.portfolios, portfolio)
@@ -63,7 +64,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.skills, skill)
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
-//                .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.projectDescriptions, projectDescription)
                 .leftJoin(memberLike)
                 .on(memberLike.fromMember.id.eq(fromMemberId).and(memberLike.toMember.id.eq(member.id)))
                 .where(eqMemberId(toMemberId))
@@ -73,11 +74,11 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public Page getFilteredMemberPage(Long memberId, ProfileCond cond, Pageable pageable) {
-        List<MemberRes> content = queryFactory
-                .select(new QMemberRes(
+    public ContentWithTotalDto getFilteredMemberPage(Long memberId, ProfileCond cond, Pageable pageable) {
+        List<MemberWithLikeDto> content = queryFactory
+                .select(new QMemberWithLikeDto(
                         member,
-                        memberLike
+                        memberLike.isNotNull()
                 ))
                 .from(member)
                 .leftJoin(member.positions, position)
@@ -110,7 +111,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 )
                 .fetchOne();
 
-        return new PageImpl<>(content, pageable, total);
+        return new ContentWithTotalDto(content, total);
     }
 
     private static BooleanExpression eqMemberId(Long memberId) {
@@ -131,7 +132,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     private BooleanExpression skillFilter(SkillType skillType) {
-        return skillType != null ? skill.name.eq(skillType.name()) : null;
+        return skillType != null ? skill.skillType.eq(skillType) : null;
     }
 
     private BooleanExpression memberStatusFilter(MemberStatus memberStatus) {

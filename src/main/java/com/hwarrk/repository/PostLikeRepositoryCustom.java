@@ -1,8 +1,10 @@
 package com.hwarrk.repository;
 
-import com.hwarrk.common.SliceCustomImpl;
+import com.hwarrk.entity.PostLike;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface PostLikeRepositoryCustom {
-    SliceCustomImpl getLikedPostSlice(Long loginId, Long lastPostLikeId, Pageable pageable);
+    List<PostLike> getPostLikeSliceInfo(Long loginId, Long lastPostLikeId, Pageable pageable);
 }

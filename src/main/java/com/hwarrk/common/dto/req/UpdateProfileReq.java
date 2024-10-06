@@ -3,6 +3,7 @@ package com.hwarrk.common.dto.req;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.constant.SkillType;
 import com.hwarrk.entity.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,7 +26,7 @@ public record UpdateProfileReq(
         @NotNull
         List<PositionType> positions,
         @NotNull
-        List<String> skills,
+        List<SkillType> skills,
         boolean isVisible,
         List<UpdateDegreeReq> degrees,
         List<UpdateCareerReq> careers,
@@ -64,7 +65,7 @@ public record UpdateProfileReq(
 
     public List<Skill> mapReqToSkills(Member member) {
         return skills == null ?
-                Collections.emptyList() : skills.stream().map(skill -> new Skill(skill, member)).toList();
+                Collections.emptyList() : skills.stream().map(skillType -> new Skill(skillType, member)).toList();
     }
 
     public List<Degree> mapReqToDegrees(Member member) {

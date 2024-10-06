@@ -6,12 +6,10 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
-import com.hwarrk.common.dto.res.MemberRes;
-import com.hwarrk.common.dto.res.MyProfileRes;
-import com.hwarrk.common.dto.res.PageRes;
-import com.hwarrk.common.dto.res.ProfileRes;
+import com.hwarrk.common.dto.res.*;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
+import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectDescription;
 import com.hwarrk.jwt.TokenProvider;
@@ -20,7 +18,7 @@ import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,8 +84,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public PageRes getMembers(Long memberId, ProfileCond cond, Pageable pageable) {
-        Page<MemberRes> memberPage = memberRepositoryCustom.getFilteredMemberPage(memberId, cond, pageable);
-        return PageRes.mapResToPageRes(memberPage);
+        ContentWithTotalDto memberPageWithTotalDto = memberRepositoryCustom.getFilteredMemberPage(memberId, cond, pageable);
+
+        List<MemberRes> memberRes = memberPageWithTotalDto.memberPage().stream().map(MemberWithLikeDto -> {
+                    Member member = MemberWithLikeDto.member();
+                    CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
+                    return MemberRes.mapEntityToRes(member, careerInfoRes, MemberWithLikeDto.isLiked());
+                })
+                .toList();
+
+        PageImpl<MemberRes> memberResPage = new PageImpl<>(memberRes, pageable, memberPageWithTotalDto.total());
+
+        return PageRes.mapResToPageRes(memberResPage);
     }
 
     private List<ProjectDescription> getProjectDescriptions(UpdateProfileReq updateProfileReq, Member member) {

@@ -36,4 +36,10 @@ public class ProjectJoin extends BaseEntity {
         this.project = project;
         project.addProjectJoin(this);
     }
+
+    public ProjectJoin(PositionType positionType, Project project, Member member) {
+        this.positionType = positionType;
+        this.project = project;
+        this.member = member;
+    }
 }
