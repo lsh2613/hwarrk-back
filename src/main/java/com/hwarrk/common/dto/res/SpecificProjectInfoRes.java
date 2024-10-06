@@ -1,6 +1,7 @@
 package com.hwarrk.common.dto.res;
 
 import com.hwarrk.common.constant.StepType;
+import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +31,11 @@ public class SpecificProjectInfoRes {
         specificProjectInfoRes.postId = project.getPost().getId();
 
         specificProjectInfoRes.memberResList = project.getProjectMembers().stream()
-                .map(pm -> MemberRes.mapEntityToRes(pm.getMember()))
+                .map(pm -> {
+                    Member member = pm.getMember();
+                    MemberRes.CareerInfo careerInfo = member.loadCareer();
+                    return MemberRes.mapEntityToRes(member, careerInfo);
+                })
                 .toList();
 
         return specificProjectInfoRes;

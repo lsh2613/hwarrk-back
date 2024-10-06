@@ -14,19 +14,19 @@ public record MemberRes(
         Long memberId,
         String image,
         String nickname,
-        CareerInfo career,
+        CareerInfo careerInfo,
         Double embers,
         MemberStatus status,
         String introduction,
         boolean isLiked
 ) {
 
-    public static MemberRes mapEntityToRes(Member member) {
+    public static MemberRes mapEntityToRes(Member member, CareerInfo careerInfo) {
         return MemberRes.builder()
                 .memberId(member.getId())
                 .image(member.getImage())
                 .nickname(member.getNickname())
-                .career(member.loadCareer())
+                .careerInfo(careerInfo)
                 .embers(member.getEmbers())
                 .status(member.getMemberStatus())
                 .introduction(member.getIntroduction())
