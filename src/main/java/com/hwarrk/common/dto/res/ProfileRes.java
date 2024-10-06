@@ -25,7 +25,7 @@ public record ProfileRes(
 ) {
 
     @QueryProjection
-    public ProfileRes(Member member, MemberLike memberLike) {
+    public ProfileRes(Member member, boolean isLiked) {
         this(
                 member.getNickname(),
                 member.getMemberStatus(),
@@ -40,7 +40,7 @@ public record ProfileRes(
                 member.getSkills().stream()
                         .map(Skill::getSkillType)
                         .toList(),
-                isLiked(memberLike),
+                isLiked,
                 member.getDegrees().stream()
                         .map(DegreeRes::mapEntityToRes)
                         .toList(),
@@ -53,7 +53,4 @@ public record ProfileRes(
         );
     }
 
-    private static boolean isLiked(MemberLike memberLike) {
-        return memberLike == null ? false : true;
-    }
 }

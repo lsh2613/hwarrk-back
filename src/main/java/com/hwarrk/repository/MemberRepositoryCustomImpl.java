@@ -4,18 +4,17 @@ import com.hwarrk.common.constant.FilterType;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.SkillType;
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
+import com.hwarrk.common.dto.dto.QMemberWithLikeDto;
 import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.ProfileRes;
-import com.hwarrk.common.dto.res.QMemberRes;
 import com.hwarrk.common.dto.res.QProfileRes;
 import com.hwarrk.entity.Member;
+import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -57,7 +56,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         ProfileRes res = queryFactory
                 .selectDistinct(new QProfileRes(
                         member,
-                        memberLike
+                        memberLike.isNotNull()
                 ))
                 .from(member)
                 .leftJoin(member.portfolios, portfolio)
@@ -75,11 +74,11 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public Page getFilteredMemberPage(Long memberId, ProfileCond cond, Pageable pageable) {
-        List<MemberRes> content = queryFactory
-                .select(new QMemberRes(
+    public ContentWithTotalDto getFilteredMemberPage(Long memberId, ProfileCond cond, Pageable pageable) {
+        List<MemberWithLikeDto> content = queryFactory
+                .select(new QMemberWithLikeDto(
                         member,
-                        memberLike
+                        memberLike.isNotNull()
                 ))
                 .from(member)
                 .leftJoin(member.positions, position)
@@ -112,7 +111,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 )
                 .fetchOne();
 
-        return new PageImpl<>(content, pageable, total);
+        return new ContentWithTotalDto(content, total);
     }
 
     private static BooleanExpression eqMemberId(Long memberId) {

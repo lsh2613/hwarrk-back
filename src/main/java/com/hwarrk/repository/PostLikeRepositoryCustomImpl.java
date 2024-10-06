@@ -1,8 +1,5 @@
 package com.hwarrk.repository;
 
-import com.hwarrk.common.SliceCustomImpl;
-import com.hwarrk.common.util.PageUtil;
-import com.hwarrk.entity.Post;
 import com.hwarrk.entity.PostLike;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,19 +21,7 @@ public class PostLikeRepositoryCustomImpl implements PostLikeRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public SliceCustomImpl getLikedPostSlice(Long memberId, Long lastPostLikeId, Pageable pageable) {
-        List<PostLike> postLikes = getPostLikes(memberId, lastPostLikeId, pageable);
-
-        boolean hasNext = PageUtil.hasNextPage(postLikes, pageable);
-
-        List<Post> likedPosts = postLikes.stream()
-                .map(PostLike::getPost)
-                .toList();
-
-        return new SliceCustomImpl(likedPosts, pageable, hasNext, PageUtil.getLastElement(postLikes).getId());
-    }
-
-    private List<PostLike> getPostLikes(Long memberId, Long lastPostLikeId, Pageable pageable) {
+    public List<PostLike> getPostLikeSliceInfo(Long memberId, Long lastPostLikeId, Pageable pageable) {
         return jpaQueryFactory
                 .select(postLike)
                 .from(postLike)
