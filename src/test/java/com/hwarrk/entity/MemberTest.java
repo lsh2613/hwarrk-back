@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.hwarrk.common.dto.res.MemberRes.CareerInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {

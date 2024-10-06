@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import static com.hwarrk.common.dto.res.MemberRes.CareerInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectMemberTest {
@@ -24,7 +23,7 @@ class ProjectMemberTest {
         // then
         assertThat(result.careerType()).isEqualTo(CareerType.EXPERIENCE);
         assertThat(result.lastCareer()).isEqualTo("AComp");
-        assertThat(result.totalExperienceYears()).isEqualTo(Period.of(3, 0, 3));
+        assertThat(result.totalExperienceYears()).isEqualTo(Period.ofYears(3).getYears());
     }
 
     private ProjectMember createExperiencedProjectMember() {

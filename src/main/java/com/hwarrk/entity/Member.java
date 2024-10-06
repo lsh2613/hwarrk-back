@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
-import static com.hwarrk.common.dto.res.MemberRes.CareerInfo;
 
 @Getter
 @Setter

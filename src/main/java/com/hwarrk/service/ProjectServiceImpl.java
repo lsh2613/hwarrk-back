@@ -48,7 +48,15 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findSpecificProjectInfoById(projectId)
                 .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
 
-        return SpecificProjectInfoRes.mapEntityToRes(project);
+        List<MemberRes> memberResList = project.getProjectMembers().stream()
+                .map(pm -> {
+                    Member member = pm.getMember();
+                    CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
+                    return MemberRes.mapEntityToRes(member, careerInfoRes);
+                })
+                .toList();
+
+        return SpecificProjectInfoRes.mapEntityToRes(project, memberResList);
     }
 
     @Override
