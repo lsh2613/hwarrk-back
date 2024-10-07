@@ -130,7 +130,6 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
         String keyWord = req.getKeyWord();
 
-        // login 한 사용자만 필터링을 할 수 있게 해야 하나?
         PageImpl<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
                 keyWord, loginId, pageable);
 

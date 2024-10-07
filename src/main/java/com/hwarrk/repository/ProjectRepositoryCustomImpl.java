@@ -38,7 +38,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
                 .where(eqRecruitingType(recruitingType));
 
         if (filterType == ProjectFilterType.TRENDING) {
-            // TODO: 인기 급상승 기준 추가
+            query.orderBy(project.views.desc());
         }
 
         if (filterType == ProjectFilterType.LATEST) {
