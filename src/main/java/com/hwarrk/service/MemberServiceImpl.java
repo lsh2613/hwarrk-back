@@ -1,7 +1,5 @@
 package com.hwarrk.service;
 
-import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.TOKEN_ID_MISMATCH;
-
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
@@ -10,7 +8,11 @@ import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
-import com.hwarrk.common.dto.res.*;
+import com.hwarrk.common.dto.res.CareerInfoRes;
+import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MyProfileRes;
+import com.hwarrk.common.dto.res.PageRes;
+import com.hwarrk.common.dto.res.ProfileRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
@@ -20,6 +22,8 @@ import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -27,9 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Transactional
