@@ -4,10 +4,10 @@ import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.SliceCustomImpl;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.LikeType;
+import com.hwarrk.common.dto.res.CareerInfoRes;
 import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.common.util.PageUtil;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.MemberLike;
 import com.hwarrk.repository.MemberLikeRepository;
@@ -15,11 +15,13 @@ import com.hwarrk.repository.MemberLikeRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -46,9 +48,19 @@ public class MemberLikeServiceImpl implements MemberLikeService {
 
     @Override
     public SliceRes getLikedMemberSlice(Long memberId, Long lastMemberLikeId, Pageable pageable) {
-        SliceCustomImpl likedMemberSlice = memberLikeRepositoryCustom.getLikedMemberSlice(memberId, lastMemberLikeId, pageable);
+        List<MemberLike> memberLikes = memberLikeRepositoryCustom.getMemberLikeSliceInfo(memberId, lastMemberLikeId, pageable);
 
-        return SliceRes.mapSliceCustomToSliceRes(likedMemberSlice, MemberRes::mapEntityToRes);
+        List<MemberRes> memberResList = memberLikes.stream()
+                .map(memberLike -> {
+                    Member member = memberLike.getToMember();
+                    CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
+                    return MemberRes.mapEntityToRes(member, careerInfoRes);
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        SliceCustomImpl sliceCustom = new SliceCustomImpl(memberLikes, memberResList, pageable);
+
+        return SliceRes.mapSliceCustomToSliceRes(sliceCustom);
     }
 
     private void handleCancel(Optional<MemberLike> optionalMemberLike) {
