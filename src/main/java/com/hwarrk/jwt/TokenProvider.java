@@ -65,7 +65,7 @@ public class TokenProvider {
     }
 
     private void saveRefreshToken(Long memberId, String refreshToken) {
-        redisUtil.setDateExpire(refreshToken, memberId, Duration.ofDays(refreshTokenExpirationPeriod));
+        redisUtil.setDataExpire(refreshToken, memberId, Duration.ofDays(refreshTokenExpirationPeriod));
     }
 
     public String reissueAccessToken(String refreshToken) {
