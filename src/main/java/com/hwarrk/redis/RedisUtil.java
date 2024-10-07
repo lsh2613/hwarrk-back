@@ -19,12 +19,12 @@ public class RedisUtil {
         return valueOperations.get(key);
     }
 
-    public void setDate(String key, Long value) {
+    public void setData(String key, Long value) {
         ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, value);
     }
 
-    public void setDateExpire(String key, Long value, Duration duration) {
+    public void setDataExpire(String key, Long value, Duration duration) {
         ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, value, duration);
     }

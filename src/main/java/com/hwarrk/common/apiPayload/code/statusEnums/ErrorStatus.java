@@ -19,7 +19,6 @@ public enum ErrorStatus implements BaseCode {
     // 토큰
     BLACKLISTED_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN4011", "블랙리스트에 존재하는 Access Token입니다"),
     MISSING_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "TOKEN4012", "Access Token이 존재하지 않습니다."),
-    TOKEN_ID_MISMATCH(HttpStatus.FORBIDDEN, "TOKEN4003", "토큰의 사용자와 로그인된 사용자가 일치하지 않습니다."),
 
     // 회원 관련
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자를 찾을 수 없습니다."),

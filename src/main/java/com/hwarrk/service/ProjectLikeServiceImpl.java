@@ -18,7 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -44,8 +47,15 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
 
     @Override
     public SliceRes getLikedProjectSlice(Long loginId, Long lastProjectLikeId, Pageable pageable) {
-        SliceCustomImpl likedProjectSlice = projectLikeRepositoryCustom.getLikedProjectSlice(loginId, lastProjectLikeId, pageable);
-        return SliceRes.mapSliceCustomToSliceRes(likedProjectSlice, ProjectRes::mapEntityToRes);
+        List<ProjectLike> projectLikes = projectLikeRepositoryCustom.getProjectLikeSliceInfo(loginId, lastProjectLikeId, pageable);
+
+        List<ProjectRes> projectResList = projectLikes.stream()
+                .map(projectLike -> ProjectRes.mapEntityToRes(projectLike.getProject()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        SliceCustomImpl sliceCustom = new SliceCustomImpl(projectLikes, projectResList, pageable);
+
+        return SliceRes.mapSliceCustomToSliceRes(sliceCustom);
     }
 
     private void handleCancel(Optional<ProjectLike> optionalProjectLike) {

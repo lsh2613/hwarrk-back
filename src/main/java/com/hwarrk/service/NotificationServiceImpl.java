@@ -1,6 +1,7 @@
 package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
+import com.hwarrk.common.SliceCustomImpl;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.NotificationBindingType;
 import com.hwarrk.common.dto.res.NotificationRes;
@@ -15,9 +16,12 @@ import com.hwarrk.repository.NotificationRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -49,8 +53,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public SliceRes<NotificationRes> getNotifications(Long memberId, Long lastNotificationId, Pageable pageable) {
-        Slice<Notification> notifications = notificationRepositoryCustom.getNotificationsSlice(memberId, lastNotificationId, pageable);
-        return SliceRes.mapSliceToSliceRes(notifications, NotificationRes::mapEntityToRes);
+        List<Notification> notifications = notificationRepositoryCustom.getNotificationSliceInfo(memberId, lastNotificationId, pageable);
+
+        notifications.forEach(System.out::println);
+
+        List<NotificationRes> notificationResList = notifications.stream()
+                .map(NotificationRes::mapEntityToRes)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        SliceCustomImpl sliceCustom = new SliceCustomImpl(notifications, notificationResList, pageable);
+
+        return SliceRes.mapSliceCustomToSliceRes(sliceCustom);
     }
 
     @Override

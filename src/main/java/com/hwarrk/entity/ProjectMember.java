@@ -54,7 +54,4 @@ public class ProjectMember {
         member.addProjectMember(this);
     }
 
-    public CareerInfo loadCareerInfo() {
-        return member.loadCareer(this);
-    }
 }

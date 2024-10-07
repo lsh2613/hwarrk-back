@@ -1,18 +1,16 @@
 package com.hwarrk.repository;
 
-import static com.hwarrk.entity.QProject.project;
-import static com.hwarrk.entity.QProjectLike.projectLike;
-
-import com.hwarrk.common.SliceCustomImpl;
-import com.hwarrk.common.util.PageUtil;
-import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectLike;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.hwarrk.entity.QProject.project;
+import static com.hwarrk.entity.QProjectLike.projectLike;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,19 +19,7 @@ public class ProjectLikeRepositoryCustomImpl implements ProjectLikeRepositoryCus
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public SliceCustomImpl getLikedProjectSlice(Long memberId, Long lastProjectLikeId, Pageable pageable) {
-        List<ProjectLike> projectLikes = getProjectLikes(memberId, lastProjectLikeId, pageable);
-
-        boolean hasNext = PageUtil.hasNextPage(projectLikes, pageable);
-
-        List<Project> likedProjects = projectLikes.stream()
-                .map(ProjectLike::getProject)
-                .toList();
-
-        return new SliceCustomImpl(likedProjects, pageable, hasNext, PageUtil.getLastElement(projectLikes).getId());
-    }
-
-    private List<ProjectLike> getProjectLikes(Long memberId, Long lastProjectLikeId, Pageable pageable) {
+    public List<ProjectLike> getProjectLikeSliceInfo(Long memberId, Long lastProjectLikeId, Pageable pageable) {
         return jpaQueryFactory
                 .select(projectLike)
                 .from(projectLike)
@@ -46,6 +32,7 @@ public class ProjectLikeRepositoryCustomImpl implements ProjectLikeRepositoryCus
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
     }
+
     private BooleanExpression eqMemberId(Long memberId) {
         return projectLike.member.id.eq(memberId);
     }
