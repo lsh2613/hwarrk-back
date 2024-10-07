@@ -41,7 +41,7 @@ public class MemberController {
                                     @AuthenticationPrincipal Long loginId) {
         String accessToken = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
         String refreshToken = tokenProvider.extractToken(request, TokenType.REFRESH_TOKEN);
-        memberService.logout(accessToken, refreshToken, loginId);
+        memberService.logout(accessToken, refreshToken);
         return CustomApiResponse.onSuccess();
     }
 

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
-    void logout(String AccessToken, String RefreshToken, Long memberId);
+    void logout(String AccessToken, String RefreshToken);
     void deleteMember(Long loginId);
     void updateMember(Long loginId, UpdateProfileReq req, MultipartFile image);
     MyProfileRes getMyProfile(Long memberId);

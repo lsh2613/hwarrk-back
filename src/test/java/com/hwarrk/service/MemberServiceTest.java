@@ -140,7 +140,7 @@ class MemberServiceTest {
         String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
         //when
-        memberService.logout(accessToken, refreshToken, member_01.getId());
+        memberService.logout(accessToken, refreshToken);
 
         //then
         assertThat(redisUtil.getData(refreshToken)).isNull();
@@ -154,7 +154,7 @@ class MemberServiceTest {
         String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
         //when
-        memberService.logout(accessToken, refreshToken, member_01.getId());
+        memberService.logout(accessToken, refreshToken);
 
         //then
         assertThat(redisUtil.getData(refreshToken)).isNull();
