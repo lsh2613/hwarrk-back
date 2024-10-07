@@ -21,8 +21,10 @@ import com.hwarrk.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -35,6 +37,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 @SpringBootTest
 class MemberServiceTest {
+
+    @Value("${jwt.access.header}")
+    private String accessHeader;
+
+    @Value("${jwt.refresh.header}")
+    private String refreshHeader;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -136,11 +144,16 @@ class MemberServiceTest {
     @Test
     void 로그아웃_성공() {
         //given
+
         String accessToken = tokenProvider.issueAccessToken(member_01.getId());
         String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(accessHeader, "Bearer " + accessToken);
+        request.addHeader(refreshHeader, "Bearer " + refreshToken);
+
         //when
-        memberService.logout(accessToken, refreshToken);
+        memberService.logout(request);
 
         //then
         assertThat(redisUtil.getData(refreshToken)).isNull();
@@ -153,8 +166,12 @@ class MemberServiceTest {
         String accessToken = tokenProvider.issueAccessToken(member_01.getId());
         String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(accessHeader, "Bearer " + accessToken);
+        request.addHeader(refreshHeader, "Bearer " + refreshToken);
+
         //when
-        memberService.logout(accessToken, refreshToken);
+        memberService.logout(request);
 
         //then
         assertThat(redisUtil.getData(refreshToken)).isNull();

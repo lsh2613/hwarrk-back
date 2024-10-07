@@ -4,6 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
@@ -16,6 +17,7 @@ import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -120,14 +122,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void logout(String accessToken, String refreshToken) {
-        DecodedJWT decodedAccessToken = tokenProvider.decodedJWT(accessToken);
-        Long accessTokenId = decodedAccessToken.getClaim("id").asLong();
+    public void logout(HttpServletRequest request) {
+        String accessToken = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
+        addToBlackList(accessToken);
 
+        String refreshToken = tokenProvider.extractToken(request, TokenType.REFRESH_TOKEN);
+        redisUtil.deleteData(refreshToken);
+    }
+
+    private void addToBlackList(String accessToken) {
+        DecodedJWT decodedAccessToken = tokenProvider.decodedJWT(accessToken);
+
+        Long accessTokenId = decodedAccessToken.getClaim("id").asLong();
         Date expiresAt = decodedAccessToken.getExpiresAt();
         long diff = expiresAt.getTime() - System.currentTimeMillis();
-        redisUtil.setBlackList(accessToken, accessTokenId, diff);
 
-        redisUtil.deleteData(refreshToken);
+        redisUtil.setBlackList(accessToken, accessTokenId, diff);
     }
 }
