@@ -59,7 +59,7 @@ class ProjectServiceImplTest {
     private ProjectRepositoryCustom projectRepositoryCustom;
 
     @Mock
-    S3Uploader s3Uploader;
+    private S3Uploader s3Uploader;
 
     @InjectMocks
     private ProjectServiceImpl projectService;

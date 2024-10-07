@@ -150,9 +150,11 @@ public class ProjectRepositoryTest {
         Page<Project> projects = projectRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, 10));
 
         assertThat(projects).isNotEmpty();
-        assertThat(projects.getContent()).hasSize(2);
-        assertThat(projects.getContent().get(0).getName()).isEqualTo("Project 2");
-        assertThat(projects.getContent().get(1).getName()).isEqualTo("Project 1");
+        List<Project> content = projects.getContent();
+        assertThat(content).hasSize(2);
+        assertThat(content.get(0).getName()).isEqualTo("Project 2");
+        assertThat(content.get(1).getName()).isEqualTo("Project 1");
+        assertThat(content.get(0).getProjectLikes()).isNotEmpty();
     }
 
     @Test
@@ -160,13 +162,15 @@ public class ProjectRepositoryTest {
         Optional<Project> foundProject = projectRepository.findSpecificProjectInfoById(project1.getId());
 
         assertThat(foundProject).isPresent();
-        assertThat(foundProject.get().getName()).isEqualTo("Project 1");
-        assertThat(foundProject.get().getPost()).isNotNull();
-        assertThat(foundProject.get().getProjectMembers()).isNotEmpty();
-        Set<ProjectMember> projectMembers = foundProject.get().getProjectMembers();
+        Project project = foundProject.get();
+        assertThat(project.getName()).isEqualTo("Project 1");
+        assertThat(project.getPost()).isNotNull();
+        assertThat(project.getProjectMembers()).isNotEmpty();
+        Set<ProjectMember> projectMembers = project.getProjectMembers();
         for (ProjectMember projectMember : projectMembers) {
             assertThat(projectMember.getMember()).isNotNull();
         }
+        assertThat(project.getProjectLikes()).isNotEmpty();
     }
 
     @Test
@@ -189,15 +193,20 @@ public class ProjectRepositoryTest {
         assertThat(post.getPositions().get(0)).isEqualTo(new RecruitingPosition(IOS, 1));
         assertThat(post.getPositions().get(1)).isEqualTo(new RecruitingPosition(ANDROID, 1));
         assertThat(post.getPositions().get(2)).isEqualTo(new RecruitingPosition(GRAPHIC_DESIGNER, 2));
+        for (Project project : projects) {
+            assertThat(project.getProjectLikes()).isNotEmpty();
+        }
     }
 
     @Test
     public void findSpecificProjectDetailsById() {
-        Optional<Project> project = projectRepository.findSpecificProjectDetailsById(project1.getId());
+        Optional<Project> optionalProject = projectRepository.findSpecificProjectDetailsById(project1.getId());
 
-        assertThat(project).isPresent();
-        assertThat(project.get().getName()).isEqualTo("Project 1");
-        assertThat(project.get().getProjectMembers()).hasSize(3);
-        assertThat(project.get().getProjectJoins()).hasSize(2);
+        assertThat(optionalProject).isPresent();
+        Project project = optionalProject.get();
+        assertThat(project.getName()).isEqualTo("Project 1");
+        assertThat(project.getProjectMembers()).hasSize(3);
+        assertThat(project.getProjectJoins()).hasSize(2);
+        assertThat(project.getProjectLikes()).isNotEmpty();
     }
 }

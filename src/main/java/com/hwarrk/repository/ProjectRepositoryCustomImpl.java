@@ -35,6 +35,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
 
         JPQLQuery<Project> query = queryFactory.selectFrom(project)
                 .join(project.post, post)
+                .join(project.projectLikes, projectLike)
                 .where(eqRecruitingType(recruitingType));
 
         if (filterType == ProjectFilterType.TRENDING) {
@@ -78,6 +79,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     public List<Project> findRecommendedProjects(Long memberId) {
         return queryFactory.selectFrom(project)
                 .join(project.post, post)
+                .leftJoin(project.projectLikes, projectLike)
                 .join(post.positions, recruitingPosition)
                 .join(member).on(member.id.eq(memberId))
                 .join(member.positions, position)

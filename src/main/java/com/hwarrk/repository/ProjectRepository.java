@@ -18,6 +18,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT DISTINCT p FROM Project p " +
             "LEFT JOIN FETCH p.post ps " +
+            "LEFT JOIN FETCH p.projectLikes pl " +
             "LEFT JOIN FETCH p.projectMembers pm " +
             "LEFT JOIN FETCH pm.member m " +
             "WHERE p.id = :projectId")
@@ -40,6 +41,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             + "LEFT JOIN FETCH ps.member psm "
             + "LEFT JOIN FETCH p.projectJoins pj "
             + "LEFT JOIN FETCH pj.member pjm "
+            + "LEFT JOIN FETCH p.projectLikes pl "
             + "WHERE p.id = :projectId")
     Optional<Project> findSpecificProjectDetailsById(@Param("projectId") Long projectId);
 }
