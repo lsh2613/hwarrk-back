@@ -71,6 +71,8 @@ public class Project extends BaseEntity {
 
     private boolean isVisible;
 
+    private long views;
+
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
 
@@ -178,5 +180,9 @@ public class Project extends BaseEntity {
             throw new GeneralHandler(ErrorStatus.PROJECT_INCOMPLETE);
         }
         return true;
+    }
+
+    public void incrementViews() {
+        this.views += 1;
     }
 }

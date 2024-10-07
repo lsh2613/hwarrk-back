@@ -120,6 +120,7 @@ class ProjectServiceImplTest {
         // then
         assertThat(result).isEqualTo(SpecificProjectInfoRes.mapEntityToRes(project, careerInfos));
         verify(projectRepository, times(1)).findSpecificProjectInfoById(projectId);
+        verify(project, times(1)).incrementViews();
     }
 
     @Test

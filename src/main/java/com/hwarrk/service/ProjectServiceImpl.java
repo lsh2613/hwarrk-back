@@ -58,6 +58,8 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findSpecificProjectInfoById(projectId)
                 .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
 
+        project.incrementViews();
+
         List<CareerInfo> careerInfos = project.getProjectMembers()
                 .stream()
                 .map(ProjectMember::loadCareerInfo)
