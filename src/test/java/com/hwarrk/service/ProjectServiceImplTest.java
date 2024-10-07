@@ -58,6 +58,9 @@ class ProjectServiceImplTest {
     @Mock
     private ProjectRepositoryCustom projectRepositoryCustom;
 
+    @Mock
+    S3Uploader s3Uploader;
+
     @InjectMocks
     private ProjectServiceImpl projectService;
 
@@ -73,9 +76,11 @@ class ProjectServiceImplTest {
         ProjectCreateReq req = mock(ProjectCreateReq.class);
         Member member = mock(Member.class);
         Project project = mock(Project.class);
+        String givenImageUrl = "imageUrl";
 
         when(entityFacade.getMember(loginId)).thenReturn(member);
-        when(req.mapCreateReqToProject(member)).thenReturn(project);
+        when(s3Uploader.uploadImg(any())).thenReturn(givenImageUrl);
+        when(req.mapCreateReqToProject(member, givenImageUrl)).thenReturn(project);
         when(projectRepository.save(project)).thenReturn(project);
         when(project.getId()).thenReturn(1L);
 

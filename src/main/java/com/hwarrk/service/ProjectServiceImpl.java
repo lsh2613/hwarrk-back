@@ -42,11 +42,13 @@ public class ProjectServiceImpl implements ProjectService {
     private final EntityFacade entityFacade;
     private final ProjectRepository projectRepository;
     private final ProjectRepositoryCustom projectRepositoryCustom;
+    private final S3Uploader s3Uploader;
 
     @Override
     public Long createProject(Long loginId, ProjectCreateReq req) {
         Member member = entityFacade.getMember(loginId);
-        Project project = req.mapCreateReqToProject(member);
+        String imageUrl = s3Uploader.uploadImg(req.image());
+        Project project = req.mapCreateReqToProject(member, imageUrl);
         projectRepository.save(project);
         return project.getId();
     }
