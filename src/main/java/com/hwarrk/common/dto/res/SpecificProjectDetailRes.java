@@ -2,6 +2,8 @@ package com.hwarrk.common.dto.res;
 
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.dto.dto.ProjectJoinWithLikeDto;
+import com.hwarrk.common.dto.dto.ProjectMemberWithLikeDto;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectJoin;
@@ -21,14 +23,16 @@ public class SpecificProjectDetailRes {
     private List<ProjectMemberRes> projectMemberResList = new ArrayList<>();
     private List<ProjectJoinRes> projectJoinResList = new ArrayList<>();
 
-    public static SpecificProjectDetailRes createRes(Project project) {
+    public static SpecificProjectDetailRes createRes(Project project,
+                                                     List<ProjectMemberWithLikeDto> projectMemberWithLikeDtos,
+                                                     List<ProjectJoinWithLikeDto> projectJoinWithLikeDtos) {
         SpecificProjectDetailRes specificProjectDetailRes = new SpecificProjectDetailRes();
         specificProjectDetailRes.projectId = project.getId();
-        specificProjectDetailRes.projectMemberResList = project.getProjectMembers()
+        specificProjectDetailRes.projectMemberResList = projectMemberWithLikeDtos
                 .stream()
                 .map(ProjectMemberRes::createRes)
                 .toList();
-        specificProjectDetailRes.projectJoinResList = project.getProjectJoins()
+        specificProjectDetailRes.projectJoinResList = projectJoinWithLikeDtos
                 .stream()
                 .map(ProjectJoinRes::createRes)
                 .toList();
@@ -47,9 +51,11 @@ public class SpecificProjectDetailRes {
         private double embers;
         private MemberStatus memberStatus;
         private String introduction;
+        private boolean isLiked;
 
-        public static ProjectMemberRes createRes(ProjectMember projectMember) {
+        public static ProjectMemberRes createRes(ProjectMemberWithLikeDto projectMemberWithLikeDto) {
             ProjectMemberRes projectMemberRes = new ProjectMemberRes();
+            ProjectMember projectMember = projectMemberWithLikeDto.getProjectMember();
             Member member = projectMember.getMember();
             projectMemberRes.memberId = member.getId();
             projectMemberRes.image = member.getImage();
@@ -62,6 +68,7 @@ public class SpecificProjectDetailRes {
             projectMemberRes.embers = member.getEmbers();
             projectMemberRes.memberStatus = member.getMemberStatus();
             projectMemberRes.introduction = member.getIntroduction();
+            projectMemberRes.isLiked = projectMemberRes.isLiked();
             return projectMemberRes;
         }
     }
@@ -79,9 +86,11 @@ public class SpecificProjectDetailRes {
         private double embers;
         private MemberStatus memberStatus;
         private String introduction;
+        private boolean isLiked;
 
-        public static ProjectJoinRes createRes(ProjectJoin projectJoin) {
+        public static ProjectJoinRes createRes(ProjectJoinWithLikeDto projectJoinWithLikeDto) {
             ProjectJoinRes projectJoinRes = new ProjectJoinRes();
+            ProjectJoin projectJoin = projectJoinWithLikeDto.getProjectJoin();
             Member member = projectJoin.getMember();
             projectJoinRes.memberId = member.getId();
             projectJoinRes.image = member.getImage();
@@ -94,6 +103,7 @@ public class SpecificProjectDetailRes {
             projectJoinRes.embers = member.getEmbers();
             projectJoinRes.memberStatus = member.getMemberStatus();
             projectJoinRes.introduction = member.getIntroduction();
+            projectJoinRes.isLiked = projectJoinRes.isLiked();
             return projectJoinRes;
         }
     }

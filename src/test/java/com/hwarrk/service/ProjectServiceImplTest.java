@@ -13,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.hwarrk.common.EntityFacade;
+import com.hwarrk.common.dto.dto.ProjectJoinWithLikeDto;
+import com.hwarrk.common.dto.dto.ProjectMemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
@@ -32,7 +34,10 @@ import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectJoin;
 import com.hwarrk.entity.ProjectMember;
+import com.hwarrk.repository.ProjectJoinRepository;
+import com.hwarrk.repository.ProjectMemberRepository;
 import com.hwarrk.repository.ProjectRepository;
 import com.hwarrk.repository.ProjectRepositoryCustom;
 import java.util.Collections;
@@ -62,6 +67,12 @@ class ProjectServiceImplTest {
 
     @Mock
     private S3Uploader s3Uploader;
+
+    @Mock
+    private ProjectMemberRepository projectMemberRepository;
+
+    @Mock
+    private ProjectJoinRepository projectJoinRepository;
 
     @InjectMocks
     private ProjectServiceImpl projectService;
@@ -365,15 +376,30 @@ class ProjectServiceImplTest {
         // given
         Long projectId = 1L;
         Project project = mock(Project.class);
+        ProjectMemberWithLikeDto projectMemberWithLikeDto = mock(ProjectMemberWithLikeDto.class);
+        ProjectJoinWithLikeDto projectJoinWithLikeDto = mock(ProjectJoinWithLikeDto.class);
+        ProjectMember projectMember = mock(ProjectMember.class);
+        ProjectJoin projectJoin = mock(ProjectJoin.class);
+        Member member = mock(Member.class);
 
-        when(projectRepository.findSpecificProjectDetailsById(projectId)).thenReturn(Optional.of(project));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(projectMemberRepository.findProjectMembersByProjectId(projectId)).thenReturn(
+                List.of(projectMemberWithLikeDto));
+        when(projectJoinRepository.findProjectJoinsWithProjectId(projectId)).thenReturn(
+                List.of(projectJoinWithLikeDto));
+        when(projectMemberWithLikeDto.getProjectMember()).thenReturn(projectMember);
+        when(projectJoinWithLikeDto.getProjectJoin()).thenReturn(projectJoin);
+        when(projectMember.getMember()).thenReturn(member);
+        when(projectJoin.getMember()).thenReturn(member);
 
         // when
         SpecificProjectDetailRes result = projectService.getSpecificProjectDetails(projectId);
 
         // then
         assertThat(result).isNotNull();
-        verify(projectRepository, times(1)).findSpecificProjectDetailsById(projectId);
+        verify(projectRepository, times(1)).findById(projectId);
+        verify(projectMemberRepository, times(1)).findProjectMembersByProjectId(projectId);
+        verify(projectJoinRepository, times(1)).findProjectJoinsWithProjectId(projectId);
     }
 
     @Test

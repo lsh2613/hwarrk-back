@@ -38,7 +38,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             + "LEFT JOIN m.receivedLikes rl "
             + "ON rl.fromMember.id = :memberId "
             + "WHERE p.id = :projectId")
-    List<MemberWithLikeDto> findMemberLikesByMemberId(@Param("memberId") Long memberId, @Param("projectId") Long projectId);
+    List<MemberWithLikeDto> findMemberLikesByMemberId(@Param("memberId") Long memberId,
+                                                      @Param("projectId") Long projectId);
 
 
     @Query("SELECT new com.hwarrk.common.dto.dto.ProjectWithLikeDto(p, " +

@@ -6,6 +6,8 @@ import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.constant.ProjectFilterType;
 import com.hwarrk.common.constant.RecruitingType;
 import com.hwarrk.common.dto.dto.MemberWithLikeDto;
+import com.hwarrk.common.dto.dto.ProjectJoinWithLikeDto;
+import com.hwarrk.common.dto.dto.ProjectMemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
@@ -23,6 +25,8 @@ import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
+import com.hwarrk.repository.ProjectJoinRepository;
+import com.hwarrk.repository.ProjectMemberRepository;
 import com.hwarrk.repository.ProjectRepository;
 import com.hwarrk.repository.ProjectRepositoryCustom;
 import java.util.List;
@@ -45,6 +49,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final EntityFacade entityFacade;
     private final ProjectRepository projectRepository;
     private final ProjectRepositoryCustom projectRepositoryCustom;
+    private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectJoinRepository projectJoinRepository;
     private final S3Uploader s3Uploader;
 
     @Override
@@ -131,9 +137,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public SpecificProjectDetailRes getSpecificProjectDetails(Long projectId) {
-        Project project = projectRepository.findSpecificProjectDetailsById(projectId)
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
-        return SpecificProjectDetailRes.createRes(project);
+        List<ProjectMemberWithLikeDto> projectMemberWithLikeDtos = projectMemberRepository.findProjectMembersByProjectId(
+                projectId);
+        List<ProjectJoinWithLikeDto> projectJoinWithLikeDtos = projectJoinRepository.findProjectJoinsWithProjectId(
+                projectId);
+        return SpecificProjectDetailRes.createRes(project, projectMemberWithLikeDtos, projectJoinWithLikeDtos);
     }
 
     @Override
@@ -143,7 +153,8 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
         String keyWord = req.getKeyWord();
 
-        PageImpl<ProjectWithLikeDto> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
+        PageImpl<ProjectWithLikeDto> projects = projectRepositoryCustom.findFilteredProjects(recruitingType,
+                projectFilterType,
                 keyWord, loginId, pageable);
 
         return PageRes.mapPageToPageRes(projects, ProjectFilterSearchRes::createRes);
