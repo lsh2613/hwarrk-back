@@ -13,9 +13,10 @@ import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProjectService {
-    Long createProject(Long loginId, ProjectCreateReq req);
+    Long createProject(Long loginId, ProjectCreateReq req, MultipartFile image);
 
     SpecificProjectInfoRes getSpecificProjectInfo(Long loginId, Long projectId);
 

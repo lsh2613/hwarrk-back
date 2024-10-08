@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,8 +37,9 @@ public class ProjectController {
 
     @PostMapping
     public CustomApiResponse createProject(@AuthenticationPrincipal Long loginId,
-                                           @RequestBody ProjectCreateReq req) {
-        Long projectId = projectService.createProject(loginId, req);
+                                           @RequestPart("projectData") ProjectCreateReq req,
+                                           @RequestPart("image") MultipartFile image) {
+        Long projectId = projectService.createProject(loginId, req, image);
         return CustomApiResponse.onSuccess(projectId);
     }
 

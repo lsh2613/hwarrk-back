@@ -53,6 +53,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 class ProjectServiceImplTest {
 
@@ -87,6 +88,7 @@ class ProjectServiceImplTest {
         // given
         Long loginId = 1L;
         ProjectCreateReq req = mock(ProjectCreateReq.class);
+        MultipartFile image = mock(MultipartFile.class);
         Member member = mock(Member.class);
         Project project = mock(Project.class);
         String givenImageUrl = "imageUrl";
@@ -98,7 +100,7 @@ class ProjectServiceImplTest {
         when(project.getId()).thenReturn(1L);
 
         // when
-        Long result = projectService.createProject(loginId, req);
+        Long result = projectService.createProject(loginId, req, image);
 
         // then
         assertThat(result).isEqualTo(1L);

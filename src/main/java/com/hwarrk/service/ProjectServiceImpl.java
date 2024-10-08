@@ -39,6 +39,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Transactional
@@ -54,9 +55,9 @@ public class ProjectServiceImpl implements ProjectService {
     private final S3Uploader s3Uploader;
 
     @Override
-    public Long createProject(Long loginId, ProjectCreateReq req) {
+    public Long createProject(Long loginId, ProjectCreateReq req, MultipartFile image) {
         Member member = entityFacade.getMember(loginId);
-        String imageUrl = s3Uploader.uploadImg(req.image());
+        String imageUrl = s3Uploader.uploadImg(image);
         Project project = req.mapCreateReqToProject(member, imageUrl);
         projectRepository.save(project);
         return project.getId();

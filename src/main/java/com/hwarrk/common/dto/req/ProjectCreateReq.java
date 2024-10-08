@@ -6,7 +6,6 @@ import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import org.springframework.web.multipart.MultipartFile;
 
 public record ProjectCreateReq(
         @NotNull
@@ -24,7 +23,6 @@ public record ProjectCreateReq(
         String area,
         @NotNull
         String subject,
-        MultipartFile image,
         @NotNull
         String description
 ) {
