@@ -143,7 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectFilterType projectFilterType = ProjectFilterType.findType(req.getFilterType());
         String keyWord = req.getKeyWord();
 
-        PageImpl<Project> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
+        PageImpl<ProjectWithLikeDto> projects = projectRepositoryCustom.findFilteredProjects(recruitingType, projectFilterType,
                 keyWord, loginId, pageable);
 
         return PageRes.mapPageToPageRes(projects, ProjectFilterSearchRes::createRes);
@@ -151,7 +151,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<RecommendProjectRes> getRecommendedProjects(Long loginId) {
-        List<Project> recommendedProjects = projectRepositoryCustom.findRecommendedProjects(loginId);
+        List<ProjectWithLikeDto> recommendedProjects = projectRepositoryCustom.findRecommendedProjects(loginId);
         return recommendedProjects.stream().map(RecommendProjectRes::createRes).toList();
     }
 }

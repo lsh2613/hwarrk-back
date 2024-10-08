@@ -9,7 +9,8 @@ import static com.hwarrk.entity.QRecruitingPosition.recruitingPosition;
 
 import com.hwarrk.common.constant.ProjectFilterType;
 import com.hwarrk.common.constant.RecruitingType;
-import com.hwarrk.entity.Project;
+import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
+import com.hwarrk.common.dto.dto.QProjectWithLikeDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -30,12 +31,19 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public PageImpl<Project> findFilteredProjects(RecruitingType recruitingType, ProjectFilterType filterType,
-                                                  String keyWord, Long memberId, Pageable pageable) {
+    public PageImpl<ProjectWithLikeDto> findFilteredProjects(RecruitingType recruitingType,
+                                                             ProjectFilterType filterType,
+                                                             String keyWord, Long memberId, Pageable pageable) {
 
-        JPQLQuery<Project> query = queryFactory.selectFrom(project)
+        JPQLQuery<ProjectWithLikeDto> query = queryFactory
+                .select(new QProjectWithLikeDto(
+                        project,
+                        Expressions.booleanTemplate("CASE WHEN {0} IS NOT NULL THEN true ELSE false END",
+                                projectLike.id)
+                ))
+                .from(project)
                 .join(project.post, post)
-                .join(project.projectLikes, projectLike)
+                .leftJoin(project.projectLikes, projectLike)
                 .where(eqRecruitingType(recruitingType));
 
         if (filterType == ProjectFilterType.TRENDING) {
@@ -51,7 +59,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
                     .on(projectLike.member.id.eq(memberId));
         }
 
-        List<Project> projects = query
+        List<ProjectWithLikeDto> projects = query
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
@@ -76,8 +84,14 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
 
 
     @Override
-    public List<Project> findRecommendedProjects(Long memberId) {
-        return queryFactory.selectFrom(project)
+    public List<ProjectWithLikeDto> findRecommendedProjects(Long memberId) {
+        return queryFactory
+                .select(new QProjectWithLikeDto(
+                        project,
+                        Expressions.booleanTemplate("CASE WHEN {0} IS NOT NULL THEN true ELSE false END",
+                                projectLike.id)
+                ))
+                .from(project)
                 .join(project.post, post)
                 .leftJoin(project.projectLikes, projectLike)
                 .join(post.positions, recruitingPosition)

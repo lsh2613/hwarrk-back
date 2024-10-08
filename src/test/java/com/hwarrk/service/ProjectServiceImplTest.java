@@ -395,29 +395,33 @@ class ProjectServiceImplTest {
         Long loginId = 1L;
         ProjectFilterSearchReq req = mock(ProjectFilterSearchReq.class);
         Pageable pageable = PageRequest.of(0, 10);
+        Project project = mock(Project.class);
 
         when(req.getRecruitingType()).thenReturn("모집 중");
         when(req.getFilterType()).thenReturn("최신");
         when(req.getKeyWord()).thenReturn("keyword");
 
-        List<Project> projectList = Collections.singletonList(mock(Project.class));
-        PageImpl<Project> mockProjectsPage = new PageImpl<>(projectList, pageable, projectList.size());
+        List<ProjectWithLikeDto> projectWithLikeDtos = Collections.singletonList(mock(ProjectWithLikeDto.class));
+        PageImpl<ProjectWithLikeDto> projectWithLikeDtoPage = new PageImpl<>(projectWithLikeDtos, pageable,
+                projectWithLikeDtos.size());
 
         when(projectRepositoryCustom.findFilteredProjects(any(), any(), anyString(), anyLong(), any(Pageable.class)))
-                .thenReturn(mockProjectsPage);
+                .thenReturn(projectWithLikeDtoPage);
+        when(projectWithLikeDtos.get(0).getProject()).thenReturn(project);
 
         // when
-        PageRes<ProjectFilterSearchRes> result = projectService.getFilteredSearchProjects(loginId, req, pageable);
+        PageRes<ProjectFilterSearchRes> result = projectService.getFilteredSearchProjects(loginId, req,
+                pageable);
 
         // then
         assertThat(result)
                 .isNotNull()
                 .extracting(PageRes::content, PageRes::totalElements, PageRes::totalPages, PageRes::isLast)
                 .containsExactly(
-                        projectList.stream().map(ProjectFilterSearchRes::createRes).toList(),
-                        mockProjectsPage.getTotalElements(),
-                        mockProjectsPage.getTotalPages(),
-                        mockProjectsPage.isLast()
+                        projectWithLikeDtos.stream().map(ProjectFilterSearchRes::createRes).toList(),
+                        projectWithLikeDtoPage.getTotalElements(),
+                        projectWithLikeDtoPage.getTotalPages(),
+                        projectWithLikeDtoPage.isLast()
                 );
 
         verify(projectRepositoryCustom, times(1))
@@ -428,11 +432,13 @@ class ProjectServiceImplTest {
     void getRecommendedProjects_Success() {
         // given
         Long loginId = 1L;
-        Project project = mock(Project.class);
-        List<Project> recommendedProjects = Collections.singletonList(project);
+        ProjectWithLikeDto projectWithLikeDto = mock(ProjectWithLikeDto.class);
+        List<ProjectWithLikeDto> recommendedProjects = Collections.singletonList(projectWithLikeDto);
         Post post = mock(Post.class);
+        Project project = mock(Project.class);
 
         when(projectRepositoryCustom.findRecommendedProjects(loginId)).thenReturn(recommendedProjects);
+        when(projectWithLikeDto.getProject()).thenReturn(project);
         when(project.getPost()).thenReturn(post);
 
         // when
