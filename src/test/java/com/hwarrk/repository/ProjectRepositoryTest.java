@@ -13,9 +13,11 @@ import static com.hwarrk.common.constant.PositionType.PO;
 import static com.hwarrk.common.constant.PositionType.SERVICE_PLANNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.entity.Career;
 import com.hwarrk.entity.Member;
+import com.hwarrk.entity.MemberLike;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectJoin;
@@ -141,6 +143,10 @@ public class ProjectRepositoryTest {
         entityManager.persist(projectJoin2);
         projectJoin2.addProject(project1);
 
+        MemberLike memberLike = new MemberLike(member4, member1);
+        memberLike.addFromMember(member4);
+        memberLike.addToMember(member1);
+
         entityManager.flush();
         entityManager.clear();
     }
@@ -171,6 +177,39 @@ public class ProjectRepositoryTest {
             assertThat(projectMember.getMember()).isNotNull();
         }
         assertThat(project.getProjectLikes()).isNotEmpty();
+    }
+
+    @Test
+    void existsProjectLikeByMemberId_True() {
+        // when
+        boolean result = projectRepository.existsProjectLikeByMemberId(member1.getId(), project1.getId());
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void existsProjectLikeByMemberId_False() {
+        // when
+        boolean result = projectRepository.existsProjectLikeByMemberId(member4.getId(), project1.getId());
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void findMemberLikesByMemberId() {
+        // when
+        List<MemberWithLikeDto> result = projectRepository.findMemberLikesByMemberId(member4.getId(),
+                project1.getId());
+
+        // then
+        assertThat(result.get(0).member().getId()).isEqualTo(member1.getId());
+        assertThat(result.get(0).isLiked()).isTrue();
+        assertThat(result.get(1).member().getId()).isEqualTo(member2.getId());
+        assertThat(result.get(1).isLiked()).isFalse();
+        assertThat(result.get(2).member().getId()).isEqualTo(member3.getId());
+        assertThat(result.get(2).isLiked()).isFalse();
     }
 
     @Test

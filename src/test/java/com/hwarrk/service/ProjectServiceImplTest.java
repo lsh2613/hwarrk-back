@@ -1,15 +1,44 @@
 package com.hwarrk.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
-import com.hwarrk.common.dto.res.*;
+import com.hwarrk.common.dto.res.CareerInfoRes;
+import com.hwarrk.common.dto.res.CompleteProjectsRes;
+import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MyProjectRes;
+import com.hwarrk.common.dto.res.PageRes;
+import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
+import com.hwarrk.common.dto.res.ProjectRes;
+import com.hwarrk.common.dto.res.RecommendProjectRes;
+import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
+import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.entity.*;
+import com.hwarrk.entity.CareerInfo;
+import com.hwarrk.entity.Member;
+import com.hwarrk.entity.Post;
+import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectMember;
 import com.hwarrk.repository.ProjectRepository;
 import com.hwarrk.repository.ProjectRepositoryCustom;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,17 +48,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 class ProjectServiceImplTest {
 
@@ -80,9 +98,10 @@ class ProjectServiceImplTest {
     @Test
     void getSpecificProjectInfo_Success() {
         // given
+        Long memberId = 1L;
         Long projectId = 1L;
-        Project project = mock(Project.class);
 
+        Project project = mock(Project.class);
         Member member_01 = mock(Member.class);
         Member member_02 = mock(Member.class);
 
@@ -91,11 +110,14 @@ class ProjectServiceImplTest {
         ProjectMember projectMember_02 = mock(ProjectMember.class);
         projectMembers.add(projectMember_01);
         projectMembers.add(projectMember_02);
-        Post post = mock(Post.class);
 
+        Post post = mock(Post.class);
         List<CareerInfo> careerInfos = List.of(mock(CareerInfo.class), mock(CareerInfo.class));
 
         when(projectRepository.findSpecificProjectInfoById(projectId)).thenReturn(Optional.of(project));
+        when(projectRepository.existsProjectLikeByMemberId(memberId, projectId)).thenReturn(false);
+        when(projectRepository.findMemberLikesByMemberId(memberId, projectId)).thenReturn(Collections.emptyList());
+
         when(project.getProjectMembers()).thenReturn(projectMembers);
         when(project.getPost()).thenReturn(post);
 
@@ -106,23 +128,35 @@ class ProjectServiceImplTest {
         when(projectMember_02.getMember().loadCareer()).thenReturn(careerInfos.get(1));
 
         // when
-        SpecificProjectInfoRes result = projectService.getSpecificProjectInfo(projectId);
+        SpecificProjectInfoRes result = projectService.getSpecificProjectInfo(memberId, projectId);
 
         // then
-//        assertThat(result).isEqualTo(SpecificProjectInfoRes.mapEntityToRes(project));
+        assertThat(result).isNotNull();
+        SpecificProjectInfoRes expected = SpecificProjectInfoRes.mapEntityToRes(project, false,
+                List.of(new MemberRes(new CareerInfoRes()), new MemberRes(new CareerInfoRes())));
+        assertThat(result.getName()).isEqualTo(expected.getName());
+        assertThat(result.getImage()).isEqualTo(expected.getImage());
+        assertThat(result.isLiked()).isFalse();
+        assertThat(result.getMemberResList()).isNotEmpty();
+        assertThat(result.getMemberResList().get(0)).isEqualTo(expected.getMemberResList().get(0));
+        assertThat(result.getMemberResList().get(1)).isEqualTo(expected.getMemberResList().get(1));
+
         verify(projectRepository, times(1)).findSpecificProjectInfoById(projectId);
+        verify(projectRepository, times(1)).existsProjectLikeByMemberId(memberId, projectId);
+        verify(projectRepository, times(1)).findMemberLikesByMemberId(memberId, projectId);
         verify(project, times(1)).incrementViews();
     }
 
     @Test
     void getSpecificProjectInfo_Fail() {
         // given
+        Long memberId = 1L;
         Long projectId = 1L;
         when(projectRepository.findSpecificProjectInfoById(projectId)).thenReturn(Optional.empty());
 
         // when, then
         Exception exception = assertThrows(GeneralHandler.class, () -> {
-            projectService.getSpecificProjectInfo(projectId);
+            projectService.getSpecificProjectInfo(memberId, projectId);
         });
 
         assertThat(exception.getMessage()).isEqualTo("프로젝트를 찾을 수 없습니다.");

@@ -1,22 +1,36 @@
 package com.hwarrk.entity;
 
 
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
+
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.oauth2.member.OauthMember;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.BatchSize;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
@@ -83,6 +97,12 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectDescription> projectDescriptions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "fromMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberLike> sentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberLike> receivedLikes = new ArrayList<>();
 
     private Double embers;
 
@@ -175,6 +195,20 @@ public class Member extends BaseEntity {
         }
         this.projectMembers.add(projectMember);
 
+    }
+
+    public void addSentLike(MemberLike memberLike) {
+        this.sentLikes.add(memberLike);
+        if (memberLike.getFromMember() != this) {
+            memberLike.addFromMember(this);
+        }
+    }
+
+    public void addReceivedLike(MemberLike memberLike) {
+        this.receivedLikes.add(memberLike);
+        if (memberLike.getToMember() != this) {
+            memberLike.addToMember(this);
+        }
     }
 
     public CareerInfo loadCareer() {
