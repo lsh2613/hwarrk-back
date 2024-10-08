@@ -23,11 +23,10 @@ public record ProjectCreateReq(
         String area,
         @NotNull
         String subject,
-        String image,
         @NotNull
         String description
 ) {
-    public Project mapCreateReqToProject(Member member) {
+    public Project mapCreateReqToProject(Member member, String imageUrl) {
         return Project.builder()
                 .name(name)
                 .step(StepType.valueOf(stepType))
@@ -37,7 +36,7 @@ public record ProjectCreateReq(
                 .way(WayType.valueOf(wayType))
                 .area(area)
                 .subject(subject)
-                .image(image)
+                .image(imageUrl)
                 .description(description)
                 .leader(member)
                 .build();

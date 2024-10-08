@@ -1,5 +1,6 @@
 package com.hwarrk.repository;
 
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.entity.Project;
 import java.util.List;
@@ -18,10 +19,28 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT DISTINCT p FROM Project p " +
             "LEFT JOIN FETCH p.post ps " +
+            "LEFT JOIN FETCH p.projectLikes pl " +
             "LEFT JOIN FETCH p.projectMembers pm " +
             "LEFT JOIN FETCH pm.member m " +
             "WHERE p.id = :projectId")
     Optional<Project> findSpecificProjectInfoById(@Param("projectId") Long projectId);
+
+    @Query("SELECT CASE WHEN COUNT(pl) > 0 THEN true ELSE false END " +
+            "FROM Project p " +
+            "LEFT JOIN p.projectLikes pl " +
+            "WHERE p.id = :projectId AND pl.member.id = :memberId")
+    boolean existsProjectLikeByMemberId(@Param("memberId") Long memberId, @Param("projectId") Long projectId);
+
+    @Query("SELECT DISTINCT new com.hwarrk.common.dto.dto.MemberWithLikeDto("
+            + "m, CASE WHEN rl.fromMember.id IS NOT NULL THEN true ELSE false END) FROM Project p "
+            + "LEFT JOIN p.projectMembers pm "
+            + "LEFT JOIN pm.member m "
+            + "LEFT JOIN m.receivedLikes rl "
+            + "ON rl.fromMember.id = :memberId "
+            + "WHERE p.id = :projectId")
+    List<MemberWithLikeDto> findMemberLikesByMemberId(@Param("memberId") Long memberId,
+                                                      @Param("projectId") Long projectId);
+
 
     @Query("SELECT new com.hwarrk.common.dto.dto.ProjectWithLikeDto(p, " +
             "CASE WHEN pl.id IS NOT NULL THEN true ELSE false END) " +
@@ -40,6 +59,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             + "LEFT JOIN FETCH ps.member psm "
             + "LEFT JOIN FETCH p.projectJoins pj "
             + "LEFT JOIN FETCH pj.member pjm "
+            + "LEFT JOIN FETCH p.projectLikes pl "
             + "WHERE p.id = :projectId")
     Optional<Project> findSpecificProjectDetailsById(@Param("projectId") Long projectId);
 }
