@@ -12,11 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -44,7 +40,7 @@ public class ProjectMember {
     private PositionType position;
 
     public ProjectMember(Member member, Project project, PositionType position) {
-        addMember(member);
+        this.member = member;
         this.project = project;
         this.position = position;
     }
@@ -54,4 +50,13 @@ public class ProjectMember {
         member.addProjectMember(this);
     }
 
+    @Override
+    public String toString() {
+        return "ProjectMember{" +
+                "id=" + id +
+                ", memberId=" + (member != null ? member.getId() : null) + // member ID 추가
+                ", projectId=" + (project != null ? project.getId() : null) + // project ID 추가
+                ", position=" + position +
+                '}';
+    }
 }
