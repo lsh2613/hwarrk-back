@@ -1,40 +1,22 @@
 package com.hwarrk.repository;
 
-import static com.hwarrk.common.constant.OauthProvider.APPLE;
-import static com.hwarrk.common.constant.OauthProvider.GOOGLE;
-import static com.hwarrk.common.constant.OauthProvider.KAKAO;
-import static com.hwarrk.common.constant.PositionType.ANDROID;
-import static com.hwarrk.common.constant.PositionType.BACKEND;
-import static com.hwarrk.common.constant.PositionType.FRONTEND;
-import static com.hwarrk.common.constant.PositionType.GRAPHIC_DESIGNER;
-import static com.hwarrk.common.constant.PositionType.INFRA;
-import static com.hwarrk.common.constant.PositionType.IOS;
-import static com.hwarrk.common.constant.PositionType.PO;
-import static com.hwarrk.common.constant.PositionType.SERVICE_PLANNER;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
-import com.hwarrk.entity.Career;
-import com.hwarrk.entity.Member;
-import com.hwarrk.entity.MemberLike;
-import com.hwarrk.entity.Post;
-import com.hwarrk.entity.Project;
-import com.hwarrk.entity.ProjectJoin;
-import com.hwarrk.entity.ProjectLike;
-import com.hwarrk.entity.ProjectMember;
-import com.hwarrk.entity.RecruitingPosition;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import com.hwarrk.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.hwarrk.common.constant.OauthProvider.*;
+import static com.hwarrk.common.constant.PositionType.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class ProjectRepositoryTest {
@@ -106,18 +88,23 @@ public class ProjectRepositoryTest {
         entityManager.persist(recruitingPosition5);
 
         ProjectMember projectMember1 = new ProjectMember(member1, project1, PO);
+        projectMember1.addMember(member1);
         entityManager.persist(projectMember1);
 
         ProjectMember projectMember2 = new ProjectMember(member2, project1, BACKEND);
+        projectMember2.addMember(member2);
         entityManager.persist(projectMember2);
 
         ProjectMember projectMember3 = new ProjectMember(member3, project1, FRONTEND);
+        projectMember3.addMember(member3);
         entityManager.persist(projectMember3);
 
         ProjectMember projectMember4 = new ProjectMember(member4, project2, PO);
+        projectMember4.addMember(member4);
         entityManager.persist(projectMember4);
 
         ProjectMember projectMember5 = new ProjectMember(member5, project2, BACKEND);
+        projectMember5.addMember(member5);
         entityManager.persist(projectMember5);
 
         ProjectLike projectLike1 = new ProjectLike();
@@ -149,18 +136,6 @@ public class ProjectRepositoryTest {
 
         entityManager.flush();
         entityManager.clear();
-    }
-
-    @Test
-    public void findAllByOrderByCreatedAtDesc() {
-        Page<Project> projects = projectRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, 10));
-
-        assertThat(projects).isNotEmpty();
-        List<Project> content = projects.getContent();
-        assertThat(content).hasSize(2);
-        assertThat(content.get(0).getName()).isEqualTo("Project 2");
-        assertThat(content.get(1).getName()).isEqualTo("Project 1");
-        assertThat(content.get(0).getProjectLikes()).isNotEmpty();
     }
 
     @Test

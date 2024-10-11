@@ -4,29 +4,16 @@ import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
-import com.hwarrk.common.dto.res.CompleteProjectsRes;
-import com.hwarrk.common.dto.res.MyProjectRes;
-import com.hwarrk.common.dto.res.PageRes;
-import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
-import com.hwarrk.common.dto.res.ProjectRes;
-import com.hwarrk.common.dto.res.RecommendProjectRes;
-import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
-import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
+import com.hwarrk.common.dto.res.*;
 import com.hwarrk.service.ProjectService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,12 +35,6 @@ public class ProjectController {
                                                     @PathVariable Long projectId) {
         SpecificProjectInfoRes project = projectService.getSpecificProjectInfo(loginId, projectId);
         return CustomApiResponse.onSuccess(project);
-    }
-
-    @GetMapping
-    public CustomApiResponse getProjects(@PageableDefault Pageable pageable) {
-        PageRes<ProjectRes> pageRes = projectService.getProjects(pageable);
-        return CustomApiResponse.onSuccess(pageRes);
     }
 
     @PostMapping("/{projectId}")
