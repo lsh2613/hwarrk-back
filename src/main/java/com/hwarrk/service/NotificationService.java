@@ -9,6 +9,6 @@ import org.springframework.data.domain.Pageable;
 public interface NotificationService {
     void sendNotification(Member member, NotificationBindingType type, Object bindingEntity, String message);
     SliceRes<NotificationRes> getNotifications(Long memberId, Long lastNotificationId, Pageable pageable);
-    NotificationRes readNotification(Long memberId, Long notificationId);
+    void readNotification(Long memberId, Long notificationId);
     void readNotifications(Long memberId);
 }

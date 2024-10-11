@@ -38,8 +38,8 @@ public class NotificationController {
     @GetMapping("{notificationId}")
     public CustomApiResponse readNotification(@AuthenticationPrincipal Long loginId,
                                               @PathVariable Long notificationId) {
-        NotificationRes res = notificationService.readNotification(loginId, notificationId);
-        return CustomApiResponse.onSuccess(res);
+        notificationService.readNotification(loginId, notificationId);
+        return CustomApiResponse.onSuccess();
     }
 
     @Operation(summary = "모든 알림 읽기")
