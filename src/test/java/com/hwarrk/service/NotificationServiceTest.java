@@ -112,6 +112,7 @@ class NotificationServiceTest {
 
         assertThat(res_02.content().size()).isEqualTo(1);
         assertThat(res_02.content().get(0).notificationId()).isEqualTo(notification_01.getId());
+        System.out.println(res_02.content().get(0).bindingId());
         assertThat(res_02.hasNext()).isFalse();
     }
 
@@ -154,5 +155,17 @@ class NotificationServiceTest {
         all.forEach(n -> assertThat(n.isRead()).isTrue());
     }
 
+    @Test
+    void 안_읽은_알림_카운트() {
+        //given
+        notificationRepository.save(new Notification(null, member_01, null, null, NotificationBindingType.MY_PAGE, "msg_01", false));
+        notificationRepository.save(new Notification(null, member_01, null, null, NotificationBindingType.MY_PAGE, "msg_02", false));
+        notificationRepository.save(new Notification(null, member_01, null, null, NotificationBindingType.MY_PAGE, "msg_03", true));
 
+        //when
+        int cnt = notificationService.countUnreadNotifications(member_01.getId());
+
+        //then
+        assertThat(cnt).isEqualTo(2);
+    }
 }
