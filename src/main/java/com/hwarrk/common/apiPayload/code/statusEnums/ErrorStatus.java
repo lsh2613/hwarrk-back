@@ -58,6 +58,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 알림
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4041", "알림을 찾을 수 없습니다"),
+    INVALID_BINDING_TYPE(HttpStatus.BAD_REQUEST, "BINDING4001", "유효하지 않은 바인딩 타입입니다."),
 
     // S3 이미지 업로드
     FAIL_IMAGE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "S5001", "S3에 이미지 업로드를 실패했습니다."),

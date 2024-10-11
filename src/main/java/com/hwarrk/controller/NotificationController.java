@@ -49,5 +49,11 @@ public class NotificationController {
         return CustomApiResponse.onSuccess();
     }
 
+    @Operation(summary = "안 읽은 알림 갯수 조회")
+    @GetMapping("/unread")
+    public CustomApiResponse countUnreadNotifications(@AuthenticationPrincipal Long loginId) {
+        int cnt = notificationService.countUnreadNotifications(loginId);
+        return CustomApiResponse.onSuccess(cnt);
+    }
 
 }

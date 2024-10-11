@@ -55,8 +55,6 @@ public class NotificationServiceImpl implements NotificationService {
     public SliceRes<NotificationRes> getNotifications(Long memberId, Long lastNotificationId, Pageable pageable) {
         List<Notification> notifications = notificationRepositoryCustom.getNotificationSliceInfo(memberId, lastNotificationId, pageable);
 
-        notifications.forEach(System.out::println);
-
         List<NotificationRes> notificationResList = notifications.stream()
                 .map(NotificationRes::mapEntityToRes)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -79,5 +77,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void readNotifications(Long memberId) {
         notificationRepository.markAllAsRead(memberId);
+    }
+
+    @Override
+    public int countUnreadNotifications(Long loginId) {
+        return notificationRepository.countByMemberIdAndIsReadFalse(loginId);
     }
 }
