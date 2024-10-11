@@ -49,14 +49,4 @@ public class ProjectMember {
         this.member = member;
         member.addProjectMember(this);
     }
-
-    @Override
-    public String toString() {
-        return "ProjectMember{" +
-                "id=" + id +
-                ", memberId=" + (member != null ? member.getId() : null) + // member ID 추가
-                ", projectId=" + (project != null ? project.getId() : null) + // project ID 추가
-                ", position=" + position +
-                '}';
-    }
 }
