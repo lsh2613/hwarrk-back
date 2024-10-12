@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-public record UpdateProfileReq(
+public record ProfileUpdateReq(
         @NotNull
         @Size(min = 2, max = 10)
         String nickname,
@@ -28,9 +28,9 @@ public record UpdateProfileReq(
         @NotNull
         List<SkillType> skills,
         boolean isVisible,
-        List<UpdateDegreeReq> degrees,
-        List<UpdateCareerReq> careers,
-        List<UpdateProjectDescriptionReq> projectDescriptions
+        List<DegreeUpdateReq> degrees,
+        List<CareerUpdateReq> careers,
+        List<ProjectDescriptionUpdateReq> projectDescriptions
 ) {
     public void updateMember(Member member, List<ProjectDescription> projectDescriptions) {
         if (member.getRole() == Role.GUEST)
@@ -78,7 +78,7 @@ public record UpdateProfileReq(
                 Collections.emptyList() : careers.stream().map(careerReq -> careerReq.mapReqToEntity(member)).toList();
     }
 
-    public record UpdateDegreeReq(
+    public record DegreeUpdateReq(
             String degreeType,
             String universityType,
             String school,
@@ -101,7 +101,7 @@ public record UpdateProfileReq(
         }
     }
 
-    public record UpdateCareerReq(
+    public record CareerUpdateReq(
             String company,
             String domain, // 직군
             String job, // 직무
@@ -122,7 +122,7 @@ public record UpdateProfileReq(
         }
     }
 
-    public record UpdateProjectDescriptionReq(
+    public record ProjectDescriptionUpdateReq(
             Long projectId,
             String description
     ) {

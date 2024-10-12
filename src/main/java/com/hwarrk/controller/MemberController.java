@@ -2,7 +2,7 @@ package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.req.UpdateProfileReq;
+import com.hwarrk.common.dto.req.ProfileUpdateReq;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProfileRes;
@@ -50,9 +50,9 @@ public class MemberController {
     @Operation(summary = "프로필 작성")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public CustomApiResponse updateProfile(@AuthenticationPrincipal Long loginId,
-                                           @RequestPart UpdateProfileReq updateProfileReq,
+                                           @RequestPart ProfileUpdateReq profileUpdateReq,
                                            @RequestPart(value = "image", required = false) MultipartFile image) {
-        memberService.updateMember(loginId, updateProfileReq, image);
+        memberService.updateMember(loginId, profileUpdateReq, image);
         return CustomApiResponse.onSuccess();
     }
 

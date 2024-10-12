@@ -1,8 +1,8 @@
 package com.hwarrk.service;
 
-import static com.hwarrk.common.dto.req.UpdateProfileReq.UpdateCareerReq;
-import static com.hwarrk.common.dto.req.UpdateProfileReq.UpdateDegreeReq;
-import static com.hwarrk.common.dto.req.UpdateProfileReq.UpdateProjectDescriptionReq;
+import static com.hwarrk.common.dto.req.ProfileUpdateReq.CareerUpdateReq;
+import static com.hwarrk.common.dto.req.ProfileUpdateReq.DegreeUpdateReq;
+import static com.hwarrk.common.dto.req.ProfileUpdateReq.ProjectDescriptionUpdateReq;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -15,7 +15,7 @@ import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.constant.SkillType;
 import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.req.UpdateProfileReq;
+import com.hwarrk.common.dto.req.ProfileUpdateReq;
 import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
@@ -70,7 +70,7 @@ class MemberServiceTest {
     Project project_01;
     Project project_02;
 
-    List<UpdateProjectDescriptionReq> projectDescriptions;
+    List<ProjectDescriptionUpdateReq> projectDescriptions;
 
     String nickname = "LSH";
     MemberStatus memberStatus = MemberStatus.사프_찾는_중;
@@ -80,8 +80,8 @@ class MemberServiceTest {
     List<PositionType> positions = List.of(PositionType.PM, PositionType.BACKEND);
     List<SkillType> skills = List.of(SkillType.JAVA, SkillType.SPRING);
     boolean isVisible = true;
-    List<UpdateDegreeReq> degrees = List.of(
-            new UpdateDegreeReq(
+    List<DegreeUpdateReq> degrees = List.of(
+            new DegreeUpdateReq(
                     "University",
                     "University A",
                     "School A",
@@ -90,7 +90,7 @@ class MemberServiceTest {
                     "2010-09-01",
                     "2014-06-01"
             ),
-            new UpdateDegreeReq(
+            new DegreeUpdateReq(
                     "University",
                     "University B",
                     "School B",
@@ -100,8 +100,8 @@ class MemberServiceTest {
                     "2017-06-01"
             )
     );
-    List<UpdateCareerReq> careers = List.of(
-            new UpdateCareerReq(
+    List<CareerUpdateReq> careers = List.of(
+            new CareerUpdateReq(
                     "Company A",
                     "Engineering",
                     "Software Engineer",
@@ -109,7 +109,7 @@ class MemberServiceTest {
                     LocalDate.of(2020, 12, 31),
                     "Developed software"
             ),
-            new UpdateCareerReq(
+            new CareerUpdateReq(
                     "Company B",
                     "Product Design",
                     "UX Designer",
@@ -125,8 +125,8 @@ class MemberServiceTest {
         project_01 = projectRepository.save(new Project("Project name", "Project introduction", member_01));
         project_02 = projectRepository.save(new Project("Project name", "Project introduction", member_01));
         projectDescriptions = List.of(
-                new UpdateProjectDescriptionReq(project_01.getId(), "Project description_01"),
-                new UpdateProjectDescriptionReq(project_02.getId(), "Project description_02")
+                new ProjectDescriptionUpdateReq(project_01.getId(), "Project description_01"),
+                new ProjectDescriptionUpdateReq(project_02.getId(), "Project description_02")
         );
     }
 
@@ -197,7 +197,7 @@ class MemberServiceTest {
     @Test
     void 프로필_작성() {
         //given
-        UpdateProfileReq req = new UpdateProfileReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
 
         //when
         memberService.updateMember(member_01.getId(), req, null);
@@ -220,7 +220,7 @@ class MemberServiceTest {
     @Test
     void 프로필_수정() {
         //given
-        UpdateProfileReq req = new UpdateProfileReq(nickname, memberStatus, email, introduction, null, positions, null, isVisible, null, null, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, null, positions, null, isVisible, null, null, projectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
         String updateNickname = "홍길동";
@@ -229,11 +229,11 @@ class MemberServiceTest {
         String updateIntroduction = "홍길동";
         List<PositionType> updatePositions = List.of(PositionType.FRONTEND, PositionType.GRAPHIC_DESIGNER, PositionType.PO);
         boolean updateIsVisible = true;
-        List<UpdateProjectDescriptionReq> updateProjectDescriptions = List.of(
-                new UpdateProjectDescriptionReq(project_01.getId(), "Update Project description_01")
+        List<ProjectDescriptionUpdateReq> updateProjectDescriptions = List.of(
+                new ProjectDescriptionUpdateReq(project_01.getId(), "Update Project description_01")
         );
 
-        UpdateProfileReq updateReq = new UpdateProfileReq(
+        ProfileUpdateReq updateReq = new ProfileUpdateReq(
                 updateNickname, updateMemberStatus, updateEmail, updateIntroduction, null, updatePositions, null, updateIsVisible, null, null, updateProjectDescriptions);
 
         //when
@@ -258,7 +258,7 @@ class MemberServiceTest {
     @Test
     void 나의_프로필_조회() {
         //given
-        UpdateProfileReq req = new UpdateProfileReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
         //when
@@ -289,7 +289,7 @@ class MemberServiceTest {
         //given
         Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
         member_02.setRole(Role.USER);
-        UpdateProfileReq req = new UpdateProfileReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
         memberLikeRepository.save(new MemberLike(member_02, member_01));
@@ -352,7 +352,7 @@ class MemberServiceTest {
         //given
         Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
         Member member_03 = memberRepository.save(new Member("test_03", OauthProvider.KAKAO));
-        UpdateProfileReq req = new UpdateProfileReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
         memberService.updateMember(member_02.getId(), req, null);
         memberService.updateMember(member_03.getId(), req, null);
 

@@ -7,7 +7,7 @@ import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.req.UpdateProfileReq;
+import com.hwarrk.common.dto.req.ProfileUpdateReq;
 import com.hwarrk.common.dto.res.CareerInfoRes;
 import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.MyProfileRes;
@@ -51,13 +51,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(Long loginId, UpdateProfileReq updateProfileReq, MultipartFile image) {
+    public void updateMember(Long loginId, ProfileUpdateReq profileUpdateReq, MultipartFile image) {
         Member member = entityFacade.getMember(loginId);
 
         updateMemberImage(image, member);
 
-        List<ProjectDescription> projectDescriptions = getProjectDescriptions(updateProfileReq, member);
-        updateProfileReq.updateMember(member, projectDescriptions);
+        List<ProjectDescription> projectDescriptions = getProjectDescriptions(profileUpdateReq, member);
+        profileUpdateReq.updateMember(member, projectDescriptions);
     }
 
     @Override
@@ -101,11 +101,11 @@ public class MemberServiceImpl implements MemberService {
         return PageRes.mapResToPageRes(memberResPage);
     }
 
-    private List<ProjectDescription> getProjectDescriptions(UpdateProfileReq updateProfileReq, Member member) {
-        if (updateProfileReq.projectDescriptions() == null)
+    private List<ProjectDescription> getProjectDescriptions(ProfileUpdateReq profileUpdateReq, Member member) {
+        if (profileUpdateReq.projectDescriptions() == null)
             return null;
 
-        return updateProfileReq.projectDescriptions().stream()
+        return profileUpdateReq.projectDescriptions().stream()
                 .map(updateProjectDescriptionReq -> {
                     Project project = entityFacade.getProject(updateProjectDescriptionReq.projectId());
                     return updateProjectDescriptionReq.mapReqToEntity(member, project);
