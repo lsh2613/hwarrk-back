@@ -1,19 +1,8 @@
 package com.hwarrk.service;
 
-import static com.hwarrk.common.dto.req.ProfileUpdateReq.CareerUpdateReq;
-import static com.hwarrk.common.dto.req.ProfileUpdateReq.DegreeUpdateReq;
-import static com.hwarrk.common.dto.req.ProfileUpdateReq.ProjectDescriptionUpdateReq;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
-import com.hwarrk.common.constant.FilterType;
-import com.hwarrk.common.constant.MemberStatus;
-import com.hwarrk.common.constant.OauthProvider;
-import com.hwarrk.common.constant.PositionType;
-import com.hwarrk.common.constant.Role;
-import com.hwarrk.common.constant.SkillType;
+import com.hwarrk.common.constant.*;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.ProfileUpdateReq;
 import com.hwarrk.common.dto.res.MemberRes;
@@ -24,13 +13,12 @@ import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.MemberLike;
 import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectStatus;
 import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberLikeRepository;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.ProjectRepository;
-import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +27,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.hwarrk.common.dto.req.ProfileUpdateReq.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest
@@ -69,8 +64,6 @@ class MemberServiceTest {
 
     Project project_01;
     Project project_02;
-
-    List<ProjectDescriptionUpdateReq> projectDescriptions;
 
     String nickname = "LSH";
     MemberStatus memberStatus = MemberStatus.사프_찾는_중;
@@ -118,6 +111,29 @@ class MemberServiceTest {
                     "Designed UX"
             )
     );
+    List<ProjectDescriptionUpdateReq> projectDescriptions;
+    List<ExternalProjectDescriptionUpdateReq> externalProjectDescriptions = List.of(
+            new ExternalProjectDescriptionUpdateReq(
+                    "Project Alpha",
+                    "www.domain-01.com",
+                    LocalDate.of(2023, 1, 10),
+                    LocalDate.of(2023, 6, 15),
+                    ProjectStatus.ONGOING,
+                    PositionType.BACKEND,
+                    "subject_01",
+                    "description_012"
+            ),
+            new ExternalProjectDescriptionUpdateReq(
+                    "Project Beta",
+                    "www.domain-02.com",
+                    LocalDate.of(2023, 7, 1),
+                    LocalDate.of(2023, 12, 31),
+                    ProjectStatus.COMPLETE,
+                    PositionType.ANDROID,
+                    "subject_02",
+                    "description_02"
+            )
+    );
 
     @BeforeEach
     void setup() {
@@ -150,7 +166,6 @@ class MemberServiceTest {
     @Test
     void 로그아웃_성공() {
         //given
-
         String accessToken = tokenProvider.issueAccessToken(member_01.getId());
         String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
 
@@ -197,7 +212,8 @@ class MemberServiceTest {
     @Test
     void 프로필_작성() {
         //given
-        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills,
+                isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
 
         //when
         memberService.updateMember(member_01.getId(), req, null);
@@ -215,12 +231,14 @@ class MemberServiceTest {
         assertThat(member_01.getCareers().size()).isEqualTo(careers.size());
         assertThat(member_01.getProjectDescriptions().size()).isEqualTo(projectDescriptions.size());
         assertThat(member_01.getRole()).isEqualTo(Role.USER);
+        assertThat(member_01.getExternalProjectDescriptions().size()).isEqualTo(externalProjectDescriptions.size());
     }
 
     @Test
     void 프로필_수정() {
         //given
-        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, null, positions, null, isVisible, null, null, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, null, positions,
+                null, isVisible, null, null, projectDescriptions, externalProjectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
         String updateNickname = "홍길동";
@@ -232,9 +250,23 @@ class MemberServiceTest {
         List<ProjectDescriptionUpdateReq> updateProjectDescriptions = List.of(
                 new ProjectDescriptionUpdateReq(project_01.getId(), "Update Project description_01")
         );
-
+        List<ExternalProjectDescriptionUpdateReq> updateExternalProjectDescriptions = List.of(
+                new ExternalProjectDescriptionUpdateReq(
+                        "Updated Project",
+                        "www.update.com",
+                        LocalDate.of(2024, 1, 10),
+                        LocalDate.of(2024, 6, 15),
+                        ProjectStatus.ONGOING,
+                        PositionType.BACKEND,
+                        "updated_subject_01",
+                        "updated_description_012"
+                )
+        );
         ProfileUpdateReq updateReq = new ProfileUpdateReq(
-                updateNickname, updateMemberStatus, updateEmail, updateIntroduction, null, updatePositions, null, updateIsVisible, null, null, updateProjectDescriptions);
+                updateNickname, updateMemberStatus, updateEmail, updateIntroduction,
+                null, updatePositions, null, updateIsVisible, null,
+                null, updateProjectDescriptions, updateExternalProjectDescriptions
+        );
 
         //when
         memberService.updateMember(member_01.getId(), updateReq, null);
@@ -253,12 +285,14 @@ class MemberServiceTest {
         assertThat(member_01.getCareers().size()).isEqualTo(0);
         assertThat(member_01.getProjectDescriptions().size()).isEqualTo(updateProjectDescriptions.size());
         assertThat(member_01.getRole()).isEqualTo(Role.USER);
+        assertThat(member_01.getExternalProjectDescriptions().size()).isEqualTo(updateExternalProjectDescriptions.size());
     }
 
     @Test
     void 나의_프로필_조회() {
         //given
-        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios,
+                positions, skills, isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
         //when
@@ -276,6 +310,7 @@ class MemberServiceTest {
         assertThat(res.degrees().size()).isEqualTo(degrees.size());
         assertThat(res.careers().size()).isEqualTo(careers.size());
         assertThat(res.projectDescriptions().size()).isEqualTo(projectDescriptions.size());
+        assertThat(res.externalProjectDescriptions().size()).isEqualTo(externalProjectDescriptions.size());
     }
 
     /**
@@ -289,7 +324,8 @@ class MemberServiceTest {
         //given
         Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
         member_02.setRole(Role.USER);
-        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios,
+                positions, skills, isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
         memberService.updateMember(member_01.getId(), req, null);
 
         memberLikeRepository.save(new MemberLike(member_02, member_01));
@@ -309,6 +345,7 @@ class MemberServiceTest {
         assertThat(res.degrees().size()).isEqualTo(degrees.size());
         assertThat(res.careers().size()).isEqualTo(careers.size());
         assertThat(res.projectDescriptions().size()).isEqualTo(projectDescriptions.size());
+        assertThat(res.externalProjectDescriptions().size()).isEqualTo(externalProjectDescriptions.size());
 
         Member member = memberRepository.findById(member_01.getId()).get();
         assertThat(member.getViews()).isEqualTo(1);
@@ -352,7 +389,8 @@ class MemberServiceTest {
         //given
         Member member_02 = memberRepository.save(new Member("test_02", OauthProvider.KAKAO));
         Member member_03 = memberRepository.save(new Member("test_03", OauthProvider.KAKAO));
-        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios, positions, skills, isVisible, degrees, careers, projectDescriptions);
+        ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios,
+                positions, skills, isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
         memberService.updateMember(member_02.getId(), req, null);
         memberService.updateMember(member_03.getId(), req, null);
 
