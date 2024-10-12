@@ -1,6 +1,6 @@
 package com.hwarrk.entity;
 
-import com.hwarrk.common.constant.MemberTag;
+import com.hwarrk.common.constant.MemberReviewTag;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +26,6 @@ public class ProjectReview {
     private Member toMember;
 
     @Enumerated(EnumType.STRING)
-    private MemberTag tag;
+    private MemberReviewTag tag;
 
 }

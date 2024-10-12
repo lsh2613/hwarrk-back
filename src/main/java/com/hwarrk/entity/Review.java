@@ -1,6 +1,6 @@
 package com.hwarrk.entity;
 
-import com.hwarrk.common.constant.MemberTag;
+import com.hwarrk.common.constant.MemberReviewTag;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +31,6 @@ public class Review {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MemberTag tag;
+    private MemberReviewTag tag;
 
 }
