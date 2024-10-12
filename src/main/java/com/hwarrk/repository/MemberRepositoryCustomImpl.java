@@ -9,6 +9,7 @@ import com.hwarrk.common.dto.dto.QMemberWithLikeDto;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.res.ProfileRes;
 import com.hwarrk.common.dto.res.QProfileRes;
+import com.hwarrk.entity.ExternalProjectDescription;
 import com.hwarrk.entity.Member;
 import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.querydsl.core.types.OrderSpecifier;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static com.hwarrk.entity.QCareer.career;
 import static com.hwarrk.entity.QDegree.degree;
+import static com.hwarrk.entity.QExternalProjectDescription.externalProjectDescription;
 import static com.hwarrk.entity.QMember.member;
 import static com.hwarrk.entity.QMemberLike.memberLike;
 import static com.hwarrk.entity.QPortfolio.portfolio;
@@ -45,6 +47,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
                 .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.externalProjectDescriptions, externalProjectDescription)
                 .where(eqMemberId(memberId))
                 .fetchOne();
 
@@ -65,6 +68,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
                 .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.externalProjectDescriptions, externalProjectDescription)
                 .leftJoin(memberLike)
                 .on(memberLike.fromMember.id.eq(fromMemberId).and(memberLike.toMember.id.eq(member.id)))
                 .where(eqMemberId(toMemberId))

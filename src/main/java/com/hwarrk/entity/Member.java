@@ -57,15 +57,19 @@ public class Member extends BaseEntity {
 
     private String introduction;
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Position> positions = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Skill> skills = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Degree> degrees = new ArrayList<>();
 
@@ -81,9 +85,11 @@ public class Member extends BaseEntity {
     @BatchSize(size = 10)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectDescription> projectDescriptions = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExternalProjectDescription> externalProjectDescriptions = new ArrayList<>();
 
