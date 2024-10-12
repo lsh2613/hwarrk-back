@@ -84,6 +84,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectDescription> projectDescriptions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExternalProjectDescription> externalProjectDescriptions = new ArrayList<>();
+
     @OneToMany(mappedBy = "fromMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberLike> sentLikes = new ArrayList<>();
 
@@ -136,6 +139,11 @@ public class Member extends BaseEntity {
         this.projectDescriptions.addAll(projectDescriptions);
     }
 
+    public void addExternalProjectDescriptions(List<ExternalProjectDescription> externalProjectDescriptions) {
+        this.externalProjectDescriptions.clear();
+        this.externalProjectDescriptions.addAll(externalProjectDescriptions);
+    }
+
     public Member(String socialId, OauthProvider oauthProvider) {
         this.socialId = socialId;
         this.oauthProvider = oauthProvider;
@@ -152,8 +160,8 @@ public class Member extends BaseEntity {
 
     @Builder
     public Member(MemberStatus memberStatus, String image, String nickname, String birth, String email, String phone, String introduction,
-                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, boolean isVisible,
-                  List<Degree> degrees, List<Career> careers, List<ProjectDescription> projectDescriptions) {
+                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, boolean isVisible, List<Degree> degrees,
+                  List<Career> careers, List<ProjectDescription> projectDescriptions, List<ExternalProjectDescription> externalProjectDescriptions) {
         this.memberStatus = memberStatus;
         this.image = image;
         this.nickname = nickname;
@@ -168,6 +176,7 @@ public class Member extends BaseEntity {
         this.degrees = degrees;
         this.careers = careers;
         this.projectDescriptions = projectDescriptions;
+        this.externalProjectDescriptions = externalProjectDescriptions;
     }
 
     public void addProjectLike(ProjectLike projectLike) {
@@ -256,6 +265,7 @@ public class Member extends BaseEntity {
         this.addDegrees(updatedMember.getDegrees());
         this.addCareers(updatedMember.getCareers());
         this.addProjectDescriptions(updatedMember.getProjectDescriptions());
+        this.addExternalProjectDescriptions(updatedMember.getExternalProjectDescriptions());
     }
 
 }

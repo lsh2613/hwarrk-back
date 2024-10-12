@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
         String imageUrl = updateMemberImage(image, member);
 
         List<Position> positions = profileUpdateReq.positions() == null ?
-                Collections.emptyList() : profileUpdateReq.positions().stream().map(position -> new Position(position, member)).toList();
+                Collections.emptyList() : profileUpdateReq.positions().stream().map(positionType -> new Position(positionType, member)).toList();
 
         List<Portfolio> portfolios = profileUpdateReq.portfolios() == null ?
                 Collections.emptyList() : profileUpdateReq.portfolios().stream().map(portfolioLink -> new Portfolio(portfolioLink, member)).toList();
@@ -74,13 +74,19 @@ public class MemberServiceImpl implements MemberService {
 
         List<ProjectDescription> projectDescriptions = profileUpdateReq.projectDescriptions() == null ?
                 Collections.emptyList() : profileUpdateReq.projectDescriptions().stream()
-                .map(updateProjectDescriptionReq -> {
-                    Project project = entityFacade.getProject(updateProjectDescriptionReq.projectId());
-                    return updateProjectDescriptionReq.mapReqToEntity(member, project);
+                .map(projectDescriptionUpdateReq -> {
+                    Project project = entityFacade.getProject(projectDescriptionUpdateReq.projectId());
+                    return projectDescriptionUpdateReq.mapReqToEntity(member, project);
                 })
                 .toList();
 
-        member.updateMember(profileUpdateReq.mapReqToMember(imageUrl, positions, portfolios, skills, degrees, careers, projectDescriptions));
+        List<ExternalProjectDescription> externalProjectDescriptions = profileUpdateReq.externalProjectDescriptions() == null ?
+                Collections.emptyList() : profileUpdateReq.externalProjectDescriptions().stream()
+                .map(externalProjectDescriptionUpdateReq -> externalProjectDescriptionUpdateReq.mapReqToEntity(member))
+                .toList();
+
+        Member updatedMember = profileUpdateReq.mapReqToMember(imageUrl, positions, portfolios, skills, degrees, careers, projectDescriptions, externalProjectDescriptions);
+        member.updateMember(updatedMember);
     }
 
     @Override

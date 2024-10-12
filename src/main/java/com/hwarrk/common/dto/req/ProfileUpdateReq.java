@@ -30,11 +30,12 @@ public record ProfileUpdateReq(
         boolean isVisible,
         List<DegreeUpdateReq> degrees,
         List<CareerUpdateReq> careers,
-        List<ProjectDescriptionUpdateReq> projectDescriptions
+        List<ProjectDescriptionUpdateReq> projectDescriptions,
+        List<ExternalProjectDescriptionUpdateReq> externalProjectDescriptions
 ) {
 
     public Member mapReqToMember(String imageUrl, List<Position> positions, List<Portfolio> portfolios, List<Skill> skills,
-                                 List<Degree> degrees, List<Career> careers, List<ProjectDescription> projectDescriptions) {
+                                 List<Degree> degrees, List<Career> careers, List<ProjectDescription> projectDescriptions, List<ExternalProjectDescription> externalProjectDescriptions) {
         return Member.builder()
                 .memberStatus(memberStatus)
                 .image(imageUrl)
@@ -48,6 +49,7 @@ public record ProfileUpdateReq(
                 .degrees(degrees)
                 .careers(careers)
                 .projectDescriptions(projectDescriptions)
+                .externalProjectDescriptions(externalProjectDescriptions)
                 .build();
     }
 
@@ -103,6 +105,31 @@ public record ProfileUpdateReq(
             return ProjectDescription.builder()
                     .project(project)
                     .member(member)
+                    .description(description)
+                    .build();
+        }
+    }
+
+    public record ExternalProjectDescriptionUpdateReq(
+            String projectName,
+            String domain,
+            LocalDate startDate,
+            LocalDate endDate,
+            ProjectStatus projectStatus,
+            PositionType positionType,
+            String subject,
+            String description
+    ) {
+
+        public ExternalProjectDescription mapReqToEntity(Member member) {
+            return ExternalProjectDescription.builder()
+                    .name(projectName)
+                    .domain(domain)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .projectStatus(projectStatus)
+                    .positionType(positionType)
+                    .subject(subject)
                     .description(description)
                     .build();
         }

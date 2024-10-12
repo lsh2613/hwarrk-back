@@ -21,7 +21,8 @@ public record ProfileRes(
         boolean isLiked,
         List<DegreeRes> degrees,
         List<CareerRes> careers,
-        List<ProjectDescriptionRes> projectDescriptions
+        List<ProjectDescriptionRes> projectDescriptions,
+        List<ExternalProjectDescriptionRes> externalProjectDescriptions
 ) {
 
     @QueryProjection
@@ -31,25 +32,14 @@ public record ProfileRes(
                 member.getMemberStatus(),
                 member.getEmail(),
                 member.getIntroduction(),
-                member.getPortfolios().stream()
-                        .map(Portfolio::getLink)
-                        .toList(),
-                member.getPositions().stream()
-                        .map(Position::getPositionType)
-                        .toList(),
-                member.getSkills().stream()
-                        .map(Skill::getSkillType)
-                        .toList(),
+                member.getPortfolios().stream().map(Portfolio::getLink).toList(),
+                member.getPositions().stream().map(Position::getPositionType).toList(),
+                member.getSkills().stream().map(Skill::getSkillType).toList(),
                 isLiked,
-                member.getDegrees().stream()
-                        .map(DegreeRes::mapEntityToRes)
-                        .toList(),
-                member.getCareers().stream()
-                        .map(CareerRes::mapEntityToRes)
-                        .toList(),
-                member.getProjectDescriptions().stream()
-                        .map(ProjectDescriptionRes::mapEntityToRes)
-                        .toList()
+                member.getDegrees().stream().map(DegreeRes::mapEntityToRes).toList(),
+                member.getCareers().stream().map(CareerRes::mapEntityToRes).toList(),
+                member.getProjectDescriptions().stream().map(ProjectDescriptionRes::mapEntityToRes).toList(),
+                member.getExternalProjectDescriptions().stream().map(ExternalProjectDescriptionRes::mapEntityToRes).toList()
         );
     }
 
