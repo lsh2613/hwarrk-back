@@ -27,6 +27,7 @@ import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAR
 public class Member extends BaseEntity {
 
     private static final String NO_LAST_COMPANY_INFO = "없음";
+    private static final Double DEFAULT_EMBERS = 100D;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -148,6 +149,7 @@ public class Member extends BaseEntity {
         this.email = request.getEmail();
         this.nickname = request.getNickname();
         this.role = Role.GUEST;
+        this.embers = DEFAULT_EMBERS;
     }
 
     @Builder
