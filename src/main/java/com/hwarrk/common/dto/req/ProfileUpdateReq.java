@@ -32,50 +32,23 @@ public record ProfileUpdateReq(
         List<CareerUpdateReq> careers,
         List<ProjectDescriptionUpdateReq> projectDescriptions
 ) {
-    public void updateMember(Member member, List<ProjectDescription> projectDescriptions) {
-        if (member.getRole() == Role.GUEST)
-            member.setRole(Role.USER);
 
-        member.setNickname(nickname);
-        member.setMemberStatus(memberStatus);
-        member.setEmail(email);
-        member.setIntroduction(introduction);
-        member.setIsVisible(isVisible);
-
-        member.addPositions(mapReqToPositions(member));
-        member.addPortfolios(mapReqToPortfolios(member));
-        member.addSkills(mapReqToSkills(member));
-        member.addDegrees(mapReqToDegrees(member));
-        member.addCareers(mapReqToCareers(member));
-
-        if (projectDescriptions != null) {
-            member.addProjectDescriptions(projectDescriptions);
-        }
-    }
-
-    public List<Portfolio> mapReqToPortfolios(Member member) {
-        return portfolios == null ?
-                Collections.emptyList() : portfolios.stream().map(portfolioLink -> new Portfolio(portfolioLink, member)).toList();
-    }
-
-    public List<Position> mapReqToPositions(Member member) {
-        return positions == null ?
-                Collections.emptyList() : positions.stream().map(position -> new Position(position, member)).toList();
-    }
-
-    public List<Skill> mapReqToSkills(Member member) {
-        return skills == null ?
-                Collections.emptyList() : skills.stream().map(skillType -> new Skill(skillType, member)).toList();
-    }
-
-    public List<Degree> mapReqToDegrees(Member member) {
-        return degrees == null ?
-                Collections.emptyList() : degrees.stream().map(degreeReq -> degreeReq.mapReqToEntity(member)).toList();
-    }
-
-    public List<Career> mapReqToCareers(Member member) {
-        return careers == null ?
-                Collections.emptyList() : careers.stream().map(careerReq -> careerReq.mapReqToEntity(member)).toList();
+    public Member mapReqToMember(String imageUrl, List<Position> positions, List<Portfolio> portfolios, List<Skill> skills,
+                                 List<Degree> degrees, List<Career> careers, List<ProjectDescription> projectDescriptions) {
+        return Member.builder()
+                .memberStatus(memberStatus)
+                .image(imageUrl)
+                .nickname(nickname)
+                .email(email)
+                .introduction(introduction)
+                .portfolios(portfolios)
+                .positions(positions)
+                .skills(skills)
+                .isVisible(isVisible)
+                .degrees(degrees)
+                .careers(careers)
+                .projectDescriptions(projectDescriptions)
+                .build();
     }
 
     public record DegreeUpdateReq(

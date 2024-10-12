@@ -151,21 +151,23 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(MemberStatus memberStatus, String image, String nickname, String birth, String email, String phone,
-                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills,
-                  List<Degree> degrees,
-                  List<Career> careers) {
+    public Member(MemberStatus memberStatus, String image, String nickname, String birth, String email, String phone, String introduction,
+                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, boolean isVisible,
+                  List<Degree> degrees, List<Career> careers, List<ProjectDescription> projectDescriptions) {
         this.memberStatus = memberStatus;
         this.image = image;
         this.nickname = nickname;
         this.birth = birth;
         this.email = email;
+        this.introduction = introduction;
         this.phone = phone;
         this.portfolios = portfolios;
         this.positions = positions;
         this.skills = skills;
+        this.isVisible = isVisible;
         this.degrees = degrees;
         this.careers = careers;
+        this.projectDescriptions = projectDescriptions;
     }
 
     public void addProjectLike(ProjectLike projectLike) {
@@ -236,4 +238,24 @@ public class Member extends BaseEntity {
     public void removeProjectMember(ProjectMember projectMember) {
         this.projectMembers.remove(projectMember);
     }
+
+    public void updateMember(Member updatedMember) {
+        if (this.role == Role.GUEST)
+            this.role = Role.USER;
+
+        this.memberStatus = updatedMember.getMemberStatus();
+        this.image = updatedMember.getImage();
+        this.nickname = updatedMember.getNickname();
+        this.email = updatedMember.getEmail();
+        this.introduction = updatedMember.getIntroduction();
+        this.isVisible = updatedMember.getIsVisible();
+
+        this.addPortfolios(updatedMember.getPortfolios());
+        this.addPositions(updatedMember.getPositions());
+        this.addSkills(updatedMember.getSkills());
+        this.addDegrees(updatedMember.getDegrees());
+        this.addCareers(updatedMember.getCareers());
+        this.addProjectDescriptions(updatedMember.getProjectDescriptions());
+    }
+
 }
