@@ -77,4 +77,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         }
         return Expressions.TRUE;
     }
+
+    @Override
+    public List<PostWithLikeDto> findPostsBySkillsAndPositions(List<SkillType> skills, List<PositionType> positions) {
+        return queryFactory.select(new QPostWithLikeDto(
+                        post,
+                        Expressions.booleanTemplate("CASE WHEN {0} IS NOT NULL THEN true ELSE false END",
+                                post.id)
+                ))
+                .from(post)
+                .join(post.positions, recruitingPosition)
+                .leftJoin(post.postLikes, postLike)
+                .where(post.skills.any().in(skills))
+                .where(recruitingPosition.position.in(positions))
+                .fetch();
+    }
 }

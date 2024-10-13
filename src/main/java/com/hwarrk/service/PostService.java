@@ -1,5 +1,7 @@
 package com.hwarrk.service;
 
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.MEMBER_NOT_FOUND;
+
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.PostFilterType;
@@ -12,10 +14,15 @@ import com.hwarrk.common.dto.req.PostFilterSearchReq;
 import com.hwarrk.common.dto.req.PostUpdateReq;
 import com.hwarrk.common.dto.res.MyPostRes;
 import com.hwarrk.common.dto.res.PostFilterSearchRes;
+import com.hwarrk.common.dto.res.RecommendPostRes;
+import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
+import com.hwarrk.entity.Position;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.RecruitingPosition;
+import com.hwarrk.entity.Skill;
+import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.PostLikeRepository;
 import com.hwarrk.repository.PostRepository;
 import com.hwarrk.repository.PostRepositoryCustom;
@@ -34,6 +41,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final PostRepositoryCustom postRepositoryCustom;
+    private final MemberRepository memberRepository;
 
     public Long createPost(PostCreateReq req) {
         Project project = entityFacade.getProject(req.getProjectId());
@@ -91,6 +99,24 @@ public class PostService {
 
         return postWithLikeDtos.stream()
                 .map(PostFilterSearchRes::createRes)
+                .toList();
+    }
+
+    public List<RecommendPostRes> findRecommendPosts(Long memberId) {
+        Member member = memberRepository.findMemberStacksById(memberId)
+                .orElseThrow(() -> new GeneralHandler(MEMBER_NOT_FOUND));
+
+        List<Skill> skills = member.getSkills();
+        List<SkillType> skillTypes = skills.stream().map(Skill::getSkillType).toList();
+
+        List<Position> positions = member.getPositions();
+        List<PositionType> positionTypes = positions.stream().map(Position::getPositionType).toList();
+
+        List<PostWithLikeDto> postWithLikeDtos = postRepositoryCustom.findPostsBySkillsAndPositions(skillTypes,
+                positionTypes);
+
+        return postWithLikeDtos.stream()
+                .map(RecommendPostRes::createRes)
                 .toList();
     }
 }
