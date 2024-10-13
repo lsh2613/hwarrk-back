@@ -4,12 +4,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.constant.TokenType;
+import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
-import com.hwarrk.common.dto.res.MemberRes;
-import com.hwarrk.common.dto.res.MyProfileRes;
-import com.hwarrk.common.dto.res.PageRes;
-import com.hwarrk.common.dto.res.ProfileRes;
+import com.hwarrk.common.dto.res.*;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Project;
@@ -18,9 +17,10 @@ import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
-
-import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.TOKEN_ID_MISMATCH;
 
 @Slf4j
 @Transactional
@@ -86,8 +84,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public PageRes getMembers(Long memberId, ProfileCond cond, Pageable pageable) {
-        Page<MemberRes> memberPage = memberRepositoryCustom.getFilteredMemberPage(memberId, cond, pageable);
-        return PageRes.mapResToPageRes(memberPage);
+        ContentWithTotalDto memberPageWithTotalDto = memberRepositoryCustom.getFilteredMemberPage(memberId, cond, pageable);
+
+        List<MemberRes> memberRes = memberPageWithTotalDto.memberPage().stream().map(MemberWithLikeDto -> {
+                    Member member = MemberWithLikeDto.member();
+                    CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
+                    return MemberRes.mapEntityToRes(member, careerInfoRes, MemberWithLikeDto.isLiked());
+                })
+                .toList();
+
+        PageImpl<MemberRes> memberResPage = new PageImpl<>(memberRes, pageable, memberPageWithTotalDto.total());
+
+        return PageRes.mapResToPageRes(memberResPage);
     }
 
     private List<ProjectDescription> getProjectDescriptions(UpdateProfileReq updateProfileReq, Member member) {
@@ -114,21 +122,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void logout(String accessToken, String refreshToken, Long memberId) {
+    public void logout(HttpServletRequest request) {
+        String accessToken = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
+        addToBlackList(accessToken);
+
+        String refreshToken = tokenProvider.extractToken(request, TokenType.REFRESH_TOKEN);
+        redisUtil.deleteData(refreshToken);
+    }
+
+    private void addToBlackList(String accessToken) {
         DecodedJWT decodedAccessToken = tokenProvider.decodedJWT(accessToken);
+
         Long accessTokenId = decodedAccessToken.getClaim("id").asLong();
-
-        DecodedJWT decodedRefreshToken = tokenProvider.decodedJWT(refreshToken);
-        Long refreshTokenId = decodedRefreshToken.getClaim("id").asLong();
-
-        if (!accessTokenId.equals(memberId) || !refreshTokenId.equals(memberId)) {
-            throw new GeneralHandler(TOKEN_ID_MISMATCH);
-        }
-
         Date expiresAt = decodedAccessToken.getExpiresAt();
         long diff = expiresAt.getTime() - System.currentTimeMillis();
-        redisUtil.setBlackList(accessToken, accessTokenId, diff);
 
-        redisUtil.deleteData(refreshToken);
+        redisUtil.setBlackList(accessToken, accessTokenId, diff);
     }
 }

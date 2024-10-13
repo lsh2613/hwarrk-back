@@ -1,13 +1,11 @@
 package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
-import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProfileRes;
-import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
-    private final TokenProvider tokenProvider;
 
     @Operation(summary = "로그아웃",
             description = "헤더로 AccessToken과 RefreshToken을 담아 요청, 로그아웃 시 Req에 넘어오는 token은 블랙리스트 토큰으로 관리하여 재사용을 막음",
@@ -39,9 +36,7 @@ public class MemberController {
     @PostMapping("/logout")
     public CustomApiResponse logout(HttpServletRequest request,
                                     @AuthenticationPrincipal Long loginId) {
-        String accessToken = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
-        String refreshToken = tokenProvider.extractToken(request, TokenType.REFRESH_TOKEN);
-        memberService.logout(accessToken, refreshToken, loginId);
+        memberService.logout(request);
         return CustomApiResponse.onSuccess();
     }
 

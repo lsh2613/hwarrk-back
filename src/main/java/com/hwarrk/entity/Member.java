@@ -1,36 +1,22 @@
 package com.hwarrk.entity;
 
 
-import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
-
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.oauth2.member.OauthMember;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
+
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
 
 @Getter
 @Setter
@@ -191,23 +177,14 @@ public class Member extends BaseEntity {
 
     }
 
-    public CareerInfo loadCareer(ProjectMember projectMember) {
-        ProjectMember findProjectMember = findMatchedProjectMember(projectMember);
+    public CareerInfo loadCareer() {
         if (careers.isEmpty()) {
-            return CareerInfo.createEntryCareerInfo(findProjectMember);
+            return CareerInfo.createEntryCareerInfo();
         }
-        return getExperienceCareerInfo(findProjectMember);
+        return getExperienceCareerInfo();
     }
 
-    private ProjectMember findMatchedProjectMember(ProjectMember projectMember) {
-        return this.projectMembers
-                .stream()
-                .filter(pm -> pm.equals(projectMember))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    private CareerInfo getExperienceCareerInfo(ProjectMember projectMember) {
+    private CareerInfo getExperienceCareerInfo() {
         Period totalExperience = Period.ZERO;
 
         String lastCareer = NO_LAST_COMPANY_INFO;
@@ -226,7 +203,10 @@ public class Member extends BaseEntity {
             throw new GeneralHandler(LAST_CAREER_NOT_FOUND);
         }
 
-        return CareerInfo.createExperienceCareerInfo(totalExperience, lastCareer, projectMember);
+        int totalMonths = totalExperience.getMonths() + totalExperience.getDays() / 30;
+        int totalYears = totalExperience.getYears() + totalMonths / 12;
+
+        return CareerInfo.createExperienceCareerInfo(totalYears, lastCareer);
     }
 
     public boolean isSameId(Long loginId) {

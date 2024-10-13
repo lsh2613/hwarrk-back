@@ -2,25 +2,19 @@ package com.hwarrk.common.dto.res;
 
 import com.hwarrk.entity.CareerInfo;
 import com.hwarrk.entity.CareerType;
-import java.time.Period;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-public class CareerInfoRes {
-
-    private CareerType careerType;
-    private Period totalExperience;
-    private String lastCareer;
-
+@Builder
+public record CareerInfoRes(
+        CareerType careerType,
+        int totalExperience,
+        String lastCareer
+) {
     public static CareerInfoRes mapEntityToRes(CareerInfo careerInfo) {
-        CareerInfoRes careerInfoRes = new CareerInfoRes();
-        careerInfoRes.careerType = careerInfo.getCareerType();
-        careerInfoRes.totalExperience = careerInfo.getTotalExperience();
-        careerInfoRes.lastCareer = careerInfo.getLastCareer();
-        return careerInfoRes;
+        return CareerInfoRes.builder()
+                .careerType(careerInfo.careerType())
+                .totalExperience(careerInfo.totalExperienceYears())
+                .lastCareer(careerInfo.lastCareer())
+                .build();
     }
 }
