@@ -1,8 +1,19 @@
 package com.hwarrk.service;
 
+import static com.hwarrk.common.dto.req.UpdateProfileReq.UpdateCareerReq;
+import static com.hwarrk.common.dto.req.UpdateProfileReq.UpdateDegreeReq;
+import static com.hwarrk.common.dto.req.UpdateProfileReq.UpdateProjectDescriptionReq;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
-import com.hwarrk.common.constant.*;
+import com.hwarrk.common.constant.FilterType;
+import com.hwarrk.common.constant.MemberStatus;
+import com.hwarrk.common.constant.OauthProvider;
+import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.constant.SkillType;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
 import com.hwarrk.common.dto.res.MemberRes;
@@ -18,6 +29,8 @@ import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberLikeRepository;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.ProjectRepository;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +39,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static com.hwarrk.common.dto.req.UpdateProfileReq.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest
@@ -365,11 +371,11 @@ class MemberServiceTest {
         assertThat(res.isLast()).isTrue();
 
         MemberRes content_01 = content.get(0); // member_03
-        assertThat(content_01.memberId()).isEqualTo(member_03.getId());
+        assertThat(content_01.getMemberId()).isEqualTo(member_03.getId());
         assertThat(content_01.isLiked()).isFalse();
 
         MemberRes content_02 = content.get(1); // member_02
-        assertThat(content_02.memberId()).isEqualTo(member_02.getId());
+        assertThat(content_02.getMemberId()).isEqualTo(member_02.getId());
         assertThat(content_02.isLiked()).isTrue();
     }
 

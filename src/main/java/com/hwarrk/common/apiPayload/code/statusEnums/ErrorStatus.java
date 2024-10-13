@@ -28,7 +28,6 @@ public enum ErrorStatus implements BaseCode {
     MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4031", "사용자에게 권한이 없습니다."),
     GUEST_ROLE_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4032", "게스트 회원은 이용할 수 없는 기능입니다."),
 
-
     // 프로필 관련
     PROFILE_NOT_VISIBLE(HttpStatus.FORBIDDEN, "PROFILE4031", "조회하려는 사용자의 프로필이 비공개 상태입니다."),
 
@@ -38,7 +37,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 프로젝트
     PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROJECT4001", "프로젝트를 찾을 수 없습니다."),
-    PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더만 프로젝트를 삭제할 수 있습니다."),
+    PROJECT_LEADER_REQUIRED(HttpStatus.UNAUTHORIZED, "PROJECT4011", "프로젝트 리더 권한이 필요합니다."),
     PROJECT_INCOMPLETE(HttpStatus.BAD_REQUEST, "PROJECT4002", "완료된 프로젝트가 아닙니다."),
 
     // 프로젝트 찜
@@ -49,6 +48,11 @@ public enum ErrorStatus implements BaseCode {
     PROJECT_JOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_JOIN4041", "프로젝트 참가 신청을 찾을 수 없습니다."),
     PROJECT_JOIN_CONFLICT(HttpStatus.CONFLICT, "PROJECT_JOIN4091", "프로젝트 참가 신청이 이미 존재합니다."),
 
+    // 프로젝트-팀원
+    PROJECT_LEADER_CANNOT_BE_REMOVED(HttpStatus.BAD_REQUEST, "PROJECT_MEMBER4001", "프로젝트 리더는 추방될 수 없습니다."),
+    PROJECT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_MEMBER4041", "프로젝트 팀원을 찾을 수 없습니다."),
+
+
     // 구인글
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_4041", "구인글을 찾을 수 없습니다"),
 
@@ -58,6 +62,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 알림
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4041", "알림을 찾을 수 없습니다"),
+    INVALID_BINDING_TYPE(HttpStatus.BAD_REQUEST, "BINDING4001", "유효하지 않은 바인딩 타입입니다."),
 
     // S3 이미지 업로드
     FAIL_IMAGE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "S5001", "S3에 이미지 업로드를 실패했습니다."),

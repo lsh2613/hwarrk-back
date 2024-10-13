@@ -29,4 +29,18 @@ public class MemberLike extends BaseEntity {
         this.fromMember = fromMember;
         this.toMember = toMember;
     }
+
+    public void addFromMember(Member fromMember) {
+        this.fromMember = fromMember;
+        if (!fromMember.getSentLikes().contains(this)) {
+            fromMember.addSentLike(this);
+        }
+    }
+
+    public void addToMember(Member toMember) {
+        this.toMember = toMember;
+        if (!toMember.getReceivedLikes().contains(this)) {
+            toMember.addReceivedLike(this);
+        }
+    }
 }

@@ -82,4 +82,14 @@ public class RecruitingPosition {
     public int hashCode() {
         return Objects.hash(position, cnt);
     }
+
+    @Override
+    public String toString() {
+        return "RecruitingPosition{" +
+                "id=" + id +
+                ", post=" + post +
+                ", position=" + position +
+                ", cnt=" + cnt +
+                '}';
+    }
 }

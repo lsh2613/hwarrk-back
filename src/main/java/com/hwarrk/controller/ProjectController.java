@@ -1,25 +1,19 @@
 package com.hwarrk.controller;
 
+import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.req.ProjectCreateReq;
 import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
-import com.hwarrk.common.dto.res.CompleteProjectsRes;
-import com.hwarrk.common.dto.res.MyProjectRes;
-import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
-import com.hwarrk.common.dto.res.ProjectRes;
-import com.hwarrk.common.dto.res.RecommendProjectRes;
-import com.hwarrk.common.dto.res.SliceRes;
-import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
-import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
+import com.hwarrk.common.dto.res.*;
 import com.hwarrk.service.ProjectService;
-import com.hwarrk.common.dto.res.PageRes;
-import com.hwarrk.common.apiPayload.CustomApiResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,21 +24,17 @@ public class ProjectController {
 
     @PostMapping
     public CustomApiResponse createProject(@AuthenticationPrincipal Long loginId,
-                                           @RequestBody ProjectCreateReq req) {
-        Long projectId = projectService.createProject(loginId, req);
+                                           @RequestPart("projectData") ProjectCreateReq req,
+                                           @RequestPart("image") MultipartFile image) {
+        Long projectId = projectService.createProject(loginId, req, image);
         return CustomApiResponse.onSuccess(projectId);
     }
 
     @GetMapping("/{projectId}")
-    public CustomApiResponse getSpecificProjectInfo(@PathVariable Long projectId) {
-        SpecificProjectInfoRes project = projectService.getSpecificProjectInfo(projectId);
+    public CustomApiResponse getSpecificProjectInfo(@AuthenticationPrincipal Long loginId,
+                                                    @PathVariable Long projectId) {
+        SpecificProjectInfoRes project = projectService.getSpecificProjectInfo(loginId, projectId);
         return CustomApiResponse.onSuccess(project);
-    }
-
-    @GetMapping
-    public CustomApiResponse getProjects(@PageableDefault Pageable pageable) {
-        PageRes<ProjectRes> pageRes = projectService.getProjects(pageable);
-        return CustomApiResponse.onSuccess(pageRes);
     }
 
     @PostMapping("/{projectId}")

@@ -1,38 +1,22 @@
 package com.hwarrk.repository;
 
-import static com.hwarrk.common.constant.OauthProvider.APPLE;
-import static com.hwarrk.common.constant.OauthProvider.GOOGLE;
-import static com.hwarrk.common.constant.OauthProvider.KAKAO;
-import static com.hwarrk.common.constant.PositionType.ANDROID;
-import static com.hwarrk.common.constant.PositionType.BACKEND;
-import static com.hwarrk.common.constant.PositionType.FRONTEND;
-import static com.hwarrk.common.constant.PositionType.GRAPHIC_DESIGNER;
-import static com.hwarrk.common.constant.PositionType.INFRA;
-import static com.hwarrk.common.constant.PositionType.IOS;
-import static com.hwarrk.common.constant.PositionType.PO;
-import static com.hwarrk.common.constant.PositionType.SERVICE_PLANNER;
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
-import com.hwarrk.entity.Career;
-import com.hwarrk.entity.Member;
-import com.hwarrk.entity.Post;
-import com.hwarrk.entity.Project;
-import com.hwarrk.entity.ProjectJoin;
-import com.hwarrk.entity.ProjectLike;
-import com.hwarrk.entity.ProjectMember;
-import com.hwarrk.entity.RecruitingPosition;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import com.hwarrk.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.hwarrk.common.constant.OauthProvider.*;
+import static com.hwarrk.common.constant.PositionType.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class ProjectRepositoryTest {
@@ -104,18 +88,23 @@ public class ProjectRepositoryTest {
         entityManager.persist(recruitingPosition5);
 
         ProjectMember projectMember1 = new ProjectMember(member1, project1, PO);
+        projectMember1.addMember(member1);
         entityManager.persist(projectMember1);
 
         ProjectMember projectMember2 = new ProjectMember(member2, project1, BACKEND);
+        projectMember2.addMember(member2);
         entityManager.persist(projectMember2);
 
         ProjectMember projectMember3 = new ProjectMember(member3, project1, FRONTEND);
+        projectMember3.addMember(member3);
         entityManager.persist(projectMember3);
 
         ProjectMember projectMember4 = new ProjectMember(member4, project2, PO);
+        projectMember4.addMember(member4);
         entityManager.persist(projectMember4);
 
         ProjectMember projectMember5 = new ProjectMember(member5, project2, BACKEND);
+        projectMember5.addMember(member5);
         entityManager.persist(projectMember5);
 
         ProjectLike projectLike1 = new ProjectLike();
@@ -141,18 +130,12 @@ public class ProjectRepositoryTest {
         entityManager.persist(projectJoin2);
         projectJoin2.addProject(project1);
 
+        MemberLike memberLike = new MemberLike(member4, member1);
+        memberLike.addFromMember(member4);
+        memberLike.addToMember(member1);
+
         entityManager.flush();
         entityManager.clear();
-    }
-
-    @Test
-    public void findAllByOrderByCreatedAtDesc() {
-        Page<Project> projects = projectRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, 10));
-
-        assertThat(projects).isNotEmpty();
-        assertThat(projects.getContent()).hasSize(2);
-        assertThat(projects.getContent().get(0).getName()).isEqualTo("Project 2");
-        assertThat(projects.getContent().get(1).getName()).isEqualTo("Project 1");
     }
 
     @Test
@@ -160,13 +143,48 @@ public class ProjectRepositoryTest {
         Optional<Project> foundProject = projectRepository.findSpecificProjectInfoById(project1.getId());
 
         assertThat(foundProject).isPresent();
-        assertThat(foundProject.get().getName()).isEqualTo("Project 1");
-        assertThat(foundProject.get().getPost()).isNotNull();
-        assertThat(foundProject.get().getProjectMembers()).isNotEmpty();
-        Set<ProjectMember> projectMembers = foundProject.get().getProjectMembers();
+        Project project = foundProject.get();
+        assertThat(project.getName()).isEqualTo("Project 1");
+        assertThat(project.getPost()).isNotNull();
+        assertThat(project.getProjectMembers()).isNotEmpty();
+        Set<ProjectMember> projectMembers = project.getProjectMembers();
         for (ProjectMember projectMember : projectMembers) {
             assertThat(projectMember.getMember()).isNotNull();
         }
+        assertThat(project.getProjectLikes()).isNotEmpty();
+    }
+
+    @Test
+    void existsProjectLikeByMemberId_True() {
+        // when
+        boolean result = projectRepository.existsProjectLikeByMemberId(member1.getId(), project1.getId());
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void existsProjectLikeByMemberId_False() {
+        // when
+        boolean result = projectRepository.existsProjectLikeByMemberId(member4.getId(), project1.getId());
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void findMemberLikesByMemberId() {
+        // when
+        List<MemberWithLikeDto> result = projectRepository.findMemberLikesByMemberId(member4.getId(),
+                project1.getId());
+
+        // then
+        assertThat(result.get(0).member().getId()).isEqualTo(member1.getId());
+        assertThat(result.get(0).isLiked()).isTrue();
+        assertThat(result.get(1).member().getId()).isEqualTo(member2.getId());
+        assertThat(result.get(1).isLiked()).isFalse();
+        assertThat(result.get(2).member().getId()).isEqualTo(member3.getId());
+        assertThat(result.get(2).isLiked()).isFalse();
     }
 
     @Test
@@ -189,15 +207,20 @@ public class ProjectRepositoryTest {
         assertThat(post.getPositions().get(0)).isEqualTo(new RecruitingPosition(IOS, 1));
         assertThat(post.getPositions().get(1)).isEqualTo(new RecruitingPosition(ANDROID, 1));
         assertThat(post.getPositions().get(2)).isEqualTo(new RecruitingPosition(GRAPHIC_DESIGNER, 2));
+        for (Project project : projects) {
+            assertThat(project.getProjectLikes()).isNotEmpty();
+        }
     }
 
     @Test
     public void findSpecificProjectDetailsById() {
-        Optional<Project> project = projectRepository.findSpecificProjectDetailsById(project1.getId());
+        Optional<Project> optionalProject = projectRepository.findSpecificProjectDetailsById(project1.getId());
 
-        assertThat(project).isPresent();
-        assertThat(project.get().getName()).isEqualTo("Project 1");
-        assertThat(project.get().getProjectMembers()).hasSize(3);
-        assertThat(project.get().getProjectJoins()).hasSize(2);
+        assertThat(optionalProject).isPresent();
+        Project project = optionalProject.get();
+        assertThat(project.getName()).isEqualTo("Project 1");
+        assertThat(project.getProjectMembers()).hasSize(3);
+        assertThat(project.getProjectJoins()).hasSize(2);
+        assertThat(project.getProjectLikes()).isNotEmpty();
     }
 }

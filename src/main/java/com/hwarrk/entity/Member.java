@@ -84,6 +84,12 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectDescription> projectDescriptions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "fromMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberLike> sentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberLike> receivedLikes = new ArrayList<>();
+
     private Double embers;
 
     private Boolean isVisible;
@@ -177,6 +183,20 @@ public class Member extends BaseEntity {
 
     }
 
+    public void addSentLike(MemberLike memberLike) {
+        this.sentLikes.add(memberLike);
+        if (memberLike.getFromMember() != this) {
+            memberLike.addFromMember(this);
+        }
+    }
+
+    public void addReceivedLike(MemberLike memberLike) {
+        this.receivedLikes.add(memberLike);
+        if (memberLike.getToMember() != this) {
+            memberLike.addToMember(this);
+        }
+    }
+
     public CareerInfo loadCareer() {
         if (careers.isEmpty()) {
             return CareerInfo.createEntryCareerInfo();
@@ -211,5 +231,9 @@ public class Member extends BaseEntity {
 
     public boolean isSameId(Long loginId) {
         return id.equals(loginId);
+    }
+
+    public void removeProjectMember(ProjectMember projectMember) {
+        this.projectMembers.remove(projectMember);
     }
 }
