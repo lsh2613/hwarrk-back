@@ -1,8 +1,11 @@
 package com.hwarrk.entity;
 
 import com.hwarrk.common.constant.RecruitingType;
+import com.hwarrk.common.constant.SkillType;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -60,6 +63,12 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitingPosition> positions = new ArrayList<>();
 
+    @ElementCollection(targetClass = SkillType.class)
+    @CollectionTable(name = "post_skills", joinColumns = @JoinColumn(name = "post_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "skill")
+    private List<SkillType> skills = new ArrayList<>();
+
     public Post(String title) {
         this.title = title;
     }
@@ -101,5 +110,10 @@ public class Post extends BaseEntity {
         this.views = views;
         this.likes = likes;
         this.isVisible = isVisible;
+    }
+
+    public void addSkills(List<String> skills) {
+        List<SkillType> skillTypes = skills.stream().map(SkillType::findType).toList();
+        this.skills.addAll(skillTypes);
     }
 }
