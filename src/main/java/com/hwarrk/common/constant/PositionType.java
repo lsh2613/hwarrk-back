@@ -12,7 +12,8 @@ public enum PositionType {
             "모션 디자이너"),
     IOS("IOS"), ANDROID("안드로이드"), FRONTEND("프론트엔드"),
     BACKEND("백엔드"),
-    INFRA("인프라");
+    INFRA("인프라"),
+    EMPTY_POSITION("없음");
 
     private final String name;
 

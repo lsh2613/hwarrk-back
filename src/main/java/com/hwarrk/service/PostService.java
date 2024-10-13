@@ -1,16 +1,24 @@
 package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
+import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.constant.PostFilterType;
+import com.hwarrk.common.constant.SkillType;
+import com.hwarrk.common.constant.WayType;
+import com.hwarrk.common.dto.dto.PostWithLikeDto;
 import com.hwarrk.common.dto.dto.RecruitingPositionDto;
 import com.hwarrk.common.dto.req.PostCreateReq;
+import com.hwarrk.common.dto.req.PostFilterSearchReq;
 import com.hwarrk.common.dto.req.PostUpdateReq;
 import com.hwarrk.common.dto.res.MyPostRes;
+import com.hwarrk.common.dto.res.PostFilterSearchRes;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.RecruitingPosition;
 import com.hwarrk.repository.PostLikeRepository;
 import com.hwarrk.repository.PostRepository;
+import com.hwarrk.repository.PostRepositoryCustom;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +33,7 @@ public class PostService {
     private final EntityFacade entityFacade;
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
+    private final PostRepositoryCustom postRepositoryCustom;
 
     public Long createPost(PostCreateReq req) {
         Project project = entityFacade.getProject(req.getProjectId());
@@ -67,5 +76,21 @@ public class PostService {
         Member member = entityFacade.getMember(memberId);
         List<Post> myPosts = postRepository.findPostsByMember(member.getId());
         return myPosts.stream().map(p -> MyPostRes.mapEntityToRes(p, p.isPostLike(member))).toList();
+    }
+
+    public List<PostFilterSearchRes> findFilteredPost(PostFilterSearchReq req, Long memberId) {
+        Member member = entityFacade.getMember(memberId);
+
+        PositionType positionType = PositionType.findType(req.getPositionType());
+        WayType wayType = WayType.valueOf(req.getWayType());
+        SkillType skillType = SkillType.findType(req.getSkillType());
+        PostFilterType filterType = PostFilterType.findType(req.getFilterType());
+
+        List<PostWithLikeDto> postWithLikeDtos = postRepositoryCustom.findFilteredPost(positionType, wayType, skillType,
+                filterType, req.getKeyWord(), member.getId());
+
+        return postWithLikeDtos.stream()
+                .map(PostFilterSearchRes::createRes)
+                .toList();
     }
 }

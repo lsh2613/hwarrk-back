@@ -27,7 +27,8 @@ public enum SkillType {
     ILLUSTRATION,
     FRAMER,
     BLENDER,
-    AFTER_EFFECTS;
+    AFTER_EFFECTS,
+    NONE;
 
     public static SkillType findType(String skill) {
         try {

@@ -1,13 +1,13 @@
 package com.hwarrk.common.dto.dto;
 
 import com.hwarrk.entity.RecruitingPosition;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RecruitingPositionDto {
 
     private String positionType;

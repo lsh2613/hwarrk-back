@@ -51,6 +51,7 @@ public class Project extends BaseEntity {
 
     private String name;
 
+    @Enumerated(value = EnumType.STRING)
     private StepType step;
 
     private String domain;
@@ -59,6 +60,7 @@ public class Project extends BaseEntity {
 
     private LocalDate endDate;
 
+    @Enumerated(value = EnumType.STRING)
     private WayType way;
 
     private String area;

@@ -2,13 +2,13 @@ package com.hwarrk.common.dto.req;
 
 import com.hwarrk.common.dto.dto.RecruitingPositionDto;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PostUpdateReq {
 
     private long postId;
