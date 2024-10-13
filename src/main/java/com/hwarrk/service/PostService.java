@@ -52,4 +52,9 @@ public class PostService {
             recruitingPosition.addPost(post);
         }
     }
+
+    public void deletePost(Long postId) {
+        Post post = entityFacade.getPost(postId);
+        postRepository.delete(post);
+    }
 }
