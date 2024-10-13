@@ -2,7 +2,8 @@ package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.dto.req.PostCreateReq;
-import com.hwarrk.common.dto.req.PostCreateReq.RecruitingPositionReq;
+import com.hwarrk.common.dto.req.PostUpdateReq;
+import com.hwarrk.common.dto.req.RecruitingPositionReq;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.RecruitingPosition;
@@ -38,5 +39,17 @@ public class PostService {
         }
 
         return postRepository.save(post).getId();
+    }
+
+    public void updatePost(PostUpdateReq req) {
+        Post post = entityFacade.getPost(req.getPostId());
+        post.updatePost(req.getTitle(), req.getBody(), req.getSkills());
+        post.addSkills(req.getSkills());
+
+        for (RecruitingPositionReq positionReq : req.getRecruitingPositionReqList()) {
+            RecruitingPosition recruitingPosition = RecruitingPosition.create(positionReq.getPositionType(),
+                    positionReq.getNumber());
+            recruitingPosition.addPost(post);
+        }
     }
 }

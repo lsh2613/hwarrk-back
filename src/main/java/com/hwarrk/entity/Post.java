@@ -113,7 +113,14 @@ public class Post extends BaseEntity {
     }
 
     public void addSkills(List<String> skills) {
+        this.skills.clear();
         List<SkillType> skillTypes = skills.stream().map(SkillType::findType).toList();
         this.skills.addAll(skillTypes);
+    }
+
+    public void updatePost(String title, String body, List<String> skills) {
+        this.title = title;
+        this.body = body;
+        addSkills(skills);
     }
 }
