@@ -1,13 +1,17 @@
 package com.hwarrk.service;
 
 import com.hwarrk.common.EntityFacade;
+import com.hwarrk.common.dto.dto.RecruitingPositionDto;
 import com.hwarrk.common.dto.req.PostCreateReq;
 import com.hwarrk.common.dto.req.PostUpdateReq;
-import com.hwarrk.common.dto.req.RecruitingPositionReq;
+import com.hwarrk.common.dto.res.MyPostRes;
+import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.RecruitingPosition;
+import com.hwarrk.repository.PostLikeRepository;
 import com.hwarrk.repository.PostRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ public class PostService {
 
     private final EntityFacade entityFacade;
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
 
     public Long createPost(PostCreateReq req) {
         Project project = entityFacade.getProject(req.getProjectId());
@@ -32,7 +37,7 @@ public class PostService {
         post.addProject(project);
         post.addSkills(req.getSkills());
 
-        for (RecruitingPositionReq positionReq : req.getRecruitingPositionReqList()) {
+        for (RecruitingPositionDto positionReq : req.getRecruitingPositionDtoList()) {
             RecruitingPosition recruitingPosition = RecruitingPosition.create(positionReq.getPositionType(),
                     positionReq.getNumber());
             recruitingPosition.addPost(post);
@@ -46,7 +51,7 @@ public class PostService {
         post.updatePost(req.getTitle(), req.getBody(), req.getSkills());
         post.addSkills(req.getSkills());
 
-        for (RecruitingPositionReq positionReq : req.getRecruitingPositionReqList()) {
+        for (RecruitingPositionDto positionReq : req.getRecruitingPositionDtoList()) {
             RecruitingPosition recruitingPosition = RecruitingPosition.create(positionReq.getPositionType(),
                     positionReq.getNumber());
             recruitingPosition.addPost(post);
@@ -56,5 +61,11 @@ public class PostService {
     public void deletePost(Long postId) {
         Post post = entityFacade.getPost(postId);
         postRepository.delete(post);
+    }
+
+    public List<MyPostRes> findMyPosts(Long memberId) {
+        Member member = entityFacade.getMember(memberId);
+        List<Post> myPosts = postRepository.findPostsByMember(member.getId());
+        return myPosts.stream().map(p -> MyPostRes.mapEntityToRes(p, p.isPostLike(member))).toList();
     }
 }

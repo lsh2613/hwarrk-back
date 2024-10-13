@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
@@ -58,10 +59,14 @@ public class Post extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "member_id")
+    @BatchSize(size = 100)
     private Member member;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitingPosition> positions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     @ElementCollection(targetClass = SkillType.class)
     @CollectionTable(name = "post_skills", joinColumns = @JoinColumn(name = "post_id"))
@@ -118,9 +123,17 @@ public class Post extends BaseEntity {
         this.skills.addAll(skillTypes);
     }
 
+    public void addPostLike(PostLike postLike) {
+        this.postLikes.add(postLike);
+    }
+
     public void updatePost(String title, String body, List<String> skills) {
         this.title = title;
         this.body = body;
         addSkills(skills);
+    }
+
+    public boolean isPostLike(Member member) {
+        return postLikes.contains(member);
     }
 }

@@ -1,5 +1,6 @@
 package com.hwarrk.common.dto.req;
 
+import com.hwarrk.common.dto.dto.RecruitingPositionDto;
 import com.hwarrk.entity.Post;
 import java.util.List;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class PostCreateReq {
     private long projectId;
     private String title;
     private String body;
-    private List<RecruitingPositionReq> recruitingPositionReqList;
+    private List<RecruitingPositionDto> recruitingPositionDtoList;
     private List<String> skills;
 
     public Post createPost() {

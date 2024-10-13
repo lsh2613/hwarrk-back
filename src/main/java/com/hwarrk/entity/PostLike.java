@@ -28,4 +28,9 @@ public class PostLike extends BaseEntity {
         this.member = member;
         this.post = post;
     }
+
+    public void addPost(Post post) {
+        this.post = post;
+        post.addPostLike(this);
+    }
 }
