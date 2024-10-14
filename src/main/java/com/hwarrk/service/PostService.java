@@ -54,7 +54,7 @@ public class PostService {
     private final ProjectRepository projectRepository;
     private final MemberRepositoryCustom memberRepositoryCustom;
 
-    public Long createPost(PostCreateReq req) {
+    public Long createPost(PostCreateReq req, Long loginId) {
         Project project = entityFacade.getProject(req.getProjectId());
         if (Optional.ofNullable(postRepository.findByProject(project))
                 .isPresent()) {
@@ -74,7 +74,7 @@ public class PostService {
         return postRepository.save(post).getId();
     }
 
-    public void updatePost(PostUpdateReq req, Long postId) {
+    public void updatePost(PostUpdateReq req, Long loginId, Long postId) {
         Post post = entityFacade.getPost(postId);
         post.updatePost(req.getTitle(), req.getBody(), req.getSkills());
         post.addSkills(req.getSkills());
@@ -125,8 +125,9 @@ public class PostService {
                 .toList();
     }
 
-    public void deletePost(Long postId) {
-        Post post = entityFacade.getPost(postId);
+    public void deletePost(Long loginId, Long postId) {
+        Post post = postRepository.findPostByMember(postId, loginId)
+                .orElseThrow(() -> new GeneralHandler(POST_NOT_FOUND));
         postRepository.delete(post);
     }
 

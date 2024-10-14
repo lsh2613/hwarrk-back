@@ -28,7 +28,7 @@ public class PostController {
     @PostMapping
     public CustomApiResponse createPost(@AuthenticationPrincipal Long loginId,
                                         @RequestBody PostCreateReq req) {
-        Long postId = postService.createPost(req);
+        Long postId = postService.createPost(req, loginId);
         return CustomApiResponse.onSuccess(postId);
     }
 
@@ -36,7 +36,7 @@ public class PostController {
     public CustomApiResponse updatePost(@AuthenticationPrincipal Long loginId,
                                         @PathVariable Long postId,
                                         @RequestBody PostUpdateReq req) {
-        postService.updatePost(req, postId);
+        postService.updatePost(req, loginId, postId);
         return CustomApiResponse.onSuccess();
     }
 
@@ -50,7 +50,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public CustomApiResponse deletePost(@AuthenticationPrincipal Long loginId,
                                         @PathVariable Long postId) {
-        postService.deletePost(postId);
+        postService.deletePost(loginId, postId);
         return CustomApiResponse.onSuccess();
     }
 
