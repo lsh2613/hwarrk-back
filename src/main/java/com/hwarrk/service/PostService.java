@@ -138,8 +138,8 @@ public class PostService {
     }
 
     public void deletePost(Long loginId, Long postId) {
-        Post post = postRepository.findPostByMember(postId, loginId)
-                .orElseThrow(() -> new GeneralHandler(POST_NOT_FOUND));
+        Post post = entityFacade.getPost(postId);
+        validateProjectLeader(loginId, post.getProject());
         postRepository.delete(post);
     }
 

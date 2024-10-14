@@ -24,9 +24,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             + "JOIN FETCH p.positions rp "
             + "WHERE p.id = :postId")
     Optional<Post> findPostsWithSkillsAndRecruitingPositions(@Param("postId") Long postId);
-
-    @Query("SELECT p FROM Post p "
-            + "JOIN FETCH p.project pp "
-            + "WHERE p.id = :postId AND pp.leader.id = :memberId")
-    Optional<Post> findPostByMember(@Param("postId") Long postId, @Param("memberId") Long memberId);
 }
