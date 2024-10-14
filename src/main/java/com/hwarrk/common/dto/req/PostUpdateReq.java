@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostUpdateReq {
 
-    private long postId;
     private String title;
     private String body;
     private List<RecruitingPositionDto> recruitingPositionDtoList;

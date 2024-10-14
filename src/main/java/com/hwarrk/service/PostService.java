@@ -74,8 +74,8 @@ public class PostService {
         return postRepository.save(post).getId();
     }
 
-    public void updatePost(PostUpdateReq req) {
-        Post post = entityFacade.getPost(req.getPostId());
+    public void updatePost(PostUpdateReq req, Long postId) {
+        Post post = entityFacade.getPost(postId);
         post.updatePost(req.getTitle(), req.getBody(), req.getSkills());
         post.addSkills(req.getSkills());
 
@@ -102,7 +102,7 @@ public class PostService {
     }
 
     private List<ProjectMemberRes> createProjectMemberResList(Set<ProjectMember> projectMembers,
-                                                                     Member fromMember) {
+                                                              Member fromMember) {
         return projectMembers.stream()
                 .map(pm -> {
                     Member member = pm.getMember();
