@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,7 @@ import org.hibernate.annotations.BatchSize;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "PROJECT")
 public class Project extends BaseEntity {
@@ -146,6 +145,10 @@ public class Project extends BaseEntity {
         this.subject = project.getSubject();
         this.image = project.getImage();
         this.description = project.getDescription();
+    }
+
+    public void addLeader(Member member) {
+        this.leader = member;
     }
 
     public void addPost(Post post) {

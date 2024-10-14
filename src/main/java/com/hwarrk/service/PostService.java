@@ -99,8 +99,8 @@ public class PostService {
     }
 
     public SpecificPostDetailRes findSpecificPostInfo(Long postId, Long memberId) {
-        Post post = postRepository.findPostsWithSkillsAndRecruitingPositions(
-                postId).orElseThrow(() -> new GeneralHandler(POST_NOT_FOUND));
+        Post post = postRepository.findPostWithPositions(postId).orElseThrow(() -> new GeneralHandler(POST_NOT_FOUND));
+        postRepository.findPostWithSkills(postId).orElseThrow(() -> new GeneralHandler(POST_NOT_FOUND));
 
         Member member = entityFacade.getMember(memberId);
 

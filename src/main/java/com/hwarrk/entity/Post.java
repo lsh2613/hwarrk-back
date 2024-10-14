@@ -19,18 +19,16 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "POST")
 public class Post extends BaseEntity {
@@ -57,11 +55,6 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    @BatchSize(size = 100)
-    private Member member;
-
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitingPosition> positions = new ArrayList<>();
 
@@ -78,9 +71,8 @@ public class Post extends BaseEntity {
         this.title = title;
     }
 
-    public Post(Project project, Member member, boolean isVisible) {
+    public Post(Project project, boolean isVisible) {
         this.project = project;
-        this.member = member;
         this.isVisible = isVisible;
     }
 
@@ -94,21 +86,20 @@ public class Post extends BaseEntity {
             positions = new ArrayList<>();
         }
         positions.add(recruitingPosition);
-        recruitingPosition.setPost(this);
+        recruitingPosition.addPost(this);
     }
 
     public void addRecruitingPositions(List<RecruitingPosition> recruitingPositions) {
         if (positions == null) {
             positions = new ArrayList<>();
         }
-        positions.forEach(this::addRecruitingPosition);
+        this.positions.addAll(recruitingPositions);
     }
 
     @Builder
-    public Post(Project project, Member member, List<RecruitingPosition> positions, String title, String body,
+    public Post(Project project, List<RecruitingPosition> positions, String title, String body,
                 Integer views, Integer likes, boolean isVisible) {
         this.project = project;
-        this.member = member;
         this.positions = positions;
         this.title = title;
         this.body = body;
