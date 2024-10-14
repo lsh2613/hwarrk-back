@@ -56,10 +56,8 @@ public class PostService {
 
     public Long createPost(PostCreateReq req, Long loginId) {
         Project project = entityFacade.getProject(req.getProjectId());
-        if (Optional.ofNullable(postRepository.findByProject(project))
-                .isPresent()) {
-            throw new IllegalStateException("프로젝트에 이미 공고가 존재합니다.");
-        }
+        validateDuplicatePost(project);
+        validateProjectLeader(loginId, project);
 
         Post post = req.createPost();
         post.addProject(project);
@@ -72,6 +70,19 @@ public class PostService {
         }
 
         return postRepository.save(post).getId();
+    }
+
+    private void validateDuplicatePost(Project project) {
+        if (Optional.ofNullable(postRepository.findByProject(project))
+                .isPresent()) {
+            throw new IllegalStateException("프로젝트에 이미 공고가 존재합니다.");
+        }
+    }
+
+    private void validateProjectLeader(Long loginId, Project project) {
+        if (!project.isProjectLeader(loginId)) {
+            throw new IllegalArgumentException("프로젝트를 생성한 리더가 아닙니다.");
+        }
     }
 
     public void updatePost(PostUpdateReq req, Long loginId, Long postId) {
