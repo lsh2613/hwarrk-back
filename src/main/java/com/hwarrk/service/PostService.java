@@ -87,6 +87,7 @@ public class PostService {
 
     public void updatePost(PostUpdateReq req, Long loginId, Long postId) {
         Post post = entityFacade.getPost(postId);
+        validateProjectLeader(loginId, post.getProject());
         post.updatePost(req.getTitle(), req.getBody(), req.getSkills());
         post.addSkills(req.getSkills());
 
