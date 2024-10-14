@@ -62,4 +62,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             + "LEFT JOIN FETCH p.projectLikes pl "
             + "WHERE p.id = :projectId")
     Optional<Project> findSpecificProjectDetailsById(@Param("projectId") Long projectId);
+
+    @Query("SELECT p FROM Project p "
+            + "LEFT JOIN FETCH p.projectMembers pm "
+            + "LEFT JOIN FETCH pm.member pmm "
+            + "WHERE p.id = :projectId")
+    Optional<Project> findProjectMembersAndMembersById(@Param("projectId") Long projectId);
 }

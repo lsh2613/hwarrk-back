@@ -1,33 +1,43 @@
 package com.hwarrk.service;
 
 import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.MEMBER_NOT_FOUND;
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.POST_NOT_FOUND;
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.PROJECT_NOT_FOUND;
 
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.PostFilterType;
 import com.hwarrk.common.constant.SkillType;
 import com.hwarrk.common.constant.WayType;
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.PostWithLikeDto;
 import com.hwarrk.common.dto.dto.RecruitingPositionDto;
 import com.hwarrk.common.dto.req.PostCreateReq;
 import com.hwarrk.common.dto.req.PostFilterSearchReq;
 import com.hwarrk.common.dto.req.PostUpdateReq;
+import com.hwarrk.common.dto.res.CareerInfoRes;
+import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.MyPostRes;
 import com.hwarrk.common.dto.res.PostFilterSearchRes;
+import com.hwarrk.common.dto.res.ProjectMemberRes;
 import com.hwarrk.common.dto.res.RecommendPostRes;
+import com.hwarrk.common.dto.res.SpecificPostDetailRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
 import com.hwarrk.entity.Position;
 import com.hwarrk.entity.Post;
 import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectMember;
 import com.hwarrk.entity.RecruitingPosition;
 import com.hwarrk.entity.Skill;
 import com.hwarrk.repository.MemberRepository;
-import com.hwarrk.repository.PostLikeRepository;
+import com.hwarrk.repository.MemberRepositoryCustom;
 import com.hwarrk.repository.PostRepository;
 import com.hwarrk.repository.PostRepositoryCustom;
+import com.hwarrk.repository.ProjectRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +49,10 @@ public class PostService {
 
     private final EntityFacade entityFacade;
     private final PostRepository postRepository;
-    private final PostLikeRepository postLikeRepository;
     private final PostRepositoryCustom postRepositoryCustom;
     private final MemberRepository memberRepository;
+    private final ProjectRepository projectRepository;
+    private final MemberRepositoryCustom memberRepositoryCustom;
 
     public Long createPost(PostCreateReq req) {
         Project project = entityFacade.getProject(req.getProjectId());
@@ -73,6 +84,45 @@ public class PostService {
                     positionReq.getNumber());
             recruitingPosition.addPost(post);
         }
+    }
+
+    public SpecificPostDetailRes findSpecificPostInfo(Long postId, Long memberId) {
+        Post post = postRepository.findPostsWithSkillsAndRecruitingPositions(
+                postId).orElseThrow(() -> new GeneralHandler(POST_NOT_FOUND));
+
+        Member member = entityFacade.getMember(memberId);
+
+        Project project = projectRepository.findProjectMembersAndMembersById(post.getProject().getId())
+                .orElseThrow(() -> new GeneralHandler(PROJECT_NOT_FOUND));
+
+        Set<ProjectMember> projectMembers = project.getProjectMembers();
+
+        return SpecificPostDetailRes.createRes(post, createProjectMemberResList(projectMembers, member),
+                createMemberResList(post, memberId));
+    }
+
+    private List<ProjectMemberRes> createProjectMemberResList(Set<ProjectMember> projectMembers,
+                                                                     Member fromMember) {
+        return projectMembers.stream()
+                .map(pm -> {
+                    Member member = pm.getMember();
+                    return ProjectMemberRes.createRes(member,
+                            CareerInfoRes.mapEntityToRes(member.loadCareer()),
+                            member.isFollower(fromMember));
+                })
+                .toList();
+    }
+
+    private List<MemberRes> createMemberResList(Post post, Long memberId) {
+        List<MemberWithLikeDto> recommendedMembers = memberRepositoryCustom.findRecommendedMembers(post.getSkills(),
+                memberId);
+        return recommendedMembers.stream()
+                .map(m -> {
+                    Member member = m.member();
+                    return MemberRes.mapEntityToRes(member, CareerInfoRes.mapEntityToRes(member.loadCareer()),
+                            m.isLiked());
+                })
+                .toList();
     }
 
     public void deletePost(Long postId) {
