@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "POST_LIKE")
 public class PostLike extends BaseEntity {
@@ -32,5 +32,9 @@ public class PostLike extends BaseEntity {
     public void addPost(Post post) {
         this.post = post;
         post.addPostLike(this);
+    }
+
+    public void addMember(Member member) {
+        this.member = member;
     }
 }

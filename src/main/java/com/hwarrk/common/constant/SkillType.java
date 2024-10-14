@@ -1,5 +1,7 @@
 package com.hwarrk.common.constant;
 
+import java.util.Optional;
+
 public enum SkillType {
 
     JAVA,
@@ -31,6 +33,9 @@ public enum SkillType {
     NONE;
 
     public static SkillType findType(String skill) {
+        if (Optional.ofNullable(skill).isEmpty()) {
+            return NONE;
+        }
         try {
             return SkillType.valueOf(skill.toUpperCase());
         } catch (IllegalArgumentException e) {

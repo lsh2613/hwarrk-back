@@ -1,6 +1,7 @@
 package com.hwarrk.common.constant;
 
 import java.util.Arrays;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,9 @@ public enum PositionType {
     private final String name;
 
     public static PositionType findType(String positionType) {
+        if (Optional.ofNullable(positionType).isEmpty()) {
+            return EMPTY_POSITION;
+        }
         return Arrays.stream(values()).filter(v -> v.name.equals(positionType))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포지션 타입 입니다."));

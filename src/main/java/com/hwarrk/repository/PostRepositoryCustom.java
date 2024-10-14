@@ -12,5 +12,5 @@ public interface PostRepositoryCustom {
     List<PostWithLikeDto> findFilteredPost(PositionType positionType, WayType wayType, SkillType skillType,
                                            PostFilterType filterType, String keyWord, long memberId);
 
-    List<PostWithLikeDto> findPostsBySkillsAndPositions(List<SkillType> skills, List<PositionType> positions);
+    List<PostWithLikeDto> findPostsBySkillsAndPositions(List<SkillType> skills, List<PositionType> positions, Long memberId);
 }

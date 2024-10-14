@@ -35,16 +35,17 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         JPAQuery<PostWithLikeDto> query = queryFactory.select(new QPostWithLikeDto(
                         post,
                         Expressions.booleanTemplate("CASE WHEN {0} IS NOT NULL THEN true ELSE false END",
-                                post.id)
+                                postLike)
                 ))
-                .from(project)
-                .join(post.project, project)
-                .leftJoin(post.postLikes, postLike)
+                .from(post)
+                .join(post.project, project).fetchJoin()
+                .leftJoin(post.postLikes, postLike).fetchJoin()
                 .where(containsKeyWord(keyWord));
 
+        // TODO -> EMPTY 가 아닌 경우 이슈 발생
         if (positionType != PositionType.EMPTY_POSITION) {
             query.join(post.positions, recruitingPosition)
-                    .on(recruitingPosition.position.eq(positionType));
+                    .where(recruitingPosition.position.eq(positionType));
         }
 
         if (wayType != WayType.NONE) {
@@ -64,11 +65,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         }
 
         if (filterType == PostFilterType.FAVORITE) {
-            query.join(post.postLikes, postLike)
-                    .on(postLike.member.id.eq(memberId));
+            query.where(postLike.member.id.eq(memberId));
         }
 
-        return query.fetch();
+        return query.distinct().fetch();
     }
 
     private BooleanExpression containsKeyWord(String keyWord) {
@@ -79,17 +79,22 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<PostWithLikeDto> findPostsBySkillsAndPositions(List<SkillType> skills, List<PositionType> positions) {
+    public List<PostWithLikeDto> findPostsBySkillsAndPositions(List<SkillType> skills, List<PositionType> positions,
+                                                               Long memberId) {
         return queryFactory.select(new QPostWithLikeDto(
                         post,
-                        Expressions.booleanTemplate("CASE WHEN {0} IS NOT NULL THEN true ELSE false END",
-                                post.id)
+                        Expressions.booleanTemplate(
+                                "CASE WHEN {0} IS NOT NULL AND {1} = {2} THEN true ELSE false END",
+                                postLike, postLike.member.id, memberId)
                 ))
                 .from(post)
-                .join(post.positions, recruitingPosition)
-                .leftJoin(post.postLikes, postLike)
+                .leftJoin(post.postLikes, postLike).fetchJoin()
+                // TODO 주석 한 부분 해제 시 문제 발생
+//                .join(post.positions, recruitingPosition)
                 .where(post.skills.any().in(skills))
-                .where(recruitingPosition.position.in(positions))
+//                        .and(recruitingPosition.position.in(positions)))
+                .distinct()
                 .fetch();
+
     }
 }

@@ -82,17 +82,10 @@ public class Post extends BaseEntity {
     }
 
     public void addRecruitingPosition(RecruitingPosition recruitingPosition) {
-        if (positions == null) {
-            positions = new ArrayList<>();
-        }
         positions.add(recruitingPosition);
-        recruitingPosition.addPost(this);
     }
 
     public void addRecruitingPositions(List<RecruitingPosition> recruitingPositions) {
-        if (positions == null) {
-            positions = new ArrayList<>();
-        }
         this.positions.addAll(recruitingPositions);
     }
 

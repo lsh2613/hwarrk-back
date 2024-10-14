@@ -112,6 +112,10 @@ public class Project extends BaseEntity {
         this.startDate = startDate;
     }
 
+    public Project(WayType way) {
+        this.way = way;
+    }
+
     @Builder
     public Project(String name, String description, Member leader) {
         this.name = name;

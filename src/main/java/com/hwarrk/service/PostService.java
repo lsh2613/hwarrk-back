@@ -152,8 +152,8 @@ public class PostService {
     public List<PostFilterSearchRes> findFilteredPost(PostFilterSearchReq req, Long memberId) {
         Member member = entityFacade.getMember(memberId);
 
+        WayType wayType = findProperWayType(req);
         PositionType positionType = PositionType.findType(req.getPositionType());
-        WayType wayType = WayType.valueOf(req.getWayType());
         SkillType skillType = SkillType.findType(req.getSkillType());
         PostFilterType filterType = PostFilterType.findType(req.getFilterType());
 
@@ -163,6 +163,13 @@ public class PostService {
         return postWithLikeDtos.stream()
                 .map(PostFilterSearchRes::createRes)
                 .toList();
+    }
+
+    private WayType findProperWayType(PostFilterSearchReq req) {
+        if (Optional.ofNullable(req.getWayType()).isEmpty()) {
+            return WayType.NONE;
+        }
+        return WayType.valueOf(req.getWayType());
     }
 
     public List<RecommendPostRes> findRecommendPosts(Long memberId) {
@@ -176,7 +183,7 @@ public class PostService {
         List<PositionType> positionTypes = positions.stream().map(Position::getPositionType).toList();
 
         List<PostWithLikeDto> postWithLikeDtos = postRepositoryCustom.findPostsBySkillsAndPositions(skillTypes,
-                positionTypes);
+                positionTypes, memberId);
 
         return postWithLikeDtos.stream()
                 .map(RecommendPostRes::createRes)
