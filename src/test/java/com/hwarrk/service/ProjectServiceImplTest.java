@@ -200,9 +200,11 @@ class ProjectServiceImplTest {
         Long loginId = 1L;
         Long projectId = 1L;
         Project project = mock(Project.class);
+        String givenImageUrl = "imageUrl";
 
         when(entityFacade.getProject(projectId)).thenReturn(project);
         when(project.isProjectLeader(loginId)).thenReturn(true);
+        when(project.getImage()).thenReturn(givenImageUrl);
 
         // when
         projectService.deleteProject(loginId, projectId);
@@ -210,6 +212,7 @@ class ProjectServiceImplTest {
         // then
         verify(projectRepository, times(1)).delete(project);
         verify(entityFacade, times(1)).getProject(projectId);
+        verify(s3Uploader, times(1)).deleteImg(givenImageUrl);
     }
 
     @Test
