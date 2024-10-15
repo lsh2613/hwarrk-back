@@ -236,15 +236,20 @@ class ProjectServiceImplTest {
         Long projectId = 1L;
         ProjectUpdateReq req = mock(ProjectUpdateReq.class);
         Project project = mock(Project.class);
+        MultipartFile image = mock(MultipartFile.class);
+        String givenImageUrl = "imageUrl";
 
         when(entityFacade.getProject(projectId)).thenReturn(project);
+        when(s3Uploader.uploadImg(image)).thenReturn(givenImageUrl);
         when(project.isProjectLeader(loginId)).thenReturn(true);
 
         // when
-        projectService.updateProject(loginId, projectId, req);
+        projectService.updateProject(loginId, projectId, req, image);
 
         // then
-        verify(project, times(1)).updateProject(any());
+        verify(entityFacade, times(1)).getProject(projectId);
+        verify(project, times(1)).updateProject(any(), anyString());
+        verify(s3Uploader, times(1)).uploadImg(image);
     }
 
     @Test
@@ -254,15 +259,16 @@ class ProjectServiceImplTest {
         Long projectId = 1L;
         ProjectUpdateReq req = mock(ProjectUpdateReq.class);
         Project project = mock(Project.class);
+        MultipartFile image = mock(MultipartFile.class);
 
         when(entityFacade.getProject(projectId)).thenReturn(project);
         when(project.isProjectLeader(loginId)).thenReturn(false);
 
         // when
-        projectService.updateProject(loginId, projectId, req);
+        projectService.updateProject(loginId, projectId, req, image);
 
         // then
-        verify(project, never()).updateProject(any());
+        verify(project, never()).updateProject(any(), anyString());
     }
 
     @Test

@@ -103,10 +103,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void updateProject(Long loginId, Long projectId, ProjectUpdateReq req) {
+    public void updateProject(Long loginId, Long projectId, ProjectUpdateReq req, MultipartFile image) {
         Project project = entityFacade.getProject(projectId);
         if (project.isProjectLeader(loginId)) {
-            project.updateProject(req.mapUpdateReqToProject());
+            String imageUrl = s3Uploader.uploadImg(image);
+            project.updateProject(req.mapUpdateReqToProject(), imageUrl);
         }
     }
 
