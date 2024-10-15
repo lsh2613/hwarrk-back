@@ -128,6 +128,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteCompleteProject(Long loginId, Long projectId) {
         Project project = entityFacade.getProject(projectId);
         if (project.isProjectLeader(loginId) && project.isComplete()) {
+            s3Uploader.deleteImg(project.getImage());
             projectRepository.delete(project);
         }
     }
