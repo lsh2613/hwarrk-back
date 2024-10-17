@@ -3,27 +3,26 @@ package com.hwarrk.service;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
+import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.Role;
+import com.hwarrk.common.constant.SkillType;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.dto.ContentWithTotalDto;
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.UpdateProfileReq;
-import com.hwarrk.common.dto.res.CareerInfoRes;
-import com.hwarrk.common.dto.res.MemberRes;
-import com.hwarrk.common.dto.res.MyProfileRes;
-import com.hwarrk.common.dto.res.PageRes;
-import com.hwarrk.common.dto.res.ProfileRes;
+import com.hwarrk.common.dto.res.*;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.entity.Member;
-import com.hwarrk.entity.Project;
-import com.hwarrk.entity.ProjectDescription;
+import com.hwarrk.entity.*;
 import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Date;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -79,10 +78,23 @@ public class MemberServiceImpl implements MemberService {
         if (toMember.getIsVisible() == false)
             throw new GeneralHandler(ErrorStatus.PROFILE_NOT_VISIBLE);
 
-        ProfileRes res = memberRepositoryCustom.getMemberProfileRes(fromMemberId, toMemberId);
+        MemberWithLikeDto memberWithLikeDto = memberRepositoryCustom.getMemberProfileRes(fromMemberId, toMemberId);
+        Member member = memberWithLikeDto.member();
+        boolean isLiked = memberWithLikeDto.isLiked();
+
+        List<String> portfolios = member.getPortfolios().stream().map(Portfolio::getLink).toList();
+        List<PositionType> positions = member.getPositions().stream().map(Position::getPositionType).toList();
+        List<SkillType> skills = member.getSkills().stream().map(Skill::getSkillType).toList();
+        List<DegreeRes> degrees = member.getDegrees().stream().map(DegreeRes::mapEntityToRes).toList();
+        List<CareerRes> careers = member.getCareers().stream().map(CareerRes::createRes).toList();
+        List<ProjectDescriptionRes> projectDescriptions = member.getProjectDescriptions().stream().map(ProjectDescriptionRes::mapEntityToRes).toList();
+        List<MemberReviewRes> memberReviews = member.loadPositiveReviewInfo().stream().map(MemberReviewRes::createRes).toList();
+        double embers = member.loadEmbers();
+
         memberRepository.increaseViews(toMember.getId());
 
-        return res;
+        return ProfileRes.createRes(member, portfolios, positions, skills,
+                isLiked, degrees, careers, projectDescriptions, memberReviews, embers);
     }
 
     @Override

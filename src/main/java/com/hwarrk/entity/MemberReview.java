@@ -44,4 +44,12 @@ public class MemberReview {
         this.tag = tag;
         this.tagType = tagType;
     }
+
+    public void addToMember(Member member) {
+        this.toMember = member;
+        if (!member.getReceivedReviews().contains(this)) {
+            member.addReceivedReviews(this);
+        }
+    }
+
 }
