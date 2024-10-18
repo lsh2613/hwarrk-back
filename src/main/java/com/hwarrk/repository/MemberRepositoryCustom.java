@@ -1,5 +1,6 @@
 package com.hwarrk.repository;
 
+import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.res.ProfileRes;
 import com.hwarrk.entity.Member;
@@ -11,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepositoryCustom {
     Member getMyProfile(Long memberId);
     ContentWithTotalDto getFilteredMemberPage(Long memberId, ProfileCond cond, Pageable pageable);
-    ProfileRes getMemberProfileRes(Long fromMemberId, Long toMemberId);
+    MemberWithLikeDto getMemberProfileRes(Long fromMemberId, Long toMemberId);
 }

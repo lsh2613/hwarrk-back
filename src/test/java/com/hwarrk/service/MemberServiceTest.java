@@ -18,6 +18,7 @@ import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberLikeRepository;
 import com.hwarrk.repository.MemberRepository;
+import com.hwarrk.repository.MemberRepositoryCustomImpl;
 import com.hwarrk.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

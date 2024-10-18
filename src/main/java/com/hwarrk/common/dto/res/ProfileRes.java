@@ -3,8 +3,7 @@ package com.hwarrk.common.dto.res;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.SkillType;
-import com.hwarrk.entity.*;
-import com.querydsl.core.annotations.QueryProjection;
+import com.hwarrk.entity.Member;
 import lombok.Builder;
 
 import java.util.List;
@@ -22,25 +21,30 @@ public record ProfileRes(
         List<DegreeRes> degrees,
         List<CareerRes> careers,
         List<ProjectDescriptionRes> projectDescriptions,
-        List<ExternalProjectDescriptionRes> externalProjectDescriptions
+        List<ExternalProjectDescriptionRes> externalProjectDescriptions,
+        List<MemberReviewRes> memberReviews,
+        double embers
 ) {
 
-    @QueryProjection
-    public ProfileRes(Member member, boolean isLiked) {
-        this(
-                member.getNickname(),
-                member.getMemberStatus(),
-                member.getEmail(),
-                member.getIntroduction(),
-                member.getPortfolios().stream().map(Portfolio::getLink).toList(),
-                member.getPositions().stream().map(Position::getPositionType).toList(),
-                member.getSkills().stream().map(Skill::getSkillType).toList(),
-                isLiked,
-                member.getDegrees().stream().map(DegreeRes::mapEntityToRes).toList(),
-                member.getCareers().stream().map(CareerRes::mapEntityToRes).toList(),
-                member.getProjectDescriptions().stream().map(ProjectDescriptionRes::mapEntityToRes).toList(),
-                member.getExternalProjectDescriptions().stream().map(ExternalProjectDescriptionRes::mapEntityToRes).toList()
-        );
+    public static ProfileRes createRes(Member member, List<String> portfolios, List<PositionType> positions,
+                                       List<SkillType> skills, boolean isLiked, List<DegreeRes> degrees,
+                                       List<CareerRes> careers, List<ProjectDescriptionRes> projectDescriptions,
+                                       List<ExternalProjectDescriptionRes> externalProjectDescriptions, List<MemberReviewRes> memberReviews, double embers) {
+        return ProfileRes.builder()
+                .nickname(member.getNickname())
+                .memberStatus(member.getMemberStatus())
+                .email(member.getEmail())
+                .introduction(member.getIntroduction())
+                .portfolios(portfolios)
+                .positions(positions)
+                .skills(skills)
+                .isLiked(isLiked)
+                .degrees(degrees)
+                .careers(careers)
+                .projectDescriptions(projectDescriptions)
+                .externalProjectDescriptions(externalProjectDescriptions)
+                .memberReviews(memberReviews)
+                .embers(embers)
+                .build();
     }
-
 }
