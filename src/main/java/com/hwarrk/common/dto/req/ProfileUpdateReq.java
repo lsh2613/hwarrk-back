@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-public record UpdateProfileReq(
+public record ProfileUpdateReq(
         @NotNull
         @Size(min = 2, max = 10)
         String nickname,
@@ -28,57 +28,32 @@ public record UpdateProfileReq(
         @NotNull
         List<SkillType> skills,
         boolean isVisible,
-        List<UpdateDegreeReq> degrees,
-        List<UpdateCareerReq> careers,
-        List<UpdateProjectDescriptionReq> projectDescriptions
+        List<DegreeUpdateReq> degrees,
+        List<CareerUpdateReq> careers,
+        List<ProjectDescriptionUpdateReq> projectDescriptions,
+        List<ExternalProjectDescriptionUpdateReq> externalProjectDescriptions
 ) {
-    public void updateMember(Member member, List<ProjectDescription> projectDescriptions) {
-        if (member.getRole() == Role.GUEST)
-            member.setRole(Role.USER);
 
-        member.setNickname(nickname);
-        member.setMemberStatus(memberStatus);
-        member.setEmail(email);
-        member.setIntroduction(introduction);
-        member.setIsVisible(isVisible);
-
-        member.addPositions(mapReqToPositions(member));
-        member.addPortfolios(mapReqToPortfolios(member));
-        member.addSkills(mapReqToSkills(member));
-        member.addDegrees(mapReqToDegrees(member));
-        member.addCareers(mapReqToCareers(member));
-
-        if (projectDescriptions != null) {
-            member.addProjectDescriptions(projectDescriptions);
-        }
+    public Member mapReqToMember(String imageUrl, List<Position> positions, List<Portfolio> portfolios, List<Skill> skills,
+                                 List<Degree> degrees, List<Career> careers, List<ProjectDescription> projectDescriptions, List<ExternalProjectDescription> externalProjectDescriptions) {
+        return Member.builder()
+                .memberStatus(memberStatus)
+                .image(imageUrl)
+                .nickname(nickname)
+                .email(email)
+                .introduction(introduction)
+                .portfolios(portfolios)
+                .positions(positions)
+                .skills(skills)
+                .isVisible(isVisible)
+                .degrees(degrees)
+                .careers(careers)
+                .projectDescriptions(projectDescriptions)
+                .externalProjectDescriptions(externalProjectDescriptions)
+                .build();
     }
 
-    public List<Portfolio> mapReqToPortfolios(Member member) {
-        return portfolios == null ?
-                Collections.emptyList() : portfolios.stream().map(portfolioLink -> new Portfolio(portfolioLink, member)).toList();
-    }
-
-    public List<Position> mapReqToPositions(Member member) {
-        return positions == null ?
-                Collections.emptyList() : positions.stream().map(position -> new Position(position, member)).toList();
-    }
-
-    public List<Skill> mapReqToSkills(Member member) {
-        return skills == null ?
-                Collections.emptyList() : skills.stream().map(skillType -> new Skill(skillType, member)).toList();
-    }
-
-    public List<Degree> mapReqToDegrees(Member member) {
-        return degrees == null ?
-                Collections.emptyList() : degrees.stream().map(degreeReq -> degreeReq.mapReqToEntity(member)).toList();
-    }
-
-    public List<Career> mapReqToCareers(Member member) {
-        return careers == null ?
-                Collections.emptyList() : careers.stream().map(careerReq -> careerReq.mapReqToEntity(member)).toList();
-    }
-
-    public record UpdateDegreeReq(
+    public record DegreeUpdateReq(
             String degreeType,
             String universityType,
             String school,
@@ -101,7 +76,7 @@ public record UpdateProfileReq(
         }
     }
 
-    public record UpdateCareerReq(
+    public record CareerUpdateReq(
             String company,
             String domain, // 직군
             String job, // 직무
@@ -122,7 +97,7 @@ public record UpdateProfileReq(
         }
     }
 
-    public record UpdateProjectDescriptionReq(
+    public record ProjectDescriptionUpdateReq(
             Long projectId,
             String description
     ) {
@@ -130,6 +105,31 @@ public record UpdateProfileReq(
             return ProjectDescription.builder()
                     .project(project)
                     .member(member)
+                    .description(description)
+                    .build();
+        }
+    }
+
+    public record ExternalProjectDescriptionUpdateReq(
+            String projectName,
+            String domain,
+            LocalDate startDate,
+            LocalDate endDate,
+            ProjectStatus projectStatus,
+            PositionType positionType,
+            String subject,
+            String description
+    ) {
+
+        public ExternalProjectDescription mapReqToEntity(Member member) {
+            return ExternalProjectDescription.builder()
+                    .name(projectName)
+                    .domain(domain)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .projectStatus(projectStatus)
+                    .positionType(positionType)
+                    .subject(subject)
                     .description(description)
                     .build();
         }

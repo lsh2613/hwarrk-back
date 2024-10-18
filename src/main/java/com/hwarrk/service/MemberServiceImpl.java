@@ -10,7 +10,7 @@ import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.req.UpdateProfileReq;
+import com.hwarrk.common.dto.req.ProfileUpdateReq;
 import com.hwarrk.common.dto.res.*;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.*;
@@ -19,10 +19,6 @@ import com.hwarrk.redis.RedisUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Date;
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -30,6 +26,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Transactional
@@ -50,13 +50,41 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(Long loginId, UpdateProfileReq updateProfileReq, MultipartFile image) {
+    public void updateMember(Long loginId, ProfileUpdateReq profileUpdateReq, MultipartFile image) {
         Member member = entityFacade.getMember(loginId);
 
-        updateMemberImage(image, member);
+        String imageUrl = updateMemberImage(image, member);
 
-        List<ProjectDescription> projectDescriptions = getProjectDescriptions(updateProfileReq, member);
-        updateProfileReq.updateMember(member, projectDescriptions);
+        List<Position> positions = profileUpdateReq.positions() == null ?
+                Collections.emptyList() : profileUpdateReq.positions().stream().map(positionType -> new Position(positionType, member)).toList();
+
+        List<Portfolio> portfolios = profileUpdateReq.portfolios() == null ?
+                Collections.emptyList() : profileUpdateReq.portfolios().stream().map(portfolioLink -> new Portfolio(portfolioLink, member)).toList();
+
+        List<Skill> skills = profileUpdateReq.skills() == null ?
+                Collections.emptyList() : profileUpdateReq.skills().stream().map(skillType -> new Skill(skillType, member)).toList();
+
+        List<Degree> degrees = profileUpdateReq.degrees() == null ?
+                Collections.emptyList() : profileUpdateReq.degrees().stream().map(degreeReq -> degreeReq.mapReqToEntity(member)).toList();
+
+        List<Career> careers = profileUpdateReq.careers() == null ?
+                Collections.emptyList() : profileUpdateReq.careers().stream().map(careerReq -> careerReq.mapReqToEntity(member)).toList();
+
+        List<ProjectDescription> projectDescriptions = profileUpdateReq.projectDescriptions() == null ?
+                Collections.emptyList() : profileUpdateReq.projectDescriptions().stream()
+                .map(projectDescriptionUpdateReq -> {
+                    Project project = entityFacade.getProject(projectDescriptionUpdateReq.projectId());
+                    return projectDescriptionUpdateReq.mapReqToEntity(member, project);
+                })
+                .toList();
+
+        List<ExternalProjectDescription> externalProjectDescriptions = profileUpdateReq.externalProjectDescriptions() == null ?
+                Collections.emptyList() : profileUpdateReq.externalProjectDescriptions().stream()
+                .map(externalProjectDescriptionUpdateReq -> externalProjectDescriptionUpdateReq.mapReqToEntity(member))
+                .toList();
+
+        Member updatedMember = profileUpdateReq.mapReqToMember(imageUrl, positions, portfolios, skills, degrees, careers, projectDescriptions, externalProjectDescriptions);
+        member.updateMember(updatedMember);
     }
 
     @Override
@@ -89,12 +117,14 @@ public class MemberServiceImpl implements MemberService {
         List<CareerRes> careers = member.getCareers().stream().map(CareerRes::createRes).toList();
         List<ProjectDescriptionRes> projectDescriptions = member.getProjectDescriptions().stream().map(ProjectDescriptionRes::mapEntityToRes).toList();
         List<MemberReviewRes> memberReviews = member.loadPositiveReviewInfo().stream().map(MemberReviewRes::createRes).toList();
+        List<ExternalProjectDescriptionRes> externalProjectDescriptions = member.getExternalProjectDescriptions().stream().map(ExternalProjectDescriptionRes::mapEntityToRes).toList();
+
         double embers = member.loadEmbers();
 
         memberRepository.increaseViews(toMember.getId());
 
         return ProfileRes.createRes(member, portfolios, positions, skills,
-                isLiked, degrees, careers, projectDescriptions, memberReviews, embers);
+                isLiked, degrees, careers, projectDescriptions, externalProjectDescriptions, memberReviews, embers);
     }
 
     @Override
@@ -113,27 +143,16 @@ public class MemberServiceImpl implements MemberService {
         return PageRes.mapResToPageRes(memberResPage);
     }
 
-    private List<ProjectDescription> getProjectDescriptions(UpdateProfileReq updateProfileReq, Member member) {
-        if (updateProfileReq.projectDescriptions() == null)
-            return null;
-
-        return updateProfileReq.projectDescriptions().stream()
-                .map(updateProjectDescriptionReq -> {
-                    Project project = entityFacade.getProject(updateProjectDescriptionReq.projectId());
-                    return updateProjectDescriptionReq.mapReqToEntity(member, project);
-                })
-                .toList();
-    }
-
-    private void updateMemberImage(MultipartFile image, Member member) {
+    private String updateMemberImage(MultipartFile image, Member member) {
+        String memberImage = member.getImage();
         if (image != null) {
-            String memberImage = member.getImage();
             if (memberImage != null) {
                 s3Uploader.deleteImg(memberImage);
             }
             String uploadedImg = s3Uploader.uploadImg(image);
-            member.setImage(uploadedImg);
+            return uploadedImg;
         }
+        return memberImage;
     }
 
     @Override
