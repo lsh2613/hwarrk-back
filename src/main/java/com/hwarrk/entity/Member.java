@@ -1,9 +1,10 @@
 package com.hwarrk.entity;
 
 
-import com.hwarrk.common.constant.*;
 import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
 
+import com.hwarrk.common.constant.MemberReviewTag;
+import com.hwarrk.common.constant.MemberReviewTagType;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.Role;
@@ -22,13 +23,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -260,6 +260,10 @@ public class Member extends BaseEntity {
 
     public void removeProjectMember(ProjectMember projectMember) {
         this.projectMembers.remove(projectMember);
+    }
+
+    public boolean isFollower(Member member) {
+        return member.getReceivedLikes().contains(member);
     }
 
     public void addReceivedReviews(MemberReview memberReview) {
