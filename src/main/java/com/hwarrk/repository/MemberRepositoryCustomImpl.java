@@ -20,6 +20,7 @@ import java.util.List;
 
 import static com.hwarrk.entity.QCareer.career;
 import static com.hwarrk.entity.QDegree.degree;
+import static com.hwarrk.entity.QExternalProjectDescription.externalProjectDescription;
 import static com.hwarrk.entity.QMember.member;
 import static com.hwarrk.entity.QMemberLike.memberLike;
 import static com.hwarrk.entity.QMemberReview.memberReview;
@@ -44,6 +45,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
                 .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.externalProjectDescriptions, externalProjectDescription)
                 .where(eqMemberId(memberId))
                 .fetchOne();
 
@@ -64,6 +66,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
                 .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.externalProjectDescriptions, externalProjectDescription)
                 .leftJoin(member.receivedReviews, memberReview)
                 .leftJoin(memberLike)
                 .on(memberLike.fromMember.id.eq(fromMemberId).and(memberLike.toMember.id.eq(member.id)))

@@ -55,15 +55,19 @@ public class Member extends BaseEntity {
 
     private String introduction;
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Position> positions = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Skill> skills = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Degree> degrees = new ArrayList<>();
 
@@ -79,8 +83,13 @@ public class Member extends BaseEntity {
     @BatchSize(size = 10)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectDescription> projectDescriptions = new ArrayList<>();
+
+    @BatchSize(size = 10)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExternalProjectDescription> externalProjectDescriptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "fromMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberLike> sentLikes = new ArrayList<>();
@@ -138,6 +147,11 @@ public class Member extends BaseEntity {
         this.projectDescriptions.addAll(projectDescriptions);
     }
 
+    public void addExternalProjectDescriptions(List<ExternalProjectDescription> externalProjectDescriptions) {
+        this.externalProjectDescriptions.clear();
+        this.externalProjectDescriptions.addAll(externalProjectDescriptions);
+    }
+
     public Member(String socialId, OauthProvider oauthProvider) {
         this.socialId = socialId;
         this.oauthProvider = oauthProvider;
@@ -154,21 +168,24 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(MemberStatus memberStatus, String image, String nickname, String birth, String email, String phone,
-                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills,
-                  List<Degree> degrees,
-                  List<Career> careers) {
+    public Member(MemberStatus memberStatus, String image, String nickname, String birth, String email, String phone, String introduction,
+                  List<Portfolio> portfolios, List<Position> positions, List<Skill> skills, boolean isVisible, List<Degree> degrees,
+                  List<Career> careers, List<ProjectDescription> projectDescriptions, List<ExternalProjectDescription> externalProjectDescriptions) {
         this.memberStatus = memberStatus;
         this.image = image;
         this.nickname = nickname;
         this.birth = birth;
         this.email = email;
+        this.introduction = introduction;
         this.phone = phone;
         this.portfolios = portfolios;
         this.positions = positions;
         this.skills = skills;
+        this.isVisible = isVisible;
         this.degrees = degrees;
         this.careers = careers;
+        this.projectDescriptions = projectDescriptions;
+        this.externalProjectDescriptions = externalProjectDescriptions;
     }
 
     public void addProjectLike(ProjectLike projectLike) {
@@ -238,6 +255,26 @@ public class Member extends BaseEntity {
 
     public void removeProjectMember(ProjectMember projectMember) {
         this.projectMembers.remove(projectMember);
+    }
+
+    public void updateMember(Member updatedMember) {
+        if (this.role == Role.GUEST)
+            this.role = Role.USER;
+
+        this.memberStatus = updatedMember.getMemberStatus();
+        this.image = updatedMember.getImage();
+        this.nickname = updatedMember.getNickname();
+        this.email = updatedMember.getEmail();
+        this.introduction = updatedMember.getIntroduction();
+        this.isVisible = updatedMember.getIsVisible();
+
+        this.addPortfolios(updatedMember.getPortfolios());
+        this.addPositions(updatedMember.getPositions());
+        this.addSkills(updatedMember.getSkills());
+        this.addDegrees(updatedMember.getDegrees());
+        this.addCareers(updatedMember.getCareers());
+        this.addProjectDescriptions(updatedMember.getProjectDescriptions());
+        this.addExternalProjectDescriptions(updatedMember.getExternalProjectDescriptions());
     }
 
     public void addReceivedReviews(MemberReview memberReview) {

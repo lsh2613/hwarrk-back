@@ -21,6 +21,7 @@ public record ProfileRes(
         List<DegreeRes> degrees,
         List<CareerRes> careers,
         List<ProjectDescriptionRes> projectDescriptions,
+        List<ExternalProjectDescriptionRes> externalProjectDescriptions,
         List<MemberReviewRes> memberReviews,
         double embers
 ) {
@@ -28,7 +29,7 @@ public record ProfileRes(
     public static ProfileRes createRes(Member member, List<String> portfolios, List<PositionType> positions,
                                        List<SkillType> skills, boolean isLiked, List<DegreeRes> degrees,
                                        List<CareerRes> careers, List<ProjectDescriptionRes> projectDescriptions,
-                                       List<MemberReviewRes> memberReviews, double embers) {
+                                       List<ExternalProjectDescriptionRes> externalProjectDescriptions, List<MemberReviewRes> memberReviews, double embers) {
         return ProfileRes.builder()
                 .nickname(member.getNickname())
                 .memberStatus(member.getMemberStatus())
@@ -41,6 +42,7 @@ public record ProfileRes(
                 .degrees(degrees)
                 .careers(careers)
                 .projectDescriptions(projectDescriptions)
+                .externalProjectDescriptions(externalProjectDescriptions)
                 .memberReviews(memberReviews)
                 .embers(embers)
                 .build();

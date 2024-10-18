@@ -20,7 +20,8 @@ public record MyProfileRes(
         boolean isVisible,
         List<DegreeRes> degrees,
         List<CareerRes> careers,
-        List<ProjectDescriptionRes> projectDescriptions
+        List<ProjectDescriptionRes> projectDescriptions,
+        List<ExternalProjectDescriptionRes> externalProjectDescriptions
 ) {
     public static MyProfileRes mapEntityToRes(Member member) {
         return MyProfileRes.builder()
@@ -35,6 +36,7 @@ public record MyProfileRes(
                 .degrees(member.getDegrees().stream().map(DegreeRes::mapEntityToRes).toList())
                 .careers(member.getCareers().stream().map(CareerRes::mapEntityToRes).toList())
                 .projectDescriptions(member.getProjectDescriptions().stream().map(ProjectDescriptionRes::mapEntityToRes).toList())
+                .externalProjectDescriptions(member.getExternalProjectDescriptions().stream().map(ExternalProjectDescriptionRes::mapEntityToRes).toList())
                 .build();
     }
 }
