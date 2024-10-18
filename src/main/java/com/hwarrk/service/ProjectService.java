@@ -24,7 +24,7 @@ public interface ProjectService {
 
     void deleteProject(Long loginId, Long projectId);
 
-    void updateProject(Long loginId, Long projectId, ProjectUpdateReq req);
+    void updateProject(Long loginId, Long projectId, ProjectUpdateReq req, MultipartFile image);
 
     void completeProject(Long projectId);
 
