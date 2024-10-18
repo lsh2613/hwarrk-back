@@ -146,7 +146,7 @@ public class PostService {
     public List<MyPostRes> findMyPosts(Long memberId) {
         Member member = entityFacade.getMember(memberId);
         List<Post> myPosts = postRepository.findPostsByMember(member.getId());
-        return myPosts.stream().map(p -> MyPostRes.mapEntityToRes(p, p.isPostLike(member))).toList();
+        return myPosts.stream().map(MyPostRes::mapEntityToRes).toList();
     }
 
     public List<PostFilterSearchRes> findFilteredPost(PostFilterSearchReq req, Long memberId) {

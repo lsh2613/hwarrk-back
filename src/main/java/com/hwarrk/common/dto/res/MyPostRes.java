@@ -17,14 +17,12 @@ public class MyPostRes {
     private String title;
     private String name;
     private String stepType;
-    private boolean isLiked;
     private List<RecruitingPositionDto> recruitingPositionDtos;
 
-    public static MyPostRes mapEntityToRes(Post post, boolean isLiked) {
+    public static MyPostRes mapEntityToRes(Post post) {
         MyPostRes myPostRes = new MyPostRes();
         myPostRes.postId = post.getId();
         myPostRes.title = post.getTitle();
-        myPostRes.isLiked = isLiked;
 
         Project project = post.getProject();
         myPostRes.name = project.getName();
