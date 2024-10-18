@@ -1,26 +1,28 @@
 package com.hwarrk.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.LikeType;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.entity.*;
+import com.hwarrk.entity.Member;
+import com.hwarrk.entity.Post;
+import com.hwarrk.entity.PostLike;
+import com.hwarrk.entity.Project;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.PostLikeRepository;
 import com.hwarrk.repository.PostRepository;
 import com.hwarrk.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -56,8 +58,8 @@ class PostLikeServiceTest {
         project_01 = projectRepository.save(new Project("프로젝트 이름", "프로젝트 설명", member_01));
         project_02 = projectRepository.save(new Project("프로젝트 이름", "프로젝트 설명", member_02));
 
-        post_01 = postRepository.save(new Post(project_01, project_01.getLeader(), List.of(), "title", "body", 0, 0, true));
-        post_02 = postRepository.save(new Post(project_02, project_02.getLeader(), List.of(), "title", "body", 0, 0, true));
+        post_01 = postRepository.save(new Post(project_01, List.of(), "title", "body", 0, 0, true));
+        post_02 = postRepository.save(new Post(project_02, List.of(), "title", "body", 0, 0, true));
     }
 
     @Test

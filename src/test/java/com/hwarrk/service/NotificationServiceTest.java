@@ -1,5 +1,8 @@
 package com.hwarrk.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.NotificationBindingType;
 import com.hwarrk.common.constant.OauthProvider;
@@ -15,16 +18,12 @@ import com.hwarrk.repository.NotificationRepository;
 import com.hwarrk.repository.PostRepository;
 import com.hwarrk.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -60,7 +59,7 @@ class NotificationServiceTest {
     void 알림_보내기_성공() {
         //given
         Project project = projectRepository.save(new Project("name", "description", member_01));
-        Post post = postRepository.save(new Post(project, member_01, false));
+        Post post = postRepository.save(new Post(project, false));
 
         //when
         // 프로젝트 신청 및 수락은 생략..

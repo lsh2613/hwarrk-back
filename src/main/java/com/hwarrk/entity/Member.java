@@ -1,19 +1,41 @@
 package com.hwarrk.entity;
 
 
-import com.hwarrk.common.constant.*;
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
+
+import com.hwarrk.common.constant.MemberReviewTag;
+import com.hwarrk.common.constant.MemberReviewTagType;
+import com.hwarrk.common.constant.MemberStatus;
+import com.hwarrk.common.constant.OauthProvider;
+import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.oauth2.member.OauthMember;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.BatchSize;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
@@ -255,6 +277,10 @@ public class Member extends BaseEntity {
 
     public void removeProjectMember(ProjectMember projectMember) {
         this.projectMembers.remove(projectMember);
+    }
+
+    public boolean isFollower(Member member) {
+        return member.getReceivedLikes().contains(member);
     }
 
     public void updateMember(Member updatedMember) {

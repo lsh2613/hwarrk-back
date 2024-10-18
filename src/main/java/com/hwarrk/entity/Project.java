@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,7 @@ import org.hibernate.annotations.BatchSize;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "PROJECT")
 public class Project extends BaseEntity {
@@ -51,6 +50,7 @@ public class Project extends BaseEntity {
 
     private String name;
 
+    @Enumerated(value = EnumType.STRING)
     private StepType step;
 
     private String domain;
@@ -59,6 +59,7 @@ public class Project extends BaseEntity {
 
     private LocalDate endDate;
 
+    @Enumerated(value = EnumType.STRING)
     private WayType way;
 
     private String area;
@@ -111,6 +112,10 @@ public class Project extends BaseEntity {
         this.startDate = startDate;
     }
 
+    public Project(WayType way) {
+        this.way = way;
+    }
+
     @Builder
     public Project(String name, String description, Member leader) {
         this.name = name;
@@ -148,6 +153,10 @@ public class Project extends BaseEntity {
         this.subject = project.getSubject();
         this.image = imageUrl;
         this.description = project.getDescription();
+    }
+
+    public void addLeader(Member member) {
+        this.leader = member;
     }
 
     public void addPost(Post post) {

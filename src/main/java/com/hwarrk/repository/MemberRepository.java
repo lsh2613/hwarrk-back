@@ -18,4 +18,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Member m SET m.views = m.views + 1 WHERE m.id = :memberId")
     void increaseViews(@Param("memberId") Long memberId);
+
+    @Query("SELECT m FROM Member m "
+            + "LEFT JOIN FETCH m.skills "
+            + "LEFT JOIN FETCH m.positions "
+            + "WHERE m.id = :memberId")
+    Optional<Member> findMemberStacksById(@Param("memberId") Long memberId);
 }
