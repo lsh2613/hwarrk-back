@@ -54,7 +54,7 @@ public class MemberLikeServiceImpl implements MemberLikeService {
                 .map(memberLike -> {
                     Member member = memberLike.getToMember();
                     CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
-                    return MemberRes.mapEntityToRes(member, careerInfoRes);
+                    return MemberRes.mapEntityToRes(member, careerInfoRes, true);
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
 

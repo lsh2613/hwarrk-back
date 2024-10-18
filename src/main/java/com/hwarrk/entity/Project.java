@@ -133,6 +133,10 @@ public class Project extends BaseEntity {
         this.description = description;
     }
 
+    public Project(Long id) {
+        this.id = id;
+    }
+
     public void updateProject(Project project, String imageUrl) {
         this.name = project.getName();
         this.step = project.getStep();

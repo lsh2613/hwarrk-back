@@ -42,4 +42,6 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
             + "LEFT JOIN FETCH psm.projectLikes pl "
             + "WHERE pm.project.id = :projectId")
     List<ProjectMemberWithLikeDto> findProjectMembersByProjectId(@Param("projectId") Long projectId);
+
+    List<ProjectMember> findAllByProject(Project project);
 }

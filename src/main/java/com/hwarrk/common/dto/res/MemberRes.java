@@ -27,18 +27,6 @@ public class MemberRes {
         this.embers = 0.0;
     }
 
-    public static MemberRes mapEntityToRes(Member member, CareerInfoRes careerInfoRes) {
-        return MemberRes.builder()
-                .memberId(member.getId())
-                .image(member.getImage())
-                .nickname(member.getNickname())
-                .careerInfoRes(careerInfoRes)
-                .embers(member.getEmbers())
-                .status(member.getMemberStatus())
-                .introduction(member.getIntroduction())
-                .build();
-    }
-
     public static MemberRes mapEntityToRes(Member member, CareerInfoRes careerInfoRes, boolean liked) {
         return MemberRes.builder()
                 .memberId(member.getId())

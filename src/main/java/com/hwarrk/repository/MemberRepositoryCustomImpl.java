@@ -4,13 +4,11 @@ import com.hwarrk.common.constant.FilterType;
 import com.hwarrk.common.constant.MemberStatus;
 import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.constant.SkillType;
+import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.QMemberWithLikeDto;
 import com.hwarrk.common.dto.req.ProfileCond;
-import com.hwarrk.common.dto.res.ProfileRes;
-import com.hwarrk.common.dto.res.QProfileRes;
 import com.hwarrk.entity.Member;
-import com.hwarrk.common.dto.dto.ContentWithTotalDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +22,7 @@ import static com.hwarrk.entity.QCareer.career;
 import static com.hwarrk.entity.QDegree.degree;
 import static com.hwarrk.entity.QMember.member;
 import static com.hwarrk.entity.QMemberLike.memberLike;
+import static com.hwarrk.entity.QMemberReview.memberReview;
 import static com.hwarrk.entity.QPortfolio.portfolio;
 import static com.hwarrk.entity.QPosition.position;
 import static com.hwarrk.entity.QProjectDescription.projectDescription;
@@ -52,9 +51,9 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public ProfileRes getMemberProfileRes(Long fromMemberId, Long toMemberId) {
-        ProfileRes res = queryFactory
-                .selectDistinct(new QProfileRes(
+    public MemberWithLikeDto getMemberProfileRes(Long fromMemberId, Long toMemberId) {
+        MemberWithLikeDto res = queryFactory
+                .selectDistinct(new QMemberWithLikeDto(
                         member,
                         memberLike.isNotNull()
                 ))
@@ -65,6 +64,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.degrees, degree)
                 .leftJoin(member.careers, career)
                 .leftJoin(member.projectDescriptions, projectDescription)
+                .leftJoin(member.receivedReviews, memberReview)
                 .leftJoin(memberLike)
                 .on(memberLike.fromMember.id.eq(fromMemberId).and(memberLike.toMember.id.eq(member.id)))
                 .where(eqMemberId(toMemberId))
