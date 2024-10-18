@@ -98,15 +98,17 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProject(Long loginId, Long projectId) {
         Project project = entityFacade.getProject(projectId);
         if (project.isProjectLeader(loginId)) {
+            s3Uploader.deleteImg(project.getImage());
             projectRepository.delete(project);
         }
     }
 
     @Override
-    public void updateProject(Long loginId, Long projectId, ProjectUpdateReq req) {
+    public void updateProject(Long loginId, Long projectId, ProjectUpdateReq req, MultipartFile image) {
         Project project = entityFacade.getProject(projectId);
         if (project.isProjectLeader(loginId)) {
-            project.updateProject(req.mapUpdateReqToProject());
+            String imageUrl = s3Uploader.uploadImg(image);
+            project.updateProject(req.mapUpdateReqToProject(), imageUrl);
         }
     }
 
@@ -126,6 +128,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteCompleteProject(Long loginId, Long projectId) {
         Project project = entityFacade.getProject(projectId);
         if (project.isProjectLeader(loginId) && project.isComplete()) {
+            s3Uploader.deleteImg(project.getImage());
             projectRepository.delete(project);
         }
     }
