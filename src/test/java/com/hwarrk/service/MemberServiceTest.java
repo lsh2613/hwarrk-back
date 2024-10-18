@@ -26,9 +26,8 @@ import com.hwarrk.entity.MemberLike;
 import com.hwarrk.entity.Project;
 import com.hwarrk.jwt.TokenProvider;
 import com.hwarrk.redis.RedisUtil;
-import com.hwarrk.repository.MemberLikeRepository;
-import com.hwarrk.repository.MemberRepository;
-import com.hwarrk.repository.ProjectRepository;
+import com.hwarrk.repository.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +63,8 @@ class MemberServiceTest {
     private TokenProvider tokenProvider;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private MemberRepositoryCustomImpl memberRepositoryCustom;
 
     Member member_01;
 

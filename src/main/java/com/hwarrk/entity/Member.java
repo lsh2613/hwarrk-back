@@ -1,6 +1,7 @@
 package com.hwarrk.entity;
 
 
+import com.hwarrk.common.constant.*;
 import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
 
 import com.hwarrk.common.constant.MemberStatus;
@@ -21,6 +22,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus.LAST_CAREER_NOT_FOUND;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +46,7 @@ import org.hibernate.annotations.BatchSize;
 public class Member extends BaseEntity {
 
     private static final String NO_LAST_COMPANY_INFO = "없음";
+    private static final Double DEFAULT_EMBERS = 100D;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,6 +110,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "toMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberLike> receivedLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "toMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 20)
+    private List<MemberReview> receivedReviews = new ArrayList<>();
+
     private Double embers;
 
     private Boolean isVisible;
@@ -162,6 +172,7 @@ public class Member extends BaseEntity {
         this.email = request.getEmail();
         this.nickname = request.getNickname();
         this.role = Role.GUEST;
+        this.embers = DEFAULT_EMBERS;
     }
 
     @Builder
@@ -251,7 +262,41 @@ public class Member extends BaseEntity {
         this.projectMembers.remove(projectMember);
     }
 
-    public boolean isFollower(Member member) {
-        return member.getReceivedLikes().contains(member);
+    public void addReceivedReviews(MemberReview memberReview) {
+        this.receivedReviews.add(memberReview);
+        if (memberReview.getToMember() != this)
+            memberReview.addToMember(this);
+    }
+
+    public double loadEmbers() {
+        if (receivedReviews == null || receivedReviews.isEmpty())
+            return DEFAULT_EMBERS;
+
+        Map<Project, List<MemberReview>> reviewsMap = receivedReviews.stream().collect(Collectors.groupingBy(MemberReview::getProject));
+
+        double totalEmbers = reviewsMap.entrySet().stream()
+                .mapToDouble(entry -> {
+                    List<MemberReview> reviewsInProject = entry.getValue();
+                    double totalScoreInProject = reviewsInProject.stream()
+                            .mapToInt(review -> review.getTag().getScore())
+                            .sum();
+                    return totalScoreInProject / (double) reviewsInProject.size();
+                })
+                .sum();
+
+        return DEFAULT_EMBERS + Math.ceil(totalEmbers);
+    }
+
+    public List<MemberReviewInfo> loadPositiveReviewInfo() {
+        if (receivedReviews == null || receivedReviews.isEmpty())
+            return Collections.emptyList();
+
+        Map<MemberReviewTagType, Long> positiveTagCountMap = receivedReviews.stream()
+                .filter(review -> review.getTag() == MemberReviewTag.EXCELLENT || review.getTag() == MemberReviewTag.GOOD)
+                .collect(Collectors.groupingBy(MemberReview::getTagType, Collectors.counting()));
+
+        return positiveTagCountMap.entrySet().stream()
+                .map(entry -> new MemberReviewInfo(entry.getKey(), entry.getValue().intValue()))
+                .toList();
     }
 }

@@ -138,7 +138,11 @@ public class Project extends BaseEntity {
         this.description = description;
     }
 
-    public void updateProject(Project project) {
+    public Project(Long id) {
+        this.id = id;
+    }
+
+    public void updateProject(Project project, String imageUrl) {
         this.name = project.getName();
         this.step = project.getStep();
         this.domain = project.getDomain();
@@ -147,7 +151,7 @@ public class Project extends BaseEntity {
         this.way = project.getWay();
         this.area = project.getArea();
         this.subject = project.getSubject();
-        this.image = project.getImage();
+        this.image = imageUrl;
         this.description = project.getDescription();
     }
 
