@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 
@@ -104,5 +105,19 @@ public class TokenProvider {
             log.debug("AccessToken is expired: ${}", accessToken);
             throw new GeneralHandler(ErrorStatus._UNAUTHORIZED);
         }
+    }
+
+    public String extractToken(StompHeaderAccessor accessor, TokenType tokenType) {
+        Optional<String> requestToken = switch (tokenType) {
+            case ACCESS_TOKEN -> Optional.ofNullable(accessor.getFirstNativeHeader(accessHeader))
+                    .filter(token -> token.startsWith(BEARER))
+                    .map(token -> token.substring(7));
+            case REFRESH_TOKEN -> Optional.ofNullable(accessor.getFirstNativeHeader(refreshHeader))
+                    .filter(token -> token.startsWith(BEARER))
+                    .map(token -> token.substring(7));
+            default -> throw new IllegalStateException("Unexpected value: " + tokenType);
+        };
+
+        return requestToken.orElse(null);
     }
 }

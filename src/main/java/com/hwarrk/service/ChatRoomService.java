@@ -73,6 +73,8 @@ public class ChatRoomService {
         Member member = entityFacade.getMember(memberId);
         ChatRoom chatRoom = entityFacade.getChatRoom(chatRoomId);
 
+        chatRoom.getChatRoomMember(member.getId()); // 예외처리 용도
+
         redisChatUtil.setMemberInChatRoom(member.getId(), chatRoom.getId());
         redisChatUtil.incrementActiveCnt(chatRoom.getId());
 
