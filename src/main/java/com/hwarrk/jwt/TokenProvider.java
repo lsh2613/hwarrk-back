@@ -77,7 +77,7 @@ public class TokenProvider {
         }
 
         Long memberId = decodedJWT.getClaim("id").asLong();
-        Long value = redisUtil.getData(String.valueOf(memberId));
+        Long value = redisTokenUtil.getMemberId(refreshToken);
 
         if (memberId == null || value == null) throw new AuthenticationServiceException(ErrorMessage.TOKEN_NOT_FOUND);
         else if (!memberId.equals(value)) throw new AuthenticationServiceException(ErrorMessage.TOKEN_VERIFICATION);
