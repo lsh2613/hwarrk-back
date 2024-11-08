@@ -1,6 +1,5 @@
 package com.hwarrk.common.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@Slf4j
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
@@ -30,11 +28,29 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Long> redisTemplate() {
+    public RedisTemplate<String, Long> StringLongRedisTemplate() {
         RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Long.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<Long, Long> LongLongRedisTemplate() {
+        RedisTemplate<Long, Long> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new Jackson2JsonRedisSerializer<>(Long.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Long.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, Integer> StringIntegerRedisTemplate() {
+        RedisTemplate<String, Integer> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Integer.class));
         return redisTemplate;
     }
 

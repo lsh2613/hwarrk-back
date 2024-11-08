@@ -18,6 +18,7 @@ public class EntityFacade {
     private final ProjectJoinRepository projectJoinRepository;
     private final NotificationRepository notificationRepository;
     private final PostRepository postRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(
@@ -46,6 +47,12 @@ public class EntityFacade {
     public Post getPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new GeneralHandler(ErrorStatus.POST_NOT_FOUND)
+        );
+    }
+
+    public ChatRoom getChatRoom(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId).orElseThrow(
+                () -> new GeneralHandler(ErrorStatus.CHAT_ROOM_NOT_FOUND)
         );
     }
 }
