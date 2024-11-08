@@ -15,10 +15,9 @@ import com.hwarrk.entity.MemberLike;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectStatus;
 import com.hwarrk.jwt.TokenProvider;
-import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.redis.RedisTokenUtil;
 import com.hwarrk.repository.MemberLikeRepository;
 import com.hwarrk.repository.MemberRepository;
-import com.hwarrk.repository.MemberRepositoryCustomImpl;
 import com.hwarrk.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +58,7 @@ class MemberServiceTest {
     @Autowired
     private TokenProvider tokenProvider;
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisTokenUtil redisTokenUtil;
 
     Member member_01;
 
@@ -178,8 +177,8 @@ class MemberServiceTest {
         memberService.logout(request);
 
         //then
-        assertThat(redisUtil.getData(refreshToken)).isNull();
-        assertThat(redisUtil.containsInBlackList(accessToken)).isTrue();
+        assertThat(redisTokenUtil.getMemberId(refreshToken)).isNull();
+        assertThat(redisTokenUtil.isBlacklistedToken(accessToken)).isTrue();
     }
 
     @Test
@@ -196,8 +195,8 @@ class MemberServiceTest {
         memberService.logout(request);
 
         //then
-        assertThat(redisUtil.getData(refreshToken)).isNull();
-        assertThat(redisUtil.isBlacklistedToken(accessToken)).isTrue();
+        assertThat(redisTokenUtil.getMemberId(refreshToken)).isNull();
+        assertThat(redisTokenUtil.isBlacklistedToken(accessToken)).isTrue();
     }
 
     @Test
@@ -207,7 +206,7 @@ class MemberServiceTest {
         //when
 
         //then
-        assertThat(redisUtil.isBlacklistedToken("NotToken")).isFalse();
+        assertThat(redisTokenUtil.isBlacklistedToken("NotToken")).isFalse();
     }
 
     @Test

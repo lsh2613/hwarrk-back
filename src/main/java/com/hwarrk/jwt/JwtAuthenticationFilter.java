@@ -4,7 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.redis.RedisTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
-    private final RedisUtil redisUtil;
+    private final RedisTokenUtil redisTokenUtil;
 
     public static final String[] whitelist = {
             "/oauth**",
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error(ErrorStatus.MISSING_ACCESS_TOKEN.getMessage());
             throw new GeneralHandler(ErrorStatus.MISSING_ACCESS_TOKEN);
         }
-        if (redisUtil.isBlacklistedToken(token)) {
+        if (redisTokenUtil.isBlacklistedToken(token)) {
             log.error(ErrorStatus.BLACKLISTED_TOKEN.getMessage());
             throw new GeneralHandler(ErrorStatus.BLACKLISTED_TOKEN);
         }

@@ -9,8 +9,7 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorMessage;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.repository.MemberRepository;
-import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.redis.RedisTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +42,7 @@ public class TokenProvider {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String BEARER = "Bearer ";
 
-    private final MemberRepository memberRepository;
-    private final RedisUtil redisUtil;
+    private final RedisTokenUtil redisTokenUtil;
 
     public String issueAccessToken(Long memberId) {
         return JWT.create()
@@ -65,7 +63,7 @@ public class TokenProvider {
     }
 
     private void saveRefreshToken(Long memberId, String refreshToken) {
-        redisUtil.setDataExpire(refreshToken, memberId, Duration.ofDays(refreshTokenExpirationPeriod));
+        redisTokenUtil.setRefreshTokenExpire(refreshToken, memberId, Duration.ofDays(refreshTokenExpirationPeriod));
     }
 
     public String reissueAccessToken(String refreshToken) {

@@ -15,7 +15,7 @@ import com.hwarrk.common.dto.res.*;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.*;
 import com.hwarrk.jwt.TokenProvider;
-import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.redis.RedisTokenUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepositoryCustom memberRepositoryCustom;
     private final EntityFacade entityFacade;
     private final TokenProvider tokenProvider;
-    private final RedisUtil redisUtil;
+    private final RedisTokenUtil redisTokenUtil;
     private final S3Uploader s3Uploader;
 
     @Override
@@ -161,7 +161,7 @@ public class MemberServiceImpl implements MemberService {
         addToBlackList(accessToken);
 
         String refreshToken = tokenProvider.extractToken(request, TokenType.REFRESH_TOKEN);
-        redisUtil.deleteData(refreshToken);
+        redisTokenUtil.deleteRefreshToken(refreshToken);
     }
 
     private void addToBlackList(String accessToken) {
@@ -171,6 +171,6 @@ public class MemberServiceImpl implements MemberService {
         Date expiresAt = decodedAccessToken.getExpiresAt();
         long diff = expiresAt.getTime() - System.currentTimeMillis();
 
-        redisUtil.setBlackList(accessToken, accessTokenId, diff);
+        redisTokenUtil.setBlackListTokenExpire(accessToken, accessTokenId, diff);
     }
 }
