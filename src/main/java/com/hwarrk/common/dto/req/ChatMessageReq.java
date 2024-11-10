@@ -4,7 +4,6 @@ import com.hwarrk.entity.ChatMessage;
 
 public record ChatMessageReq(
         Long chatRoomId,
-        Long memberId,
         String message
 ) {
     public ChatMessage createChatMessage(Long chatRoomId, Long memberId, int unreadCnt) {

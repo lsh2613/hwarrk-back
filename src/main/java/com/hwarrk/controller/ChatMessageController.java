@@ -7,11 +7,15 @@ import com.hwarrk.service.ChatMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.List;
 
@@ -22,9 +26,20 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
     @MessageMapping("chat.message")
-    public CustomApiResponse sendMessage(ChatMessageReq message) {
-        chatMessageService.sendMessage(message);
-        return CustomApiResponse.onSuccess();
+    public void sendMessage(ChatMessageReq message, StompHeaderAccessor accessor) {
+        chatMessageService.sendMessage(message, accessor);
+    }
+
+    @EventListener
+    public void handleWebSocketConnectListener(SessionConnectEvent event) {
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        chatMessageService.handleConnectMessage(accessor);
+    }
+
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        chatMessageService.handleDisconnectMessage(accessor);
     }
 
     @Operation(summary = "채팅내역 조회",

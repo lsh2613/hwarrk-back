@@ -37,29 +37,4 @@ public class ChatRoomController {
         return CustomApiResponse.onSuccess(chatRoomService.getChatRooms(loginId));
     }
 
-    @Operation(summary = "채팅방 접속",
-            responses = {
-                    @ApiResponse(responseCode = "MEMBER4001", description = "사용자를 찾을 수 없습니다"),
-                    @ApiResponse(responseCode = "CHAT_ROOM4041", description = "채팅방을 찾을 수 없습니다"),
-                    @ApiResponse(responseCode = "CHAT_ROOM_MEMBER4041", description = "채팅방 참가자를 찾을 수 없습니다")
-            })
-    @PostMapping("/{chatRoomId}/entry")
-    public CustomApiResponse enterChatRoom(@AuthenticationPrincipal Long loginId,
-                                           @PathVariable Long chatRoomId) {
-        chatRoomService.enterChatRoom(loginId, chatRoomId);
-        return CustomApiResponse.onSuccess();
-    }
-
-    @Operation(summary = "채팅방 나가기",
-            responses = {
-                    @ApiResponse(responseCode = "MEMBER4001", description = "사용자를 찾을 수 없습니다"),
-                    @ApiResponse(responseCode = "CHAT_ROOM4041", description = "채팅방을 찾을 수 없습니다"),
-                    @ApiResponse(responseCode = "CHAT_ROOM_MEMBER4041", description = "채팅방 참가자를 찾을 수 없습니다")
-            })
-    @PostMapping("/{chatRoomId}/exit")
-    public CustomApiResponse exitChatRoom(@AuthenticationPrincipal Long loginId,
-                                          @PathVariable Long chatRoomId) {
-        chatRoomService.exitChatRoom(loginId, chatRoomId);
-        return CustomApiResponse.onSuccess();
-    }
 }

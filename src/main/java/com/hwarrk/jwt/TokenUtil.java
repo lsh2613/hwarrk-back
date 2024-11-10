@@ -107,17 +107,18 @@ public class TokenUtil {
         }
     }
 
-    public String extractToken(StompHeaderAccessor accessor, TokenType tokenType) {
-        Optional<String> requestToken = switch (tokenType) {
-            case ACCESS_TOKEN -> Optional.ofNullable(accessor.getFirstNativeHeader(accessHeader))
-                    .filter(token -> token.startsWith(BEARER))
-                    .map(token -> token.substring(7));
-            case REFRESH_TOKEN -> Optional.ofNullable(accessor.getFirstNativeHeader(refreshHeader))
-                    .filter(token -> token.startsWith(BEARER))
-                    .map(token -> token.substring(7));
-            default -> throw new IllegalStateException("Unexpected value: " + tokenType);
-        };
+    public Long validateTokenAndGetMemberId(String token) {
+        if (token == null || token.isBlank()) {
+            log.error(ErrorStatus.MISSING_ACCESS_TOKEN.getMessage());
+            throw new GeneralHandler(ErrorStatus.MISSING_ACCESS_TOKEN);
+        }
 
-        return requestToken.orElse(null);
+        if (redisTokenUtil.isBlacklistedToken(token)) {
+            log.error(ErrorStatus.BLACKLISTED_TOKEN.getMessage());
+            throw new GeneralHandler(ErrorStatus.BLACKLISTED_TOKEN);
+        }
+
+        DecodedJWT decodedJWT = decodedJWT(token);
+        return decodedJWT.getClaim("id").asLong();
     }
 }
