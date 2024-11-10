@@ -14,7 +14,7 @@ import com.hwarrk.entity.Member;
 import com.hwarrk.entity.MemberLike;
 import com.hwarrk.entity.Project;
 import com.hwarrk.entity.ProjectStatus;
-import com.hwarrk.jwt.TokenProvider;
+import com.hwarrk.jwt.TokenUtil;
 import com.hwarrk.redis.RedisTokenUtil;
 import com.hwarrk.repository.MemberLikeRepository;
 import com.hwarrk.repository.MemberRepository;
@@ -56,7 +56,7 @@ class MemberServiceTest {
     @Autowired
     private EntityFacade entityFacade;
     @Autowired
-    private TokenProvider tokenProvider;
+    private TokenUtil tokenUtil;
     @Autowired
     private RedisTokenUtil redisTokenUtil;
 
@@ -166,8 +166,8 @@ class MemberServiceTest {
     @Test
     void 로그아웃_성공() {
         //given
-        String accessToken = tokenProvider.issueAccessToken(member_01.getId());
-        String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
+        String accessToken = tokenUtil.issueAccessToken(member_01.getId());
+        String refreshToken = tokenUtil.issueRefreshToken(member_01.getId());
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(accessHeader, "Bearer " + accessToken);
@@ -184,8 +184,8 @@ class MemberServiceTest {
     @Test
     void 블랙리스트_검증_성공() {
         //given
-        String accessToken = tokenProvider.issueAccessToken(member_01.getId());
-        String refreshToken = tokenProvider.issueRefreshToken(member_01.getId());
+        String accessToken = tokenUtil.issueAccessToken(member_01.getId());
+        String refreshToken = tokenUtil.issueRefreshToken(member_01.getId());
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(accessHeader, "Bearer " + accessToken);

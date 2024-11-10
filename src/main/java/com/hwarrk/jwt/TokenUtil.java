@@ -27,7 +27,7 @@ import java.util.Optional;
 @Getter
 @Component
 @RequiredArgsConstructor
-public class TokenProvider {
+public class TokenUtil {
     @Value("${jwt.secret}")
     private String secretKey;
     @Value("${jwt.access.expiration}")

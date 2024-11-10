@@ -1,9 +1,10 @@
 package com.hwarrk.common.interceptor;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.jwt.TokenProvider;
+import com.hwarrk.jwt.TokenUtil;
 import com.hwarrk.redis.RedisTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,14 +15,14 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
+import static org.springframework.messaging.simp.stomp.StompCommand.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class InboundChannelInterceptor implements ChannelInterceptor {
 
-    private final TokenProvider tokenProvider;
+    private final TokenUtil tokenUtil;
     private final RedisTokenUtil redisTokenUtil;
 
     @Override
@@ -29,14 +30,14 @@ public class InboundChannelInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand command = accessor.getCommand();
 
-        if (command == CONNECT)
+        if (command == CONNECT || command == SEND)
             validateToken(accessor);
 
         return message;
     }
 
     private void validateToken(StompHeaderAccessor accessor) {
-        String token = tokenProvider.extractToken(accessor, TokenType.ACCESS_TOKEN);
+        String token = tokenUtil.extractToken(accessor, TokenType.ACCESS_TOKEN);
 
         if (token == null || token.isBlank()) {
             log.error(ErrorStatus.MISSING_ACCESS_TOKEN.getMessage());
@@ -48,6 +49,9 @@ public class InboundChannelInterceptor implements ChannelInterceptor {
             throw new GeneralHandler(ErrorStatus.BLACKLISTED_TOKEN);
         }
 
-        tokenProvider.decodedJWT(token);
+        DecodedJWT decodedJWT = tokenUtil.decodedJWT(token);
+        Long id = decodedJWT.getClaim("id").asLong();
+
+        accessor.getSessionAttributes().put("memberId", id);
     }
 }

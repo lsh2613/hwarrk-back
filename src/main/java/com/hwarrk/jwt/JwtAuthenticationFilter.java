@@ -24,7 +24,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final TokenProvider tokenProvider;
+    private final TokenUtil tokenUtil;
     private final RedisTokenUtil redisTokenUtil;
 
     public static final String[] whitelist = {
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
+        String token = tokenUtil.extractToken(request, TokenType.ACCESS_TOKEN);
 
         if (token == null) {
             log.error(ErrorStatus.MISSING_ACCESS_TOKEN.getMessage());
@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new GeneralHandler(ErrorStatus.BLACKLISTED_TOKEN);
         }
 
-        DecodedJWT decodedJWT = tokenProvider.decodedJWT(token);
+        DecodedJWT decodedJWT = tokenUtil.decodedJWT(token);
         Long id = decodedJWT.getClaim("id").asLong();
         Authentication authentication = new UsernamePasswordAuthenticationToken(id,null);
 

@@ -14,7 +14,7 @@ import com.hwarrk.common.dto.req.ProfileUpdateReq;
 import com.hwarrk.common.dto.res.*;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.*;
-import com.hwarrk.jwt.TokenProvider;
+import com.hwarrk.jwt.TokenUtil;
 import com.hwarrk.redis.RedisTokenUtil;
 import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.repository.MemberRepositoryCustom;
@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberRepositoryCustom memberRepositoryCustom;
     private final EntityFacade entityFacade;
-    private final TokenProvider tokenProvider;
+    private final TokenUtil tokenUtil;
     private final RedisTokenUtil redisTokenUtil;
     private final S3Uploader s3Uploader;
 
@@ -157,15 +157,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void logout(HttpServletRequest request) {
-        String accessToken = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
+        String accessToken = tokenUtil.extractToken(request, TokenType.ACCESS_TOKEN);
         addToBlackList(accessToken);
 
-        String refreshToken = tokenProvider.extractToken(request, TokenType.REFRESH_TOKEN);
+        String refreshToken = tokenUtil.extractToken(request, TokenType.REFRESH_TOKEN);
         redisTokenUtil.deleteRefreshToken(refreshToken);
     }
 
     private void addToBlackList(String accessToken) {
-        DecodedJWT decodedAccessToken = tokenProvider.decodedJWT(accessToken);
+        DecodedJWT decodedAccessToken = tokenUtil.decodedJWT(accessToken);
 
         Long accessTokenId = decodedAccessToken.getClaim("id").asLong();
         Date expiresAt = decodedAccessToken.getExpiresAt();
