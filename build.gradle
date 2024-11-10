@@ -60,6 +60,21 @@ dependencies {
 
     // mockito
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.12.0'
+
+    // 객체-JSON에 대해 직렬화/역직렬화
+    implementation 'com.fasterxml.jackson.core:jackson-core:latest.release'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:latest.release'
+
+    // 채팅
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp' // 외부 메시지 브로커 사용 ex) rabbitmq
+    implementation 'org.springframework:spring-messaging' // 메시지 처리 기능 ex) @MessageMapping
+    implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:3.0.0' // rabbitmq와의 비동기 네트워크 처리
+
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64' // netty-macOS 호환
+
+    // mongoDB
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 
 // Querydsl 설정부

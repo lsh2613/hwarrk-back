@@ -4,7 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.redis.RedisTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,14 +24,15 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final TokenProvider tokenProvider;
-    private final RedisUtil redisUtil;
+    private final TokenUtil tokenUtil;
+    private final RedisTokenUtil redisTokenUtil;
 
     public static final String[] whitelist = {
             "/oauth**",
             "/resources/**", "/favicon.ico", // resource
             "/swagger-ui/**", "/api-docs/**", "/v3/api-docs**", "/v3/api-docs/**" , // swagger
             "/h2-console", "/h2-console/**", // h2
+            "/chat/inbox", // ws
             "/token" // 디버깅용
     };
 
@@ -42,18 +43,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = tokenProvider.extractToken(request, TokenType.ACCESS_TOKEN);
+        String token = tokenUtil.extractToken(request, TokenType.ACCESS_TOKEN);
 
         if (token == null) {
             log.error(ErrorStatus.MISSING_ACCESS_TOKEN.getMessage());
             throw new GeneralHandler(ErrorStatus.MISSING_ACCESS_TOKEN);
         }
-        if (redisUtil.isBlacklistedToken(token)) {
+        if (redisTokenUtil.isBlacklistedToken(token)) {
             log.error(ErrorStatus.BLACKLISTED_TOKEN.getMessage());
             throw new GeneralHandler(ErrorStatus.BLACKLISTED_TOKEN);
         }
 
-        DecodedJWT decodedJWT = tokenProvider.decodedJWT(token);
+        DecodedJWT decodedJWT = tokenUtil.decodedJWT(token);
         Long id = decodedJWT.getClaim("id").asLong();
         Authentication authentication = new UsernamePasswordAuthenticationToken(id,null);
 

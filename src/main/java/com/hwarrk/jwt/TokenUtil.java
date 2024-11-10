@@ -9,13 +9,13 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorMessage;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.exception.GeneralHandler;
-import com.hwarrk.repository.MemberRepository;
-import com.hwarrk.redis.RedisUtil;
+import com.hwarrk.redis.RedisTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import java.util.Optional;
 @Getter
 @Component
 @RequiredArgsConstructor
-public class TokenProvider {
+public class TokenUtil {
     @Value("${jwt.secret}")
     private String secretKey;
     @Value("${jwt.access.expiration}")
@@ -43,8 +43,7 @@ public class TokenProvider {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String BEARER = "Bearer ";
 
-    private final MemberRepository memberRepository;
-    private final RedisUtil redisUtil;
+    private final RedisTokenUtil redisTokenUtil;
 
     public String issueAccessToken(Long memberId) {
         return JWT.create()
@@ -65,7 +64,7 @@ public class TokenProvider {
     }
 
     private void saveRefreshToken(Long memberId, String refreshToken) {
-        redisUtil.setDataExpire(refreshToken, memberId, Duration.ofDays(refreshTokenExpirationPeriod));
+        redisTokenUtil.setRefreshTokenExpire(refreshToken, memberId, Duration.ofDays(refreshTokenExpirationPeriod));
     }
 
     public String reissueAccessToken(String refreshToken) {
@@ -77,7 +76,7 @@ public class TokenProvider {
         }
 
         Long memberId = decodedJWT.getClaim("id").asLong();
-        Long value = redisUtil.getData(String.valueOf(memberId));
+        Long value = redisTokenUtil.getMemberId(refreshToken);
 
         if (memberId == null || value == null) throw new AuthenticationServiceException(ErrorMessage.TOKEN_NOT_FOUND);
         else if (!memberId.equals(value)) throw new AuthenticationServiceException(ErrorMessage.TOKEN_VERIFICATION);
@@ -106,5 +105,20 @@ public class TokenProvider {
             log.debug("AccessToken is expired: ${}", accessToken);
             throw new GeneralHandler(ErrorStatus._UNAUTHORIZED);
         }
+    }
+
+    public Long validateTokenAndGetMemberId(String token) {
+        if (token == null || token.isBlank()) {
+            log.error(ErrorStatus.MISSING_ACCESS_TOKEN.getMessage());
+            throw new GeneralHandler(ErrorStatus.MISSING_ACCESS_TOKEN);
+        }
+
+        if (redisTokenUtil.isBlacklistedToken(token)) {
+            log.error(ErrorStatus.BLACKLISTED_TOKEN.getMessage());
+            throw new GeneralHandler(ErrorStatus.BLACKLISTED_TOKEN);
+        }
+
+        DecodedJWT decodedJWT = decodedJWT(token);
+        return decodedJWT.getClaim("id").asLong();
     }
 }
