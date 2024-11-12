@@ -23,7 +23,7 @@ public class NotificationController {
 
     @Operation(summary = "모든 알림 조회", description = "첫 조회는 lastNotificationId = 0으로 호출")
     @GetMapping
-    public CustomApiResponse getNotifications(@AuthenticationPrincipal Long loginId,
+    public CustomApiResponse<SliceRes<NotificationRes>> getNotifications(@AuthenticationPrincipal Long loginId,
                                               @RequestParam Long lastNotificationId,
                                               @PageableDefault Pageable pageable) {
         SliceRes<NotificationRes> res = notificationService.getNotifications(loginId, lastNotificationId, pageable);
@@ -51,8 +51,8 @@ public class NotificationController {
 
     @Operation(summary = "안 읽은 알림 갯수 조회")
     @GetMapping("/unread")
-    public CustomApiResponse countUnreadNotifications(@AuthenticationPrincipal Long loginId) {
-        int cnt = notificationService.countUnreadNotifications(loginId);
+    public CustomApiResponse<Integer> countUnreadNotifications(@AuthenticationPrincipal Long loginId) {
+        Integer cnt = notificationService.countUnreadNotifications(loginId);
         return CustomApiResponse.onSuccess(cnt);
     }
 

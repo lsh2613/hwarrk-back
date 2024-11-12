@@ -128,8 +128,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public PageRes getMembers(Long memberId, ProfileCond cond, Pageable pageable) {
-        ContentWithTotalDto memberPageWithTotalDto = memberRepositoryCustom.getFilteredMemberPage(memberId, cond, pageable);
+    public PageRes<MemberRes> getFilteredMemberCard(Long memberId, ProfileCond cond, Pageable pageable) {
+        ContentWithTotalDto memberPageWithTotalDto = memberRepositoryCustom.getFilteredMemberCard(memberId, cond, pageable);
 
         List<MemberRes> memberRes = memberPageWithTotalDto.memberPage().stream().map(MemberWithLikeDto -> {
                     Member member = MemberWithLikeDto.member();

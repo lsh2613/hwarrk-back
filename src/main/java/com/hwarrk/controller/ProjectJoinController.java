@@ -38,7 +38,7 @@ public class ProjectJoinController {
 
     // 프로젝트의 신청자 현황
     @GetMapping("{projectJoinId}/application")
-    public CustomApiResponse getProjectJoins(@AuthenticationPrincipal Long loginId,
+    public CustomApiResponse<PageRes<ProjectJoinRes>> getProjectJoins(@AuthenticationPrincipal Long loginId,
                                              @PathVariable Long projectJoinId,
                                              @PageableDefault Pageable pageable) {
         PageRes<ProjectJoinRes> pageRes = projectJoinService.getProjectJoins(loginId, projectJoinId, pageable);
@@ -47,7 +47,7 @@ public class ProjectJoinController {
 
     // 내가 지원한 현황
     @GetMapping("my-application")
-    public CustomApiResponse getMyProjectJoins(@AuthenticationPrincipal Long loginId,
+    public CustomApiResponse<PageRes<ProjectJoinRes>> getMyProjectJoins(@AuthenticationPrincipal Long loginId,
                                                @PageableDefault Pageable pageable) {
         PageRes<ProjectJoinRes> pageRes = projectJoinService.getMyProjectJoins(loginId, pageable);
         return CustomApiResponse.onSuccess(pageRes);

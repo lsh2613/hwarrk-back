@@ -2,12 +2,15 @@ package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.res.ChatRoomCreateRes;
+import com.hwarrk.common.dto.res.ChatRoomRes;
 import com.hwarrk.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class ChatRoomController {
                     @ApiResponse(responseCode = "MEMBER4001", description = "사용자를 찾을 수 없습니다"),
             })
     @GetMapping
-    public CustomApiResponse getChatRooms(@AuthenticationPrincipal Long loginId) {
+    public CustomApiResponse<List<ChatRoomRes>> getChatRooms(@AuthenticationPrincipal Long loginId) {
         return CustomApiResponse.onSuccess(chatRoomService.getChatRooms(loginId));
     }
 

@@ -11,5 +11,5 @@ public interface NotificationService {
     SliceRes<NotificationRes> getNotifications(Long memberId, Long lastNotificationId, Pageable pageable);
     void readNotification(Long memberId, Long notificationId);
     void readNotifications(Long memberId);
-    int countUnreadNotifications(Long loginId);
+    Integer countUnreadNotifications(Long loginId);
 }

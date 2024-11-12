@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public int countUnreadNotifications(Long loginId) {
+    public Integer countUnreadNotifications(Long loginId) {
         return notificationRepository.countByMemberIdAndIsReadFalse(loginId);
     }
 }

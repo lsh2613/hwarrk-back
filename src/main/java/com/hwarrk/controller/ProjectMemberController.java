@@ -28,7 +28,7 @@ public class ProjectMemberController {
                     @ApiResponse(responseCode = "PROJECT4001", description = "프로젝트를 찾을 수 없습니다")
             })
     @GetMapping("/projects/{projectId}")
-    public CustomApiResponse getMembersInProject(@AuthenticationPrincipal Long loginId,
+    public CustomApiResponse<List<MemberRes>> getMembersInProject(@AuthenticationPrincipal Long loginId,
                                                  @PathVariable Long projectId) {
         List<MemberRes> memberResList = projectMemberService.getMembersInProject(loginId, projectId);
         return CustomApiResponse.onSuccess(memberResList);
@@ -36,7 +36,7 @@ public class ProjectMemberController {
 
     @Operation(summary = "내가 참여 중인 프로젝트 조회")
     @GetMapping
-    public CustomApiResponse getMyProjects(@AuthenticationPrincipal Long loginId) {
+    public CustomApiResponse<List<ProjectRes>> getMyProjects(@AuthenticationPrincipal Long loginId) {
         List<ProjectRes> projectResList = projectMemberService.getMyProjects(loginId);
         return CustomApiResponse.onSuccess(projectResList);
     }

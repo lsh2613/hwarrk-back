@@ -3,6 +3,7 @@ package com.hwarrk.controller;
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.constant.LikeType;
 import com.hwarrk.common.dto.res.SliceRes;
+import com.hwarrk.entity.MemberLike;
 import com.hwarrk.service.MemberLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,10 +39,10 @@ public class MemberLikeController {
 
     @Operation(summary = "프로필 찜목록 조회")
     @GetMapping
-    public CustomApiResponse getLikedMembers(@AuthenticationPrincipal Long loginId,
-                                             @RequestParam Long lastMemberLikeId,
-                                             @PageableDefault Pageable pageable) {
-        SliceRes res = memberLikeService.getLikedMemberSlice(loginId, lastMemberLikeId, pageable);
+    public CustomApiResponse<SliceRes<MemberRes>> getLikedMembers(@AuthenticationPrincipal Long loginId,
+                                                                  @RequestParam Long lastMemberLikeId,
+                                                                  @PageableDefault Pageable pageable) {
+        SliceRes<MemberRes> res = memberLikeService.getLikedMemberSlice(loginId, lastMemberLikeId, pageable);
         return CustomApiResponse.onSuccess(res);
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    int countByMemberIdAndIsReadFalse(Long memberId);
+    Integer countByMemberIdAndIsReadFalse(Long memberId);
 
     List<Notification> findAllByMemberId(Long memberId);
 

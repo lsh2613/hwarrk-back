@@ -3,6 +3,7 @@ package com.hwarrk.controller;
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.ProfileUpdateReq;
+import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProfileRes;
@@ -58,22 +59,22 @@ public class MemberController {
 
     @Operation(summary = "나의 프로필 조회")
     @GetMapping("/my-profile")
-    public CustomApiResponse getMyProfile(@AuthenticationPrincipal Long loginId) {
+    public CustomApiResponse<MyProfileRes> getMyProfile(@AuthenticationPrincipal Long loginId) {
         MyProfileRes res = memberService.getMyProfile(loginId);
         return CustomApiResponse.onSuccess(res);
     }
 
     @Operation(summary = "남의 프로필 조회")
     @GetMapping("{memberId}")
-    public CustomApiResponse getProfile(@AuthenticationPrincipal Long loginId,
-                                        @PathVariable Long memberId) {
+    public CustomApiResponse<ProfileRes> getProfile(@AuthenticationPrincipal Long loginId,
+                                                    @PathVariable Long memberId) {
         ProfileRes res = memberService.getProfile(loginId, memberId);
         return CustomApiResponse.onSuccess(res);
     }
 
     @Operation(summary = "프로필 허브 조회")
     @GetMapping
-    public CustomApiResponse getProfileHub(@AuthenticationPrincipal Long loginId,
+    public CustomApiResponse<PageRes<MemberRes>> getProfileHub(@AuthenticationPrincipal Long loginId,
                                            @RequestBody ProfileCond cond,
                                            @PageableDefault Pageable pageable) {
         PageRes res = memberService.getMembers(loginId, cond, pageable);

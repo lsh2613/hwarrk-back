@@ -36,7 +36,7 @@ public class ProjectLikeController {
 
     @Operation(summary = "프로젝트 찜목록 조회")
     @GetMapping
-    public CustomApiResponse getLikedProjects(@AuthenticationPrincipal Long loginId,
+    public CustomApiResponse<SliceRes> getLikedProjects(@AuthenticationPrincipal Long loginId,
                                              @RequestParam Long lastProjectLikeId,
                                              @PageableDefault Pageable pageable) {
         SliceRes res = projectLikeService.getLikedProjectSlice(loginId, lastProjectLikeId, pageable);
