@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface MemberService {
     void logout(HttpServletRequest request);
     void deleteMember(Long loginId);
-    void updateMember(Long loginId, ProfileUpdateReq req, MultipartFile image);
+    void updateProfile(Long loginId, ProfileUpdateReq req, MultipartFile image);
     MyProfileRes getMyProfile(Long memberId);
     ProfileRes getProfile(Long loginId, Long memberId);
     PageRes<MemberRes> getFilteredMemberCard(Long memberId, ProfileCond cond, Pageable pageable);

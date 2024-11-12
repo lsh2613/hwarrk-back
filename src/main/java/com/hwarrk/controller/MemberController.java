@@ -49,7 +49,7 @@ public class MemberController {
     public CustomApiResponse updateProfile(@AuthenticationPrincipal Long loginId,
                                            @RequestPart ProfileUpdateReq profileUpdateReq,
                                            @RequestPart(value = "image", required = false) MultipartFile image) {
-        memberService.updateMember(loginId, profileUpdateReq, image);
+        memberService.updateProfile(loginId, profileUpdateReq, image);
         return CustomApiResponse.onSuccess();
     }
 
@@ -71,10 +71,10 @@ public class MemberController {
 
     @Operation(summary = "프로필 허브 조회")
     @GetMapping
-    public CustomApiResponse<PageRes<MemberRes>> getProfileHub(@AuthenticationPrincipal Long loginId,
-                                           @RequestBody ProfileCond cond,
-                                           @PageableDefault Pageable pageable) {
-        PageRes res = memberService.getMembers(loginId, cond, pageable);
+    public CustomApiResponse<PageRes<MemberRes>> getFilteredMemberCard(@AuthenticationPrincipal Long loginId,
+                                                                   @RequestBody ProfileCond cond,
+                                                                   @PageableDefault Pageable pageable) {
+        PageRes<MemberRes> res = memberService.getFilteredMemberCard(loginId, cond, pageable);
         return CustomApiResponse.onSuccess(res);
     }
 

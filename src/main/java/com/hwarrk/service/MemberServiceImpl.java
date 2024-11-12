@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(Long loginId, ProfileUpdateReq profileUpdateReq, MultipartFile image) {
+    public void updateProfile(Long loginId, ProfileUpdateReq profileUpdateReq, MultipartFile image) {
         Member member = entityFacade.getMember(loginId);
 
         String imageUrl = updateMemberImage(image, member);

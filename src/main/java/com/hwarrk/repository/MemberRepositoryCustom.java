@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepositoryCustom {
     Member getMyProfile(Long memberId);
 
-    ContentWithTotalDto getFilteredMemberPage(Long memberId, ProfileCond cond, Pageable pageable);
+    ContentWithTotalDto getFilteredMemberCard(Long memberId, ProfileCond cond, Pageable pageable);
 
     List<MemberWithLikeDto> findRecommendedMembers(List<SkillType> skills, Long memberId);
 
