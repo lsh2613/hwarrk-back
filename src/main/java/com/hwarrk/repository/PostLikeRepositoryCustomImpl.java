@@ -21,7 +21,7 @@ public class PostLikeRepositoryCustomImpl implements PostLikeRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PostLike> getPostLikeSliceInfo(Long memberId, Long lastPostLikeId, Pageable pageable) {
+    public List<PostLike> getPostLikes(Long memberId, Long lastPostLikeId, Pageable pageable) {
         return jpaQueryFactory
                 .select(postLike)
                 .from(postLike)

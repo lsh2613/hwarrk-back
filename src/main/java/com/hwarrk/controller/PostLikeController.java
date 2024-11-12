@@ -36,10 +36,10 @@ public class PostLikeController {
 
     @Operation(summary = "구인글 찜목록 조회")
     @GetMapping
-    public CustomApiResponse getLikedPosts(@AuthenticationPrincipal Long loginId,
-                                           @RequestParam Long lastPostLikeId,
-                                           @PageableDefault Pageable pageable) {
-        SliceRes res = postLikeService.getLikedPostSlice(loginId, lastPostLikeId, pageable);
+    public CustomApiResponse getMyLikedPostCards(@AuthenticationPrincipal Long loginId,
+                                                 @RequestParam Long lastPostLikeId,
+                                                 @PageableDefault Pageable pageable) {
+        SliceRes res = postLikeService.getMyLikedPostCards(loginId, lastPostLikeId, pageable);
         return CustomApiResponse.onSuccess(res);
     }
 }

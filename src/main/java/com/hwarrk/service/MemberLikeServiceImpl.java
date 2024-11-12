@@ -47,8 +47,8 @@ public class MemberLikeServiceImpl implements MemberLikeService {
     }
 
     @Override
-    public SliceRes<MemberRes> getLikedMemberSlice(Long memberId, Long lastMemberLikeId, Pageable pageable) {
-        List<MemberLike> memberLikes = memberLikeRepositoryCustom.getMemberLikeSliceInfo(memberId, lastMemberLikeId, pageable);
+    public SliceRes<MemberRes> getMyLikedMemberCards(Long memberId, Long lastMemberLikeId, Pageable pageable) {
+        List<MemberLike> memberLikes = memberLikeRepositoryCustom.getMemberLikes(memberId, lastMemberLikeId, pageable);
 
         List<MemberRes> memberResList = memberLikes.stream()
                 .map(memberLike -> {

@@ -21,7 +21,7 @@ public class MemberLikeRepositoryCustomImpl implements MemberLikeRepositoryCusto
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<MemberLike> getMemberLikeSliceInfo(Long memberId, Long lastMemberLikeId, Pageable pageable) {
+    public List<MemberLike> getMemberLikes(Long memberId, Long lastMemberLikeId, Pageable pageable) {
         return jpaQueryFactory
                 .select(memberLike)
                 .from(memberLike)

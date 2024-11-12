@@ -37,10 +37,10 @@ public class ProjectLikeController {
 
     @Operation(summary = "프로젝트 찜목록 조회")
     @GetMapping
-    public CustomApiResponse<SliceRes> getLikedProjects(@AuthenticationPrincipal Long loginId,
-                                                        @RequestParam Long lastProjectLikeId,
-                                                        @PageableDefault Pageable pageable) {
-        SliceRes res = projectLikeService.getLikedProjectSlice(loginId, lastProjectLikeId, pageable);
+    public CustomApiResponse<SliceRes> getMyLikedProjectCards(@AuthenticationPrincipal Long loginId,
+                                                              @RequestParam Long lastProjectLikeId,
+                                                              @PageableDefault Pageable pageable) {
+        SliceRes res = projectLikeService.getMyLikedProjectCards(loginId, lastProjectLikeId, pageable);
         return CustomApiResponse.onSuccess(res);
     }
 }

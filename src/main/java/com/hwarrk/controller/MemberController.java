@@ -72,8 +72,8 @@ public class MemberController {
     @Operation(summary = "프로필 허브 조회")
     @GetMapping
     public CustomApiResponse<PageRes<MemberRes>> getFilteredMemberCard(@AuthenticationPrincipal Long loginId,
-                                                                   @RequestBody ProfileCond cond,
-                                                                   @PageableDefault Pageable pageable) {
+                                                                       @RequestBody ProfileCond cond,
+                                                                       @PageableDefault Pageable pageable) {
         PageRes<MemberRes> res = memberService.getFilteredMemberCard(loginId, cond, pageable);
         return CustomApiResponse.onSuccess(res);
     }

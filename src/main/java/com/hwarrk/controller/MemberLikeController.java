@@ -38,10 +38,10 @@ public class MemberLikeController {
 
     @Operation(summary = "프로필 찜목록 조회")
     @GetMapping
-    public CustomApiResponse<SliceRes<MemberRes>> getLikedMembers(@AuthenticationPrincipal Long loginId,
-                                                                  @RequestParam Long lastMemberLikeId,
-                                                                  @PageableDefault Pageable pageable) {
-        SliceRes<MemberRes> res = memberLikeService.getLikedMemberSlice(loginId, lastMemberLikeId, pageable);
+    public CustomApiResponse<SliceRes<MemberRes>> getMyLikedMemberCards(@AuthenticationPrincipal Long loginId,
+                                                                        @RequestParam Long lastMemberLikeId,
+                                                                        @PageableDefault Pageable pageable) {
+        SliceRes<MemberRes> res = memberLikeService.getMyLikedMemberCards(loginId, lastMemberLikeId, pageable);
         return CustomApiResponse.onSuccess(res);
     }
 

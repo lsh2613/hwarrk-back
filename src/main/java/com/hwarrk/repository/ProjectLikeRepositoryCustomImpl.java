@@ -19,7 +19,7 @@ public class ProjectLikeRepositoryCustomImpl implements ProjectLikeRepositoryCus
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ProjectLike> getProjectLikeSliceInfo(Long memberId, Long lastProjectLikeId, Pageable pageable) {
+    public List<ProjectLike> getProjectLikes(Long memberId, Long lastProjectLikeId, Pageable pageable) {
         return jpaQueryFactory
                 .select(projectLike)
                 .from(projectLike)

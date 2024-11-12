@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface PostLikeService {
     void likePost(Long loginId, Long postId, LikeType likeType);
-    SliceRes getLikedPostSlice(Long loginId, Long lastPostLikeId, Pageable pageable);
+    SliceRes getMyLikedPostCards(Long loginId, Long lastPostLikeId, Pageable pageable);
 }
