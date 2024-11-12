@@ -179,7 +179,7 @@ public class Project extends BaseEntity {
 
     public boolean isProjectLeader(Long loginId) {
         if (!leader.isSameId(loginId)) {
-            throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
+            throw new GeneralHandler(ErrorStatus.PROJECT_LEADER_REQUIRED);
         }
         return true;
     }

@@ -29,11 +29,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "로그아웃",
-            description = "헤더로 AccessToken과 RefreshToken을 담아 요청, 로그아웃 시 Req에 넘어오는 token은 블랙리스트 토큰으로 관리하여 재사용을 막음",
-            responses = {
-                    @ApiResponse(responseCode = "COMMON200", description = "로그아웃 성공"),
-                    @ApiResponse(responseCode = "TOKEN4003", description = "토큰의 사용자와 로그인된 사용자가 일치하지 않습니다")
-            })
+            description = "헤더로 AccessToken과 RefreshToken을 담아 요청, 로그아웃 시 Req에 넘어오는 token은 블랙리스트 토큰으로 관리하여 재사용을 막음")
     @PostMapping("/logout")
     public CustomApiResponse logout(HttpServletRequest request,
                                     @AuthenticationPrincipal Long loginId) {
@@ -65,6 +61,7 @@ public class MemberController {
     }
 
     @Operation(summary = "남의 프로필 조회")
+    @ApiResponse(responseCode = "MEMBER4041", description = "사용자를 찾을 수 없습니다")
     @GetMapping("{memberId}")
     public CustomApiResponse<ProfileRes> getProfile(@AuthenticationPrincipal Long loginId,
                                                     @PathVariable Long memberId) {

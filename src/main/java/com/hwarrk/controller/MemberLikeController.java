@@ -2,8 +2,8 @@ package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.constant.LikeType;
+import com.hwarrk.common.dto.res.MemberRes;
 import com.hwarrk.common.dto.res.SliceRes;
-import com.hwarrk.entity.MemberLike;
 import com.hwarrk.service.MemberLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +24,6 @@ public class MemberLikeController {
 
     @Operation(summary = "프로필 찜하기",
             responses = {
-                    @ApiResponse(responseCode = "COMMON200", description = "찜하기 성공"),
                     @ApiResponse(responseCode = "MEMBER_LIKE4091", description = "찜이 이미 존재합니다"),
                     @ApiResponse(responseCode = "MEMBER_LIKE4041", description = "찜을 찾을 수 없습니다")
             }

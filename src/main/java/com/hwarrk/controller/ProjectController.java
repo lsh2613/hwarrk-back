@@ -13,7 +13,10 @@ import com.hwarrk.common.dto.res.SpecificProjectDetailRes;
 import com.hwarrk.common.dto.res.SpecificProjectInfoRes;
 import com.hwarrk.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -53,6 +56,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "프로젝트 수정")
+    @ApiResponse(responseCode = "PROJECT4011", description = "프로젝트 리더 권한이 필요합니다")
     @PostMapping("/{projectId}")
     public CustomApiResponse updateProject(@AuthenticationPrincipal Long loginId,
                                            @PathVariable Long projectId,
@@ -63,6 +67,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "프로젝트 삭제")
+    @ApiResponse(responseCode = "PROJECT4011", description = "프로젝트 리더 권한이 필요합니다")
     @DeleteMapping("/{projectId}")
     public CustomApiResponse deleteProject(@AuthenticationPrincipal Long loginId,
                                            @PathVariable Long projectId) {
