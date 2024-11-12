@@ -10,7 +10,7 @@ public interface ProjectJoinService {
 
     void decide(Long loginId,Long projectJoinId, ProjectJoinDecideReq projectJoinDecideReq);
 
-    PageRes getProjectJoins(Long loginId, Long projectJoinId, Pageable pageable);
+    PageRes getProjectJoins(Long loginId, Long projectId, Pageable pageable);
 
     PageRes getMyProjectJoins(Long loginId, Pageable pageable);
 }

@@ -14,9 +14,9 @@ import java.util.Optional;
 
 @Repository
 public interface ProjectJoinRepository extends JpaRepository<ProjectJoin, Long> {
-    Optional<ProjectJoin> findByProject_idAndMember_Id(Long projectId, Long memberId);
-    Page<ProjectJoin> findAllByMember_IdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
-    Page<ProjectJoin> findAllByProject_IdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
+    Optional<ProjectJoin> findByProjectIdAndMemberId(Long projectId, Long memberId);
+    Page<ProjectJoin> findAllByMemberIdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
+    Page<ProjectJoin> findAllByProjectIdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
 
     @Query("SELECT new com.hwarrk.common.dto.dto.ProjectJoinWithLikeDto(pj, "
             + "CASE WHEN pl.id IS NOT NULL THEN true ELSE false END) "

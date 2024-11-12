@@ -19,10 +19,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -121,6 +123,7 @@ public class Project extends BaseEntity {
         this.name = name;
         this.description = description;
         this.leader = leader;
+        this.projectMembers = new LinkedHashSet<>();
     }
 
     @Builder

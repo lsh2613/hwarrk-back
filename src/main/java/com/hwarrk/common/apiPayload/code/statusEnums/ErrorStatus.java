@@ -36,7 +36,7 @@ public enum ErrorStatus implements BaseCode {
     MEMBER_LIKE_CONFLICT(HttpStatus.CONFLICT, "MEMBER_LIKE4091", "찜이 이미 존재합니다."),
 
     // 사용자 리뷰
-    PROJECT_MEMBER_ONLY_CAN_REVIEW(HttpStatus.BAD_REQUEST, "MEMBER_REVIEW4001", "프로젝트의 팀원만 리뷰를 작성할 수 있습니다"),
+    PROJECT_MEMBER_ONLY_CAN_REVIEW(HttpStatus.BAD_REQUEST, "MEMBER_REVIEW4001", "같은 프로젝트의 팀원끼리만 리뷰를 작성할 수 있습니다."),
     MEMBER_REVIEW_CONFLICT(HttpStatus.CONFLICT, "MEMBER_REVIEW4091", "리뷰가 이미 존재합니다."),
     SELF_REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER_REVIEW4031", "자신에 대한 리뷰는 작성할 수 없습니다."),
 
@@ -57,6 +57,7 @@ public enum ErrorStatus implements BaseCode {
     // 프로젝트-팀원
     PROJECT_LEADER_CANNOT_BE_REMOVED(HttpStatus.BAD_REQUEST, "PROJECT_MEMBER4001", "프로젝트 리더는 추방될 수 없습니다."),
     PROJECT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_MEMBER4041", "프로젝트 팀원을 찾을 수 없습니다."),
+    PROJECT_MEMBER_CONFLICT(HttpStatus.CONFLICT, "PROJECT_MEMBER4091", "프로젝트 팀원이 이미 존재합니다."),
 
 
     // 구인글
