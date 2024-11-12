@@ -72,7 +72,7 @@ class ProjectJoinServiceTest {
     void 프로젝트_지원_신청_성공() {
         //given
         Project project = createProject(name, description, member_01);
-        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.JOIN);
+        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.JOIN, PositionType.ANDROID);
 
         //when
         projectJoinService.applyJoin(member_02.getId(), req);
@@ -86,23 +86,10 @@ class ProjectJoinServiceTest {
     }
 
     @Test
-    void 프로젝트_지원_신청_실패_01() {
+    void 프로젝트_지원_신청_실패() {
         //given
         Project project = createProject(name, description, member_01);
-        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.JOIN);
-
-        //when
-
-        //then
-        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.applyJoin(member_01.getId(), req));
-        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.MEMBER_FORBIDDEN);
-    }
-
-    @Test
-    void 프로젝트_지원_신청_실패_02() {
-        //given
-        Project project = createProject(name, description, member_01);
-        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.JOIN);
+        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.JOIN, PositionType.ANDROID);
 
         //when
         projectJoinService.applyJoin(member_02.getId(), req);
@@ -117,7 +104,7 @@ class ProjectJoinServiceTest {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinRepository.save(new ProjectJoin(null, project, member_02));
-        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.CANCEL);
+        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.CANCEL, PositionType.ANDROID);
 
         //when
         projectJoinService.applyJoin(member_02.getId(), req);
@@ -131,7 +118,7 @@ class ProjectJoinServiceTest {
     void 프로젝트_지원_취소_실패() {
         //given
         Project project = createProject(name, description, member_01);
-        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.CANCEL);
+        ProjectJoinApplyReq req = new ProjectJoinApplyReq(project.getId(), JoinType.CANCEL, PositionType.ANDROID);
 
         //when
 
@@ -144,13 +131,12 @@ class ProjectJoinServiceTest {
     void 프로젝트_신청_수락_성공() {
         //given
         Project project = createProject(name, description, member_01);
-        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN, PositionType.ANDROID));
 
         ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.ACCEPT, PositionType.PM);
 
         //when
-        projectJoinService.decide(member_01.getId(), projectJoin.getId(), req);
+        projectJoinService.decide(member_01.getId(), projectJoin.getId(), JoinDecide.ACCEPT);
 
         //then
         List<ProjectJoin> projectJoins= projectJoinRepository.findAll();
@@ -167,29 +153,27 @@ class ProjectJoinServiceTest {
     void 프로젝트_신청_수락_실패() {
         //given
         Project project = createProject(name, description, member_01);
-        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN, PositionType.ANDROID));
 
         ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
 
         //then
-        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), projectJoin.getId(), req));
-        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.MEMBER_FORBIDDEN);
+        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), projectJoin.getId(), JoinDecide.REJECT));
+        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.PROJECT_LEADER_REQUIRED);
     }
 
     @Test
     void 프로젝트_신청_거절_성공() {
         //given
         Project project = createProject(name, description, member_01);
-        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN, PositionType.ANDROID));
 
         ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
-        projectJoinService.decide(member_01.getId(), projectJoin.getId(), req);
+        projectJoinService.decide(member_01.getId(), projectJoin.getId(), JoinDecide.REJECT);
 
         //then
         List<ProjectJoin> projectJoins= projectJoinRepository.findAll();
@@ -203,24 +187,22 @@ class ProjectJoinServiceTest {
     void 프로젝트_신청_거절_실패() {
         //given
         Project project = createProject(name, description, member_01);
-        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN));
+        projectJoinService.applyJoin(member_02.getId(), new ProjectJoinApplyReq(project.getId(), JoinType.JOIN, PositionType.ANDROID));
 
         ProjectJoin projectJoin = projectJoinRepository.findAll().get(0);
-        ProjectJoinDecideReq req = new ProjectJoinDecideReq(JoinDecide.REJECT, PositionType.PM);
 
         //when
 
         //then
-        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), projectJoin.getId(), req));
-        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.MEMBER_FORBIDDEN);
+        GeneralHandler e = assertThrows(GeneralHandler.class, () -> projectJoinService.decide(member_02.getId(), projectJoin.getId(), JoinDecide.REJECT));
+        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.PROJECT_LEADER_REQUIRED);
     }
 
     @Test
-    void 프로젝트_신청자_조회() throws InterruptedException {
+    void 프로젝트_신청자_조회() {
         //given
         Project project = createProject(name, description, member_01);
         projectJoinRepository.save(new ProjectJoin(null, project, member_02));
-        sleep(1000);
         projectJoinRepository.save(new ProjectJoin(null, project, member_03));
 
         PageRequest pageable = PageRequest.of(0, 1);

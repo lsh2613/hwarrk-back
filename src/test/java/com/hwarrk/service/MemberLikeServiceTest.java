@@ -106,8 +106,8 @@ class MemberLikeServiceTest {
         memberLikeService.likeMember(member_01.getId(), member_03.getId(), LikeType.LIKE);
 
         //when
-        SliceRes res_01 = memberLikeService.getLikedMemberSlice(member_01.getId(), null, PageRequest.of(0, 1));
-        SliceRes res_02 = memberLikeService.getLikedMemberSlice(member_01.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
+        SliceRes res_01 = memberLikeService.getMyLikedMemberCards(member_01.getId(), null, PageRequest.of(0, 1));
+        SliceRes res_02 = memberLikeService.getMyLikedMemberCards(member_01.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
 
         //then
         List<MemberLike> all = memberLikeRepository.findAll();
