@@ -8,12 +8,14 @@ import com.hwarrk.common.dto.res.ProjectJoinRes;
 import com.hwarrk.service.ProjectJoinService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "프로젝트")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/project-joins")

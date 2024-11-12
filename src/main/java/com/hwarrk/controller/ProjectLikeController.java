@@ -6,12 +6,14 @@ import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.service.ProjectLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "프로젝트 찜")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/project-likes")
@@ -35,7 +37,7 @@ public class ProjectLikeController {
         return CustomApiResponse.onSuccess();
     }
 
-    @Operation(summary = "프로젝트 찜목록 조회")
+    @Operation(summary = "나의 프로젝트 찜목록 조회")
     @GetMapping
     public CustomApiResponse<SliceRes> getMyLikedProjectCards(@AuthenticationPrincipal Long loginId,
                                                               @RequestParam Long lastProjectLikeId,

@@ -6,6 +6,7 @@ import com.hwarrk.common.dto.res.MessageRes;
 import com.hwarrk.service.ChatMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.List;
 
+@Tag(name = "채팅 메시지")
 @RestController
 @RequiredArgsConstructor
 public class ChatMessageController {

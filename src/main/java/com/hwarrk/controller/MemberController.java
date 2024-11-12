@@ -10,6 +10,7 @@ import com.hwarrk.common.dto.res.ProfileRes;
 import com.hwarrk.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Tag(name = "유저/프로필")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -44,7 +46,15 @@ public class MemberController {
         return CustomApiResponse.onSuccess();
     }
 
-    @Operation(summary = "프로필 작성")
+    @Operation(summary = "프로필 작성/수정",
+            responses = {
+                    @ApiResponse(responseCode = "PROJECT4001", description = "프로젝트를 찾을 수 없습니다"),
+                    @ApiResponse(responseCode = "S400", description = "잘못된 이미지 데이터입니다"),
+                    @ApiResponse(responseCode = "S401", description = "S3 접근 인증에 실패했습니다"),
+                    @ApiResponse(responseCode = "S403", description = "S3 권한을 가지고 있지 않습니다"),
+                    @ApiResponse(responseCode = "S5001", description = "S3에 이미지 업로드를 실패했습니다"),
+                    @ApiResponse(responseCode = "S503", description = "S3 서버가 일시적으로 데이터를 처리할 수 없습니다"),
+            })
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public CustomApiResponse updateProfile(@AuthenticationPrincipal Long loginId,
                                            @RequestPart ProfileUpdateReq profileUpdateReq,
