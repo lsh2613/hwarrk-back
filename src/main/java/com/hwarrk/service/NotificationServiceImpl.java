@@ -68,10 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void readNotification(Long memberId, Long notificationId) {
         Notification notification = entityFacade.getNotification(notificationId);
 
-        if (!memberId.equals(notification.getMember().getId()))
-            throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
-
-        notificationRepository.markAsRead(notificationId);
+        notificationRepository.markAsRead(notification.getId());
     }
 
     @Override
