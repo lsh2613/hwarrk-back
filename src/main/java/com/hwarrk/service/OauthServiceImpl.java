@@ -1,6 +1,5 @@
 package com.hwarrk.service;
 
-import com.hwarrk.common.constant.Role;
 import com.hwarrk.common.dto.res.OauthLoginRes;
 import com.hwarrk.entity.Member;
 import com.hwarrk.jwt.TokenUtil;
@@ -32,14 +31,9 @@ public class OauthServiceImpl implements OauthService {
 
         Member member = byOauthProviderAndSocialId.orElseGet(() -> memberRepository.save(new Member(request)));
 
-        String accessToken = null;
-        String refreshToken = null;
+        String accessToken = tokenUtil.issueAccessToken(member.getId());
+        String refreshToken = tokenUtil.issueRefreshToken(member.getId());
 
-        if (member.getRole() == Role.USER) {
-            accessToken = tokenUtil.issueAccessToken(member.getId());
-            refreshToken = tokenUtil.issueRefreshToken(member.getId());
-        }
-
-        return new OauthLoginRes(member.getId(), member.getRole(), accessToken, refreshToken);
+        return OauthLoginRes.createRes(accessToken, refreshToken);
     }
 }
