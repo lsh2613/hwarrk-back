@@ -1,8 +1,8 @@
 package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
+import com.hwarrk.common.constant.JoinDecide;
 import com.hwarrk.common.dto.req.ProjectJoinApplyReq;
-import com.hwarrk.common.dto.req.ProjectJoinDecideReq;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectJoinRes;
 import com.hwarrk.service.ProjectJoinService;
@@ -47,8 +47,8 @@ public class ProjectJoinController {
     @PostMapping("{projectJoinId}/decision")
     public CustomApiResponse decideJoin(@AuthenticationPrincipal Long loginId,
                                         @PathVariable Long projectJoinId,
-                                        @RequestBody ProjectJoinDecideReq projectJoinDecideReq) {
-        projectJoinService.decide(loginId, projectJoinId, projectJoinDecideReq);
+                                        @RequestParam JoinDecide joinDecide) {
+        projectJoinService.decide(loginId, projectJoinId, joinDecide);
         return CustomApiResponse.onSuccess();
     }
 

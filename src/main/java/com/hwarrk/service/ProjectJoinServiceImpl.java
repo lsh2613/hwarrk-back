@@ -3,8 +3,8 @@ package com.hwarrk.service;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.JoinDecide;
+import com.hwarrk.common.constant.PositionType;
 import com.hwarrk.common.dto.req.ProjectJoinApplyReq;
-import com.hwarrk.common.dto.req.ProjectJoinDecideReq;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectJoinRes;
 import com.hwarrk.common.exception.GeneralHandler;
@@ -34,20 +34,20 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
     private final EntityFacade entityFacade;
 
     @Override
-    public void applyJoin(Long memberId, ProjectJoinApplyReq groupJoinApplyReq) {
+    public void applyJoin(Long memberId, ProjectJoinApplyReq req) {
         Member member = entityFacade.getMember(memberId);
-        Project project = entityFacade.getProject(groupJoinApplyReq.projectId());
+        Project project = entityFacade.getProject(req.projectId());
 
-        Optional<ProjectJoin> optionalProjectJoin = projectJoinRepository.findByProjectIdAndMemberId(groupJoinApplyReq.projectId(), memberId);
+        Optional<ProjectJoin> optionalProjectJoin = projectJoinRepository.findByProjectIdAndMemberId(req.projectId(), memberId);
 
-        switch (groupJoinApplyReq.joinType()) {
-            case JOIN -> handleJoin(member, project, optionalProjectJoin);
+        switch (req.joinType()) {
+            case JOIN -> handleJoin(member, project, optionalProjectJoin, req.positionType());
             case CANCEL -> handleCancel(optionalProjectJoin);
         }
     }
 
     @Override
-    public void decide(Long memberId, Long projectJoinId, ProjectJoinDecideReq projectJoinDecideReq) {
+    public void decide(Long memberId, Long projectJoinId, JoinDecide joinDecide) {
         Member member = entityFacade.getMember(memberId);
         ProjectJoin projectJoin = entityFacade.getProjectJoin(projectJoinId);
 
@@ -55,9 +55,9 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
             throw new GeneralHandler(ErrorStatus.PROJECT_LEADER_REQUIRED);
         }
 
-        if (projectJoinDecideReq.joinDecide() == JoinDecide.ACCEPT) {
+        if (joinDecide == JoinDecide.ACCEPT) {
             // todo 프로젝트 전체 인원 및 포지션 인원 비교 후
-            ProjectMember projectMember = new ProjectMember(projectJoin.getMember(), projectJoin.getProject(), projectJoinDecideReq.positionType());
+            ProjectMember projectMember = new ProjectMember(projectJoin.getMember(), projectJoin.getProject(), projectJoin.getPositionType());
             projectMemberRepository.save(projectMember);
         }
 
@@ -92,7 +92,7 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
         );
     }
 
-    private void handleJoin(Member member, Project project, Optional<ProjectJoin> optionalProjectJoin) {
+    private void handleJoin(Member member, Project project, Optional<ProjectJoin> optionalProjectJoin, PositionType positionType) {
         optionalProjectJoin.ifPresent(projectJoin -> {
             throw new GeneralHandler(ErrorStatus.PROJECT_JOIN_CONFLICT);
         });
@@ -102,6 +102,6 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
         });
 
         // todo: 프로젝트 모집 여부 확인 로직 추가
-        projectJoinRepository.save(new ProjectJoin(null, project, member));
+        projectJoinRepository.save(new ProjectJoin(positionType, project, member));
     }
 }
