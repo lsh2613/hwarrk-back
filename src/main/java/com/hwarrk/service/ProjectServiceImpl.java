@@ -14,7 +14,7 @@ import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.CareerInfoRes;
 import com.hwarrk.common.dto.res.CompleteProjectsRes;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.MyProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
@@ -75,8 +75,8 @@ public class ProjectServiceImpl implements ProjectService {
         Map<Long, Boolean> likedMembersMap = memberLikes.stream()
                 .collect(Collectors.toMap(dto -> dto.member().getId(), MemberWithLikeDto::isLiked));
 
-        List<MemberRes> memberResList = project.getProjectMembers().stream()
-                .map(pm -> MemberRes.mapEntityToRes(
+        List<MemberCardRes> memberCardResList = project.getProjectMembers().stream()
+                .map(pm -> MemberCardRes.mapEntityToRes(
                         pm.getMember(),
                         CareerInfoRes.mapEntityToRes(pm.getMember().loadCareer()),
                         likedMembersMap.getOrDefault(pm.getMember().getId(), false)
@@ -85,7 +85,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.incrementViews();
 
-        return SpecificProjectInfoRes.mapEntityToRes(project, isProjectLiked, memberResList);
+        return SpecificProjectInfoRes.mapEntityToRes(project, isProjectLiked, memberCardResList);
     }
 
     @Override

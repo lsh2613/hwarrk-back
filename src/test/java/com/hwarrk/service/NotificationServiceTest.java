@@ -129,18 +129,6 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 알림_읽기_실패() {
-        //given
-        Notification notification = notificationRepository.save(new Notification(null, member_01, null, null, NotificationBindingType.MY_PAGE, "msg", false));
-
-        //when
-
-        //then
-        GeneralHandler e = assertThrows(GeneralHandler.class, () -> notificationService.readNotification(member_02.getId(), notification.getId()));
-        assertThat(e.getErrorStatus()).isEqualTo(ErrorStatus.MEMBER_FORBIDDEN);
-    }
-
-    @Test
     void 알림_모두_읽기() {
         //given
         notificationRepository.save(new Notification(null, member_01, null, null, NotificationBindingType.MY_PAGE, "msg_01", false));

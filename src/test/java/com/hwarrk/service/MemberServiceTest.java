@@ -5,7 +5,7 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.*;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.ProfileUpdateReq;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProfileRes;
@@ -216,7 +216,7 @@ class MemberServiceTest {
                 isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
 
         //when
-        memberService.updateMember(member_01.getId(), req, null);
+        memberService.updateProfile(member_01.getId(), req, null);
 
         //then
         assertThat(member_01.getNickname()).isEqualTo(nickname);
@@ -239,7 +239,7 @@ class MemberServiceTest {
         //given
         ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, null, positions,
                 null, isVisible, null, null, projectDescriptions, externalProjectDescriptions);
-        memberService.updateMember(member_01.getId(), req, null);
+        memberService.updateProfile(member_01.getId(), req, null);
 
         String updateNickname = "홍길동";
         MemberStatus updateMemberStatus = MemberStatus.이직_구직_중;
@@ -269,7 +269,7 @@ class MemberServiceTest {
         );
 
         //when
-        memberService.updateMember(member_01.getId(), updateReq, null);
+        memberService.updateProfile(member_01.getId(), updateReq, null);
 
         //then
         assertThat(member_01.getNickname()).isEqualTo(updateNickname);
@@ -293,7 +293,7 @@ class MemberServiceTest {
         //given
         ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios,
                 positions, skills, isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
-        memberService.updateMember(member_01.getId(), req, null);
+        memberService.updateProfile(member_01.getId(), req, null);
 
         //when
         MyProfileRes res = memberService.getMyProfile(member_01.getId());
@@ -326,7 +326,7 @@ class MemberServiceTest {
         member_02.setRole(Role.USER);
         ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios,
                 positions, skills, isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
-        memberService.updateMember(member_01.getId(), req, null);
+        memberService.updateProfile(member_01.getId(), req, null);
 
         memberLikeRepository.save(new MemberLike(member_02, member_01));
 
@@ -391,28 +391,28 @@ class MemberServiceTest {
         Member member_03 = memberRepository.save(new Member("test_03", OauthProvider.KAKAO));
         ProfileUpdateReq req = new ProfileUpdateReq(nickname, memberStatus, email, introduction, portfolios,
                 positions, skills, isVisible, degrees, careers, projectDescriptions, externalProjectDescriptions);
-        memberService.updateMember(member_02.getId(), req, null);
-        memberService.updateMember(member_03.getId(), req, null);
+        memberService.updateProfile(member_02.getId(), req, null);
+        memberService.updateProfile(member_03.getId(), req, null);
 
         ProfileCond cond = new ProfileCond(PositionType.BACKEND, SkillType.SPRING, MemberStatus.사프_찾는_중, FilterType.LATEST, "LSH");
 
         memberLikeRepository.save(new MemberLike(member_01, member_02));
 
         //when
-        PageRes res = memberService.getMembers(member_01.getId(), cond, PageRequest.of(0, 2));
+        PageRes res = memberService.getFilteredMemberCard(member_01.getId(), cond, PageRequest.of(0, 2));
 
         //then
-        List<MemberRes> content = res.content();
+        List<MemberCardRes> content = res.content();
         assertThat(content.size()).isEqualTo(2);
         assertThat(res.totalElements()).isEqualTo(2);
         assertThat(res.totalPages()).isEqualTo(1);
         assertThat(res.isLast()).isTrue();
 
-        MemberRes content_01 = content.get(0); // member_03
+        MemberCardRes content_01 = content.get(0); // member_03
         assertThat(content_01.getMemberId()).isEqualTo(member_03.getId());
         assertThat(content_01.isLiked()).isFalse();
 
-        MemberRes content_02 = content.get(1); // member_02
+        MemberCardRes content_02 = content.get(1); // member_02
         assertThat(content_02.getMemberId()).isEqualTo(member_02.getId());
         assertThat(content_02.isLiked()).isTrue();
     }

@@ -121,8 +121,8 @@ class PostLikeServiceTest {
         postLikeService.likePost(member_03.getId(), post_02.getId(), LikeType.LIKE);
 
         //when
-        SliceRes res_01 = postLikeService.getLikedPostSlice(member_03.getId(), null, PageRequest.of(0, 1));
-        SliceRes res_02 = postLikeService.getLikedPostSlice(member_03.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
+        SliceRes res_01 = postLikeService.getMyLikedPostCards(member_03.getId(), null, PageRequest.of(0, 1));
+        SliceRes res_02 = postLikeService.getMyLikedPostCards(member_03.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
 
         //then
         List<PostLike> postLikes = postLikeRepository.findAll();

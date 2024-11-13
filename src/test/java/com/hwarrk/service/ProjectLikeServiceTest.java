@@ -110,8 +110,8 @@ class ProjectLikeServiceTest {
         projectLikeService.likeProject(member_02.getId(), project_02.getId(), LikeType.LIKE);
 
         //when
-        SliceRes res_01 = projectLikeService.getLikedProjectSlice(member_02.getId(), null, PageRequest.of(0, 1));
-        SliceRes res_02 = projectLikeService.getLikedProjectSlice(member_02.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
+        SliceRes res_01 = projectLikeService.getMyLikedProjectCards(member_02.getId(), null, PageRequest.of(0, 1));
+        SliceRes res_02 = projectLikeService.getMyLikedProjectCards(member_02.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
 
         //then
         List<ProjectLike> all = projectLikeRepository.findAll();

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.LikeType;
 import com.hwarrk.common.constant.OauthProvider;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
@@ -106,8 +106,8 @@ class MemberLikeServiceTest {
         memberLikeService.likeMember(member_01.getId(), member_03.getId(), LikeType.LIKE);
 
         //when
-        SliceRes res_01 = memberLikeService.getLikedMemberSlice(member_01.getId(), null, PageRequest.of(0, 1));
-        SliceRes res_02 = memberLikeService.getLikedMemberSlice(member_01.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
+        SliceRes res_01 = memberLikeService.getMyLikedMemberCards(member_01.getId(), null, PageRequest.of(0, 1));
+        SliceRes res_02 = memberLikeService.getMyLikedMemberCards(member_01.getId(), res_01.lastElementId(), PageRequest.of(0, 1));
 
         //then
         List<MemberLike> all = memberLikeRepository.findAll();
@@ -116,7 +116,7 @@ class MemberLikeServiceTest {
 
         // CreatedAt.desc()이므로 마지막에 찜된 02가 먼저 조회돼야 함
         assertThat(res_01.content().size()).isEqualTo( 1);
-        MemberRes content_01 = (MemberRes) res_01.content().get(0);
+        MemberCardRes content_01 = (MemberCardRes) res_01.content().get(0);
 
         assertThat(content_01.getMemberId()).isEqualTo(member_03.getId());
         assertThat(content_01.isLiked()).isTrue();
@@ -124,7 +124,7 @@ class MemberLikeServiceTest {
         assertThat(res_01.hasNext()).isTrue();
 
         assertThat(res_02.content().size()).isEqualTo(1);
-        MemberRes content_02 = (MemberRes) res_02.content().get(0);
+        MemberCardRes content_02 = (MemberCardRes) res_02.content().get(0);
         assertThat(content_02.getMemberId()).isEqualTo(member_02.getId());
         assertThat(content_02.isLiked()).isTrue();
         assertThat(res_02.lastElementId()).isEqualTo(memberLike_01.getId());

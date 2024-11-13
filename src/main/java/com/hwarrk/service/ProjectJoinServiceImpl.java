@@ -1,19 +1,19 @@
 package com.hwarrk.service;
 
-import com.hwarrk.entity.Member;
-import com.hwarrk.entity.Project;
-import com.hwarrk.common.dto.req.ProjectJoinApplyReq;
-import com.hwarrk.common.dto.req.ProjectJoinDecideReq;
-import com.hwarrk.common.dto.res.ProjectJoinRes;
-import com.hwarrk.entity.ProjectJoin;
-import com.hwarrk.repository.ProjectJoinRepository;
-import com.hwarrk.entity.ProjectMember;
-import com.hwarrk.repository.ProjectMemberRepository;
 import com.hwarrk.common.EntityFacade;
-import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.JoinDecide;
+import com.hwarrk.common.constant.PositionType;
+import com.hwarrk.common.dto.req.ProjectJoinApplyReq;
+import com.hwarrk.common.dto.res.PageRes;
+import com.hwarrk.common.dto.res.ProjectJoinRes;
 import com.hwarrk.common.exception.GeneralHandler;
+import com.hwarrk.entity.Member;
+import com.hwarrk.entity.Project;
+import com.hwarrk.entity.ProjectJoin;
+import com.hwarrk.entity.ProjectMember;
+import com.hwarrk.repository.ProjectJoinRepository;
+import com.hwarrk.repository.ProjectMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,28 +34,30 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
     private final EntityFacade entityFacade;
 
     @Override
-    public void applyJoin(Long memberId, ProjectJoinApplyReq groupJoinApplyReq) {
-        Optional<ProjectJoin> optionalProjectJoin = projectJoinRepository.findByProject_idAndMember_Id(groupJoinApplyReq.projectId(), memberId);
+    public void applyJoin(Long memberId, ProjectJoinApplyReq req) {
+        Member member = entityFacade.getMember(memberId);
+        Project project = entityFacade.getProject(req.projectId());
 
-        Project project = entityFacade.getProject(groupJoinApplyReq.projectId());
-        verifyNotLeader(memberId, project.getLeader().getId());
+        Optional<ProjectJoin> optionalProjectJoin = projectJoinRepository.findByProjectIdAndMemberId(req.projectId(), memberId);
 
-        switch (groupJoinApplyReq.joinType()) {
-            case JOIN -> handleJoin(memberId, optionalProjectJoin, project);
+        switch (req.joinType()) {
+            case JOIN -> handleJoin(member, project, optionalProjectJoin, req.positionType());
             case CANCEL -> handleCancel(optionalProjectJoin);
         }
     }
 
     @Override
-    public void decide(Long memberId, Long projectJoinId, ProjectJoinDecideReq projectJoinDecideReq) {
+    public void decide(Long memberId, Long projectJoinId, JoinDecide joinDecide) {
+        Member member = entityFacade.getMember(memberId);
         ProjectJoin projectJoin = entityFacade.getProjectJoin(projectJoinId);
 
-        Long leaderId = extractLeaderId(projectJoin);
-        verifyIsLeader(memberId, leaderId);
+        if (!projectJoin.getProject().isProjectLeader(member.getId())) {
+            throw new GeneralHandler(ErrorStatus.PROJECT_LEADER_REQUIRED);
+        }
 
-        if (projectJoinDecideReq.joinDecide() == JoinDecide.ACCEPT) {
+        if (joinDecide == JoinDecide.ACCEPT) {
             // todo 프로젝트 전체 인원 및 포지션 인원 비교 후
-            ProjectMember projectMember = new ProjectMember(null, projectJoin.getMember(), projectJoin.getProject(), projectJoinDecideReq.positionType());
+            ProjectMember projectMember = new ProjectMember(projectJoin.getMember(), projectJoin.getProject(), projectJoin.getPositionType());
             projectMemberRepository.save(projectMember);
         }
 
@@ -63,31 +65,23 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
     }
 
     @Override
-    public PageRes<ProjectJoinRes> getProjectJoins(Long loginId, Long projectJoinId, Pageable pageable) {
-        Page<ProjectJoin> projectJoinPages = projectJoinRepository.findAllByProject_IdOrderByCreatedAtDesc(projectJoinId, pageable);
+    public PageRes<ProjectJoinRes> getProjectJoins(Long loginId, Long projectId, Pageable pageable) {
+        Member member = entityFacade.getMember(loginId);
+        Project project = entityFacade.getProject(projectId);
+
+        if (!project.isProjectLeader(member.getId())) {
+            throw new GeneralHandler(ErrorStatus.PROJECT_LEADER_REQUIRED);
+        }
+
+        Page<ProjectJoin> projectJoinPages = projectJoinRepository.findAllByProjectIdOrderByCreatedAtDesc(project.getId(), pageable);
         return PageRes.mapPageToPageRes(projectJoinPages, ProjectJoinRes::mapEntityToRes);
     }
 
     @Override
     public PageRes getMyProjectJoins(Long loginId, Pageable pageable) {
-        Page<ProjectJoin> myProjectJoinPages = projectJoinRepository.findAllByMember_IdOrderByCreatedAtDesc(loginId, pageable);
+        Page<ProjectJoin> myProjectJoinPages = projectJoinRepository.findAllByMemberIdOrderByCreatedAtDesc(loginId, pageable);
         return PageRes.mapPageToPageRes(myProjectJoinPages, ProjectJoinRes::mapEntityToRes);
     }
-
-    private void verifyNotLeader(Long memberId, Long leaderId) {
-        if (memberId == leaderId)
-            throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
-    }
-
-    private void verifyIsLeader(Long memberId, Long leaderId) {
-        if (memberId != leaderId)
-            throw new GeneralHandler(ErrorStatus.MEMBER_FORBIDDEN);
-    }
-
-    private static Long extractLeaderId(ProjectJoin projectJoin) {
-        return projectJoin.getProject().getLeader().getId();
-    }
-
 
     private void handleCancel(Optional<ProjectJoin> optionalProjectJoin) {
         optionalProjectJoin.ifPresentOrElse(
@@ -98,13 +92,16 @@ public class ProjectJoinServiceImpl implements ProjectJoinService {
         );
     }
 
-    private void handleJoin(Long memberId, Optional<ProjectJoin> optionalProjectJoin, Project project) {
+    private void handleJoin(Member member, Project project, Optional<ProjectJoin> optionalProjectJoin, PositionType positionType) {
         optionalProjectJoin.ifPresent(projectJoin -> {
             throw new GeneralHandler(ErrorStatus.PROJECT_JOIN_CONFLICT);
         });
 
+        projectMemberRepository.findByMemberAndProject(member, project).ifPresent(p -> {
+            throw new GeneralHandler(ErrorStatus.PROJECT_MEMBER_CONFLICT);
+        });
+
         // todo: 프로젝트 모집 여부 확인 로직 추가
-        Member member = entityFacade.getMember(memberId);
-        projectJoinRepository.save(new ProjectJoin(null, project, member));
+        projectJoinRepository.save(new ProjectJoin(positionType, project, member));
     }
 }

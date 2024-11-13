@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MemberRes {
+public class MemberCardRes {
     private long memberId;
     private String image;
     private String nickname;
@@ -22,13 +22,13 @@ public class MemberRes {
     private String introduction;
     private boolean isLiked;
 
-    public MemberRes(CareerInfoRes careerInfoRes) {
+    public MemberCardRes(CareerInfoRes careerInfoRes) {
         this.careerInfoRes = careerInfoRes;
         this.embers = 0.0;
     }
 
-    public static MemberRes mapEntityToRes(Member member, CareerInfoRes careerInfoRes, boolean liked) {
-        return MemberRes.builder()
+    public static MemberCardRes mapEntityToRes(Member member, CareerInfoRes careerInfoRes, boolean liked) {
+        return MemberCardRes.builder()
                 .memberId(member.getId())
                 .image(member.getImage())
                 .nickname(member.getNickname())
@@ -48,12 +48,12 @@ public class MemberRes {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MemberRes memberRes = (MemberRes) o;
-        return isLiked == memberRes.isLiked && Objects.equals(memberId, memberRes.memberId)
-                && Objects.equals(image, memberRes.image) && Objects.equals(nickname,
-                memberRes.nickname) && Objects.equals(careerInfoRes, memberRes.careerInfoRes)
-                && Objects.equals(embers, memberRes.embers) && status == memberRes.status
-                && Objects.equals(introduction, memberRes.introduction);
+        MemberCardRes memberCardRes = (MemberCardRes) o;
+        return isLiked == memberCardRes.isLiked && Objects.equals(memberId, memberCardRes.memberId)
+                && Objects.equals(image, memberCardRes.image) && Objects.equals(nickname,
+                memberCardRes.nickname) && Objects.equals(careerInfoRes, memberCardRes.careerInfoRes)
+                && Objects.equals(embers, memberCardRes.embers) && status == memberCardRes.status
+                && Objects.equals(introduction, memberCardRes.introduction);
     }
 
     @Override

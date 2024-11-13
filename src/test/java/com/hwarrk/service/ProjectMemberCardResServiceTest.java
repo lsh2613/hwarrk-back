@@ -3,7 +3,7 @@ package com.hwarrk.service;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.constant.PositionType;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.*;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
-class ProjectMemberResServiceTest {
+class ProjectMemberCardResServiceTest {
 
     @Autowired
     private ProjectMemberService projectMemberService;
@@ -65,16 +65,16 @@ class ProjectMemberResServiceTest {
         member_01.addReceivedLike(new MemberLike(member_03, member_01));
 
         //when
-        List<MemberRes> memberResList = projectMemberService.getMembersInProject(member_03.getId(), project_01.getId());
+        List<MemberCardRes> memberCardResList = projectMemberService.getMembersInProject(member_03.getId(), project_01.getId());
 
         //then
-        MemberRes memberRes_01 = memberResList.get(0);
-        MemberRes memberRes_02 = memberResList.get(1);
-        assertThat(memberResList.size()).isEqualTo(2);
-        assertThat(memberRes_01.getMemberId()).isEqualTo(member_01.getId());
-        assertThat(memberRes_01.isLiked()).isTrue();
-        assertThat(memberRes_02.getMemberId()).isEqualTo(member_02.getId());
-        assertThat(memberRes_02.isLiked()).isFalse();
+        MemberCardRes memberCardRes_01 = memberCardResList.get(0);
+        MemberCardRes memberCardRes_02 = memberCardResList.get(1);
+        assertThat(memberCardResList.size()).isEqualTo(2);
+        assertThat(memberCardRes_01.getMemberId()).isEqualTo(member_01.getId());
+        assertThat(memberCardRes_01.isLiked()).isTrue();
+        assertThat(memberCardRes_02.getMemberId()).isEqualTo(member_02.getId());
+        assertThat(memberCardRes_02.isLiked()).isFalse();
     }
 
     @Test

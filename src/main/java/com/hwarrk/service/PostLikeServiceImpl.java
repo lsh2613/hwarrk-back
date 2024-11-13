@@ -46,8 +46,8 @@ public class PostLikeServiceImpl implements PostLikeService {
     }
 
     @Override
-    public SliceRes getLikedPostSlice(Long loginId, Long lastPostLikeId, Pageable pageable) {
-        List<PostLike> postLikes = postLikeRepositoryCustom.getPostLikeSliceInfo(loginId, lastPostLikeId, pageable);
+    public SliceRes getMyLikedPostCards(Long loginId, Long lastPostLikeId, Pageable pageable) {
+        List<PostLike> postLikes = postLikeRepositoryCustom.getPostLikes(loginId, lastPostLikeId, pageable);
 
         List<PostRes> postResList = postLikes.stream()
                 .map(postLike -> PostRes.mapEntityToRes(postLike.getPost()))

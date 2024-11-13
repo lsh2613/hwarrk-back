@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ProjectMemberResTest {
+class ProjectMemberCardResTest {
 
     @Test
     @DisplayName("프로젝트에 참여한 회원 정보를 바탕으로 회원의 경력 정보를 불러온다.")

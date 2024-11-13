@@ -4,7 +4,7 @@ import com.hwarrk.common.constant.OauthProvider;
 import org.springframework.util.MultiValueMap;
 
 public interface OauthParams {
-    public OauthProvider oauthProvider();
-    public String getAuthorizationCode();
-    public MultiValueMap<String, String> makeBody();
+    OauthProvider oauthProvider();
+    String getAuthorizationCode();
+    MultiValueMap<String, String> makeBody();
 }

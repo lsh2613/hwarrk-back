@@ -21,7 +21,7 @@ public enum ErrorStatus implements BaseCode {
     MISSING_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "TOKEN4012", "Access Token이 존재하지 않습니다."),
 
     // 회원 관련
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자를 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4041", "사용자를 찾을 수 없습니다."),
     DUPLICATED_MEMBER_ID(HttpStatus.UNAUTHORIZED, "MEMBER4011", "이미 존재하는 사용자 ID입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER4012", "사용자 비밀번호가 일치하지 않습니다"),
     SESSION_NOT_FOUND(HttpStatus.UNAUTHORIZED, "MEMBER4013", "존재하지 않는 유효한 세션입니다."),
@@ -36,7 +36,7 @@ public enum ErrorStatus implements BaseCode {
     MEMBER_LIKE_CONFLICT(HttpStatus.CONFLICT, "MEMBER_LIKE4091", "찜이 이미 존재합니다."),
 
     // 사용자 리뷰
-    PROJECT_MEMBER_ONLY_CAN_REVIEW(HttpStatus.BAD_REQUEST, "MEMBER_REVIEW4001", "프로젝트의 팀원만 리뷰를 작성할 수 있습니다"),
+    PROJECT_MEMBER_ONLY_CAN_REVIEW(HttpStatus.BAD_REQUEST, "MEMBER_REVIEW4001", "같은 프로젝트의 팀원끼리만 리뷰를 작성할 수 있습니다."),
     MEMBER_REVIEW_CONFLICT(HttpStatus.CONFLICT, "MEMBER_REVIEW4091", "리뷰가 이미 존재합니다."),
     SELF_REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER_REVIEW4031", "자신에 대한 리뷰는 작성할 수 없습니다."),
 
@@ -57,6 +57,7 @@ public enum ErrorStatus implements BaseCode {
     // 프로젝트-팀원
     PROJECT_LEADER_CANNOT_BE_REMOVED(HttpStatus.BAD_REQUEST, "PROJECT_MEMBER4001", "프로젝트 리더는 추방될 수 없습니다."),
     PROJECT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_MEMBER4041", "프로젝트 팀원을 찾을 수 없습니다."),
+    PROJECT_MEMBER_CONFLICT(HttpStatus.CONFLICT, "PROJECT_MEMBER4091", "프로젝트 팀원이 이미 존재합니다."),
 
 
     // 구인글
@@ -68,7 +69,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 알림
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4041", "알림을 찾을 수 없습니다"),
-    INVALID_BINDING_TYPE(HttpStatus.BAD_REQUEST, "BINDING4001", "유효하지 않은 바인딩 타입입니다."),
+    INVALID_BINDING_TYPE(HttpStatus.BAD_REQUEST, "NOTIFICATION4001", "유효하지 않은 바인딩 타입입니다."),
 
     // S3 이미지 업로드
     FAIL_IMAGE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "S5001", "S3에 이미지 업로드를 실패했습니다."),

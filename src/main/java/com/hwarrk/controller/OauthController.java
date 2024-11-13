@@ -3,10 +3,6 @@ package com.hwarrk.controller;
 import com.hwarrk.common.apiPayload.CustomApiResponse;
 import com.hwarrk.common.dto.req.OauthLoginReq;
 import com.hwarrk.common.dto.res.OauthLoginRes;
-import com.hwarrk.oauth2.param.AppleParams;
-import com.hwarrk.oauth2.param.GoogleParams;
-import com.hwarrk.oauth2.param.KakaoParams;
-import com.hwarrk.oauth2.param.OauthParams;
 import com.hwarrk.service.OauthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,16 +28,8 @@ public class OauthController {
             @ApiResponse(responseCode = "COMMON400", description = "처리할 수 없는 소셜 로그인")}
     )
     @PostMapping("/login")
-    public CustomApiResponse<OauthLoginRes> socialLogin(@Valid @RequestBody OauthLoginReq oauthLoginReq) {
-        OauthParams oauthParam;
-        switch (oauthLoginReq.getOauthProvider()) {
-            case KAKAO -> oauthParam = new KakaoParams(oauthLoginReq.getCode());
-            case GOOGLE -> oauthParam = new GoogleParams(oauthLoginReq.getCode());
-            case APPLE -> oauthParam = new AppleParams(oauthLoginReq.getCode());
-            default -> throw new IllegalStateException("Unexpected value: " + oauthLoginReq.getOauthProvider());
-        }
-
-        OauthLoginRes memberByOauthLogin = oauthService.getMemberByOauthLogin(oauthParam);
+    public CustomApiResponse<OauthLoginRes> socialLogin(@Valid @RequestBody OauthLoginReq req) {
+        OauthLoginRes memberByOauthLogin = oauthService.getMemberByOauthLogin(req);
         return CustomApiResponse.onSuccess(memberByOauthLogin);
     }
 }

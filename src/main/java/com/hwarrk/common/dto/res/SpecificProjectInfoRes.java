@@ -18,17 +18,17 @@ public class SpecificProjectInfoRes {
     private String subject;
     private long postId;
     private boolean isLiked;
-    private List<MemberRes> memberResList;
+    private List<MemberCardRes> memberCardResList;
 
     public static SpecificProjectInfoRes mapEntityToRes(Project project, boolean isLiked,
-                                                        List<MemberRes> memberResList) {
+                                                        List<MemberCardRes> memberCardResList) {
         SpecificProjectInfoRes specificProjectInfoRes = new SpecificProjectInfoRes();
         specificProjectInfoRes.image = project.getImage();
         specificProjectInfoRes.name = project.getName();
         specificProjectInfoRes.stepType = project.getStep();
         specificProjectInfoRes.postId = project.getPost().getId();
         specificProjectInfoRes.isLiked = isLiked;
-        specificProjectInfoRes.memberResList = memberResList;
+        specificProjectInfoRes.memberCardResList = memberCardResList;
 
         return specificProjectInfoRes;
     }
@@ -47,12 +47,12 @@ public class SpecificProjectInfoRes {
                 Objects.equals(name, that.name) &&
                 stepType == that.stepType &&
                 Objects.equals(subject, that.subject) &&
-                Objects.equals(memberResList, that.memberResList);
+                Objects.equals(memberCardResList, that.memberCardResList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(image, name, stepType, subject, postId, isLiked, memberResList);
+        return Objects.hash(image, name, stepType, subject, postId, isLiked, memberCardResList);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class SpecificProjectInfoRes {
                 ", subject='" + subject + '\'' +
                 ", postId=" + postId +
                 ", isLiked=" + isLiked +
-                ", memberResList=" + memberResList +
+                ", memberResList=" + memberCardResList +
                 '}';
     }
 }

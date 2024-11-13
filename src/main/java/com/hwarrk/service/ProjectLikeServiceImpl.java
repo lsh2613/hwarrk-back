@@ -46,8 +46,8 @@ public class ProjectLikeServiceImpl implements ProjectLikeService {
     }
 
     @Override
-    public SliceRes getLikedProjectSlice(Long loginId, Long lastProjectLikeId, Pageable pageable) {
-        List<ProjectLike> projectLikes = projectLikeRepositoryCustom.getProjectLikeSliceInfo(loginId, lastProjectLikeId, pageable);
+    public SliceRes getMyLikedProjectCards(Long loginId, Long lastProjectLikeId, Pageable pageable) {
+        List<ProjectLike> projectLikes = projectLikeRepositoryCustom.getProjectLikes(loginId, lastProjectLikeId, pageable);
 
         List<ProjectRes> projectResList = projectLikes.stream()
                 .map(projectLike -> ProjectRes.mapEntityToRes(projectLike.getProject()))

@@ -5,7 +5,7 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.dto.dto.MemberWithLikeDto;
 import com.hwarrk.common.dto.dto.ProjectWithLikeDto;
 import com.hwarrk.common.dto.res.CareerInfoRes;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
@@ -30,20 +30,20 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     private final ProjectMemberRepository projectMemberRepository;
 
     @Override
-    public List<MemberRes> getMembersInProject(Long memberId, Long projectId) {
+    public List<MemberCardRes> getMembersInProject(Long memberId, Long projectId) {
         Project project = entityFacade.getProject(projectId);
 
         List<MemberWithLikeDto> memberWithLikeDtos = projectMemberRepository.findMembersWithLikeByMemberIdAndProjectId(memberId, project.getId());
 
-        List<MemberRes> memberResList = memberWithLikeDtos.stream()
+        List<MemberCardRes> memberCardResList = memberWithLikeDtos.stream()
                 .map(dto -> {
                     Member member = dto.member();
                     CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
-                    return MemberRes.mapEntityToRes(member, careerInfoRes, dto.isLiked());
+                    return MemberCardRes.mapEntityToRes(member, careerInfoRes, dto.isLiked());
                 })
                 .toList();
 
-        return memberResList;
+        return memberCardResList;
     }
 
     @Override
