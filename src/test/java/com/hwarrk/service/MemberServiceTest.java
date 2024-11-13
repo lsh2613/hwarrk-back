@@ -5,7 +5,7 @@ import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.*;
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.ProfileUpdateReq;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProfileRes;
@@ -402,17 +402,17 @@ class MemberServiceTest {
         PageRes res = memberService.getFilteredMemberCard(member_01.getId(), cond, PageRequest.of(0, 2));
 
         //then
-        List<MemberRes> content = res.content();
+        List<MemberCardRes> content = res.content();
         assertThat(content.size()).isEqualTo(2);
         assertThat(res.totalElements()).isEqualTo(2);
         assertThat(res.totalPages()).isEqualTo(1);
         assertThat(res.isLast()).isTrue();
 
-        MemberRes content_01 = content.get(0); // member_03
+        MemberCardRes content_01 = content.get(0); // member_03
         assertThat(content_01.getMemberId()).isEqualTo(member_03.getId());
         assertThat(content_01.isLiked()).isFalse();
 
-        MemberRes content_02 = content.get(1); // member_02
+        MemberCardRes content_02 = content.get(1); // member_02
         assertThat(content_02.getMemberId()).isEqualTo(member_02.getId());
         assertThat(content_02.isLiked()).isTrue();
     }

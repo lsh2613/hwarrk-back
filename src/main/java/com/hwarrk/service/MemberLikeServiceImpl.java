@@ -5,7 +5,7 @@ import com.hwarrk.common.SliceCustomImpl;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.LikeType;
 import com.hwarrk.common.dto.res.CareerInfoRes;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.SliceRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.entity.Member;
@@ -47,18 +47,18 @@ public class MemberLikeServiceImpl implements MemberLikeService {
     }
 
     @Override
-    public SliceRes<MemberRes> getMyLikedMemberCards(Long memberId, Long lastMemberLikeId, Pageable pageable) {
+    public SliceRes<MemberCardRes> getMyLikedMemberCards(Long memberId, Long lastMemberLikeId, Pageable pageable) {
         List<MemberLike> memberLikes = memberLikeRepositoryCustom.getMemberLikes(memberId, lastMemberLikeId, pageable);
 
-        List<MemberRes> memberResList = memberLikes.stream()
+        List<MemberCardRes> memberCardResList = memberLikes.stream()
                 .map(memberLike -> {
                     Member member = memberLike.getToMember();
                     CareerInfoRes careerInfoRes = CareerInfoRes.mapEntityToRes(member.loadCareer());
-                    return MemberRes.mapEntityToRes(member, careerInfoRes, true);
+                    return MemberCardRes.mapEntityToRes(member, careerInfoRes, true);
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        SliceCustomImpl sliceCustom = new SliceCustomImpl(memberLikes, memberResList, pageable);
+        SliceCustomImpl sliceCustom = new SliceCustomImpl(memberLikes, memberCardResList, pageable);
 
         return SliceRes.mapSliceCustomToSliceRes(sliceCustom);
     }

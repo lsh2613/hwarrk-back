@@ -21,7 +21,7 @@ import com.hwarrk.common.dto.req.ProjectFilterSearchReq;
 import com.hwarrk.common.dto.req.ProjectUpdateReq;
 import com.hwarrk.common.dto.res.CareerInfoRes;
 import com.hwarrk.common.dto.res.CompleteProjectsRes;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.MyProjectRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProjectFilterSearchRes;
@@ -146,13 +146,13 @@ class ProjectServiceImplTest {
         // then
         assertThat(result).isNotNull();
         SpecificProjectInfoRes expected = SpecificProjectInfoRes.mapEntityToRes(project, false,
-                List.of(new MemberRes(new CareerInfoRes()), new MemberRes(new CareerInfoRes())));
+                List.of(new MemberCardRes(new CareerInfoRes()), new MemberCardRes(new CareerInfoRes())));
         assertThat(result.getName()).isEqualTo(expected.getName());
         assertThat(result.getImage()).isEqualTo(expected.getImage());
         assertThat(result.isLiked()).isFalse();
-        assertThat(result.getMemberResList()).isNotEmpty();
-        assertThat(result.getMemberResList().get(0)).isEqualTo(expected.getMemberResList().get(0));
-        assertThat(result.getMemberResList().get(1)).isEqualTo(expected.getMemberResList().get(1));
+        assertThat(result.getMemberCardResList()).isNotEmpty();
+        assertThat(result.getMemberCardResList().get(0)).isEqualTo(expected.getMemberCardResList().get(0));
+        assertThat(result.getMemberCardResList().get(1)).isEqualTo(expected.getMemberCardResList().get(1));
 
         verify(projectRepository, times(1)).findSpecificProjectInfoById(projectId);
         verify(projectRepository, times(1)).existsProjectLikeByMemberId(memberId, projectId);

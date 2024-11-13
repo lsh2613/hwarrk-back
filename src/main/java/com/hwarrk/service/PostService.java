@@ -16,7 +16,7 @@ import com.hwarrk.common.dto.req.PostCreateReq;
 import com.hwarrk.common.dto.req.PostFilterSearchReq;
 import com.hwarrk.common.dto.req.PostUpdateReq;
 import com.hwarrk.common.dto.res.CareerInfoRes;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.MyPostRes;
 import com.hwarrk.common.dto.res.PostFilterSearchRes;
 import com.hwarrk.common.dto.res.ProjectMemberRes;
@@ -125,13 +125,13 @@ public class PostService {
                 .toList();
     }
 
-    private List<MemberRes> createMemberResList(Post post, Long memberId) {
+    private List<MemberCardRes> createMemberResList(Post post, Long memberId) {
         List<MemberWithLikeDto> recommendedMembers = memberRepositoryCustom.findRecommendedMembers(post.getSkills(),
                 memberId);
         return recommendedMembers.stream()
                 .map(m -> {
                     Member member = m.member();
-                    return MemberRes.mapEntityToRes(member, CareerInfoRes.mapEntityToRes(member.loadCareer()),
+                    return MemberCardRes.mapEntityToRes(member, CareerInfoRes.mapEntityToRes(member.loadCareer()),
                             m.isLiked());
                 })
                 .toList();

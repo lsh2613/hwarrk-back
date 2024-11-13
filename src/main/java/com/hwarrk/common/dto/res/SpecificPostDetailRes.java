@@ -24,10 +24,10 @@ public class SpecificPostDetailRes {
     private String description;
     // TODO 받은 태그
     private List<ProjectMemberRes> projectMemberResResList;
-    private List<MemberRes> memberResList;
+    private List<MemberCardRes> memberCardResList;
 
     public static SpecificPostDetailRes createRes(Post post, List<ProjectMemberRes> projectMemberResResList,
-                                                  List<MemberRes> memberResList) {
+                                                  List<MemberCardRes> memberCardResList) {
         SpecificPostDetailRes res = new SpecificPostDetailRes();
         res.title = post.getTitle();
         res.body = post.getBody();
@@ -42,7 +42,7 @@ public class SpecificPostDetailRes {
         res.description = project.getDescription();
 
         res.projectMemberResResList = projectMemberResResList;
-        res.memberResList = memberResList;
+        res.memberCardResList = memberCardResList;
 
         return res;
     }

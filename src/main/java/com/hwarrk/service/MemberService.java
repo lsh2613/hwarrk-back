@@ -2,7 +2,7 @@ package com.hwarrk.service;
 
 import com.hwarrk.common.dto.req.ProfileCond;
 import com.hwarrk.common.dto.req.ProfileUpdateReq;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.MyProfileRes;
 import com.hwarrk.common.dto.res.PageRes;
 import com.hwarrk.common.dto.res.ProfileRes;
@@ -16,5 +16,5 @@ public interface MemberService {
     void updateProfile(Long loginId, ProfileUpdateReq req, MultipartFile image);
     MyProfileRes getMyProfile(Long memberId);
     ProfileRes getProfile(Long loginId, Long memberId);
-    PageRes<MemberRes> getFilteredMemberCard(Long memberId, ProfileCond cond, Pageable pageable);
+    PageRes<MemberCardRes> getFilteredMemberCard(Long memberId, ProfileCond cond, Pageable pageable);
 }

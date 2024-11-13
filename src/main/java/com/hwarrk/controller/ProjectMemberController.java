@@ -1,7 +1,7 @@
 package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
-import com.hwarrk.common.dto.res.MemberRes;
+import com.hwarrk.common.dto.res.MemberCardRes;
 import com.hwarrk.common.dto.res.ProjectRes;
 import com.hwarrk.service.ProjectMemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,10 +27,10 @@ public class ProjectMemberController {
     @Operation(summary = "프로젝트에 참여 중인 팀원 조회")
     @ApiResponse(responseCode = "PROJECT4001", description = "프로젝트를 찾을 수 없습니다")
     @GetMapping("/projects/{projectId}")
-    public CustomApiResponse<List<MemberRes>> getMembersInProject(@AuthenticationPrincipal Long loginId,
-                                                                  @PathVariable Long projectId) {
-        List<MemberRes> memberResList = projectMemberService.getMembersInProject(loginId, projectId);
-        return CustomApiResponse.onSuccess(memberResList);
+    public CustomApiResponse<List<MemberCardRes>> getMembersInProject(@AuthenticationPrincipal Long loginId,
+                                                                      @PathVariable Long projectId) {
+        List<MemberCardRes> memberCardResList = projectMemberService.getMembersInProject(loginId, projectId);
+        return CustomApiResponse.onSuccess(memberCardResList);
     }
 
     @Operation(summary = "내가 참여 중인 프로젝트 조회")
