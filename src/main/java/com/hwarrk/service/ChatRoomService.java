@@ -47,16 +47,15 @@ public class ChatRoomService {
                 .map(chatRoom -> {
                     ChatRoomMember otherMember = chatRoom.getOtherMember(member.getId());
 
-                    int unreadCnt = chatMessageRepository.countByChatRoomIdAndCreatedAtAfter(chatRoom.getId(), otherMember.getLastEntryTime());
+                    int unreadMessageCnt = chatMessageRepository.countByChatRoomIdAndCreatedAtAfter(chatRoom.getId(), otherMember.getLastEntryTime());
                     Optional<ChatMessage> lastMessage = chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId());
 
-                    return ChatRoomRes.createRes(chatRoom.getId(), otherMember.getMember().getNickname(), unreadCnt, lastMessage);
+                    return ChatRoomRes.createRes(chatRoom.getId(), otherMember.getMember().getNickname(), unreadMessageCnt, lastMessage);
                 })
                 .toList();
 
         return chatRoomResList;
     }
-
 
 
 }
