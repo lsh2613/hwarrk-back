@@ -3,7 +3,6 @@ package com.hwarrk.service;
 import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.MessageType;
-import com.hwarrk.common.constant.TokenType;
 import com.hwarrk.common.dto.req.ChatMessageReq;
 import com.hwarrk.common.dto.res.MessageRes;
 import com.hwarrk.common.exception.GeneralHandler;
@@ -12,7 +11,6 @@ import com.hwarrk.entity.ChatMessage;
 import com.hwarrk.entity.ChatRoom;
 import com.hwarrk.entity.ChatRoomMember;
 import com.hwarrk.entity.Member;
-import com.hwarrk.jwt.TokenUtil;
 import com.hwarrk.redis.RedisChatUtil;
 import com.hwarrk.repository.ChatMessageRepository;
 import com.hwarrk.repository.ChatMessageRepositoryCustom;
@@ -79,7 +77,7 @@ public class ChatMessageService {
 
         chatRoom.getChatRoomMember(member.getId()); // 예외처리 용도
 
-        setMemberActiveInChatRoom(member.getId(), chatRoom.getId());
+        enterChatRoom(member.getId(), chatRoom.getId());
 
         readUnreadMessages(chatRoom, member.getId());
     }
@@ -94,7 +92,7 @@ public class ChatMessageService {
         ChatRoomMember chatRoomMember = chatRoom.getChatRoomMember(member.getId());
         chatRoomMember.updateLastEntryTime();
 
-        removeActiveMemberInChatRoom(member.getId(), chatRoom.getId());
+        exitChatRoom(member.getId(), chatRoom.getId());
     }
 
     private void sendToChatRoom(Long chatRoomId, ChatMessage chatMessage) {
@@ -120,12 +118,12 @@ public class ChatMessageService {
         }
     }
 
-    private void setMemberActiveInChatRoom(Long memberId, Long chatRoomId) {
+    private void enterChatRoom(Long memberId, Long chatRoomId) {
         redisChatUtil.setMemberInChatRoom(memberId, chatRoomId);
         redisChatUtil.incrementActiveCnt(chatRoomId);
     }
 
-    private void removeActiveMemberInChatRoom(Long memberId, Long chatRoomId) {
+    private void exitChatRoom(Long memberId, Long chatRoomId) {
         redisChatUtil.deleteMemberInChatRoom(memberId);
         redisChatUtil.decrementActiveCnt(chatRoomId);
     }
