@@ -4,6 +4,8 @@ import com.hwarrk.common.EntityFacade;
 import com.hwarrk.common.apiPayload.code.statusEnums.ErrorStatus;
 import com.hwarrk.common.constant.MessageType;
 import com.hwarrk.common.dto.req.ChatMessageReq;
+import com.hwarrk.common.dto.res.ChatMessageRes;
+import com.hwarrk.common.dto.res.ChatSyncRequestRes;
 import com.hwarrk.common.dto.res.MessageRes;
 import com.hwarrk.common.exception.GeneralHandler;
 import com.hwarrk.common.util.StompHeaderAccessorUtil;
@@ -62,7 +64,7 @@ public class ChatMessageService {
     }
 
     private void sendMessage(Long chatRoomId, ChatMessage chatMessage, int unreadCnt) {
-        MessageRes messageRes = MessageRes.createRes(MessageType.CHAT_MESSAGE, chatMessage, unreadCnt);
+        MessageRes messageRes = ChatMessageRes.createRes(chatMessage, unreadCnt);
         rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
     }
 
@@ -80,7 +82,7 @@ public class ChatMessageService {
         List<MessageRes> messageResList = chatMessages.stream()
                 .map(chatMessage -> {
                     int unreadCnt = chatRoom.getUnreadCnt(onlineMembersInChatRoom, chatMessage.getCreatedAt());
-                    return MessageRes.createRes(MessageType.CHAT_MESSAGE, chatMessage, unreadCnt);
+                    return ChatMessageRes.createRes(chatMessage, unreadCnt);
                 })
                 .toList();
 
@@ -116,7 +118,7 @@ public class ChatMessageService {
     }
 
     private void sendChatSyncRequestMessage(Long chatRoomId) {
-        MessageRes messageRes = MessageRes.createRes(MessageType.CHAT_SYNC_REQUEST);
+        MessageRes messageRes = ChatSyncRequestRes.createRes();
         rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
     }
 
