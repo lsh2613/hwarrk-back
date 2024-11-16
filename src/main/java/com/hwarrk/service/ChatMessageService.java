@@ -37,7 +37,6 @@ public class ChatMessageService {
     private final RedisChatUtil redisChatUtil;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatMessageRepositoryCustom chatMessageRepositoryCustom;
-    private final TokenUtil tokenUtil;
     private final StompHeaderAccessorUtil stompHeaderAccessorUtil;
 
     private static final String ROUTING_KEY_PREFIX = "room.";
@@ -47,14 +46,15 @@ public class ChatMessageService {
         Long memberId = stompHeaderAccessorUtil.getMemberIdInSession(accessor);
         Member member = entityFacade.getMember(memberId);
 
-        ChatRoom chatRoom = entityFacade.getChatRoom(req.chatRoomId());
+        Long chatRoomId = stompHeaderAccessorUtil.getChatRoomIdInSession(accessor);
+        ChatRoom chatRoom = entityFacade.getChatRoom(chatRoomId);
 
         int unreadCnt = calculateUnreadCnt(req, chatRoom);
 
         ChatMessage chatMessage = req.createChatMessage(chatRoom.getId(), member.getId(), unreadCnt);
         chatMessageRepository.save(chatMessage);
 
-        sendToChatRoom(req.chatRoomId(), chatMessage);
+        sendToChatRoom(chatRoomId, chatMessage);
     }
 
     public List<MessageRes> getChatMessages(Long memberId, Long chatRoomId) {
@@ -71,17 +71,14 @@ public class ChatMessageService {
     }
 
     public void handleConnectMessage(StompHeaderAccessor accessor) {
-        String token = stompHeaderAccessorUtil.extractToken(accessor, TokenType.ACCESS_TOKEN);
-
-        Long memberId = tokenUtil.validateTokenAndGetMemberId(token);
+        Long memberId = stompHeaderAccessorUtil.getMemberIdInSession(accessor);
         Member member = entityFacade.getMember(memberId);
 
-        Long chatRoomId = stompHeaderAccessorUtil.getChatRoomIdInHeader(accessor);
+        Long chatRoomId = stompHeaderAccessorUtil.getChatRoomIdInSession(accessor);
         ChatRoom chatRoom = entityFacade.getChatRoom(chatRoomId);
 
         chatRoom.getChatRoomMember(member.getId()); // 예외처리 용도
 
-        stompHeaderAccessorUtil.setMemberIdInSession(accessor, member.getId());
         setMemberActiveInChatRoom(member.getId(), chatRoom.getId());
 
         readUnreadMessages(chatRoom, member.getId());
@@ -91,7 +88,7 @@ public class ChatMessageService {
         Long memberId = stompHeaderAccessorUtil.removeMemberIdInSession(accessor);
         Member member = entityFacade.getMember(memberId);
 
-        Long chatRoomId = redisChatUtil.getChatRoomId(member.getId());
+        Long chatRoomId = stompHeaderAccessorUtil.removeChatRoomIdInSession(accessor);
         ChatRoom chatRoom = entityFacade.getChatRoom(chatRoomId);
 
         ChatRoomMember chatRoomMember = chatRoom.getChatRoomMember(member.getId());

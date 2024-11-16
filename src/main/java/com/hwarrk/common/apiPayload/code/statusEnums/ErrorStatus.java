@@ -93,8 +93,9 @@ public enum ErrorStatus implements BaseCode {
     NOT_CHAT_ROOM_MEMBER(HttpStatus.FORBIDDEN, "CHAT_ROOM_MEMBER4031", "채팅방에 참여 중인 사용자가 아닙니다."),
 
     // Stomp header
-    MISSING_CHAT_ROOM_ID(HttpStatus.BAD_REQUEST, "CHATROOM4002", "Stomp header에 chat-room-id 존재하지 않습니다"),
-    MISSING_MEMBER_ID_IN_SESSION(HttpStatus.BAD_REQUEST, "CHATROOM4002", "Stomp header session에 memberId가 존재하지 않습니다");
+    MISSING_CHAT_ROOM_ID_IN_HEADER(HttpStatus.BAD_REQUEST, "STOMP4001", "Stomp header에 chat-room-id 존재하지 않습니다"),
+    MISSING_MEMBER_ID_IN_SESSION(HttpStatus.BAD_REQUEST, "STOMP4002", "Stomp header session에 memberId가 존재하지 않습니다"), 
+    MISSING_CHAT_ROOM_ID_IN_SESSION(HttpStatus.BAD_REQUEST, "STOMP4003", "Stomp header session에 chat-room-id 존재하지 않습니다" );
 
 
     private final HttpStatus httpStatus;
