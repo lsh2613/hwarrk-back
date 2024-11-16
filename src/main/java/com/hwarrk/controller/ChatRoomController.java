@@ -46,27 +46,4 @@ public class ChatRoomController {
     public CustomApiResponse<List<ChatRoomRes>> getChatRooms(@AuthenticationPrincipal Long loginId) {
         return CustomApiResponse.onSuccess(chatRoomService.getChatRooms(loginId));
     }
-
-    private final MemberRepository memberRepository;
-    private final ChatRoomRepository chatRoomRepository;
-
-    @GetMapping("/init")
-    public ResponseEntity<Map<String, Long>> init() {
-        Member roomMaker = new Member("방장", "s1", OauthProvider.KAKAO);
-        Member guest = new Member("게스트", "s2", OauthProvider.KAKAO);
-        memberRepository.save(roomMaker);
-        memberRepository.save(guest);
-
-        ChatRoom chatRoom = ChatRoom.emptyChatRoom();
-        chatRoom.addChatRoomMember(new ChatRoomMember(chatRoom, roomMaker));
-        chatRoom.addChatRoomMember(new ChatRoomMember(chatRoom, guest));
-        chatRoomRepository.save(chatRoom);
-
-        Map<String, Long> response = new HashMap<>();
-        response.put("chatRoomId", chatRoom.getId());
-        response.put("roomMakerId", roomMaker.getId());
-        response.put("guestId", guest.getId());
-
-        return ResponseEntity.ok(response);
-    }
 }
