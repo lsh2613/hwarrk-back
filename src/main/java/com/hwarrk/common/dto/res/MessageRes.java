@@ -16,7 +16,7 @@ public abstract class MessageRes {
         return ChatSyncRequestRes.createRes(messageType);
     }
 
-    public static MessageRes createRes(MessageType messageType, ChatMessage chatMessage) {
-        return ChatMessageRes.createRes(messageType, chatMessage);
+    public static MessageRes createRes(MessageType messageType, ChatMessage chatMessage, int unreadCnt) {
+        return ChatMessageRes.createRes(messageType, chatMessage, unreadCnt);
     }
 }

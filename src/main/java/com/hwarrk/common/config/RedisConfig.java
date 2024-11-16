@@ -27,6 +27,7 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
+    // jwt -> memberId
     @Bean
     public RedisTemplate<String, Long> StringLongRedisTemplate() {
         RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
@@ -36,21 +37,13 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    // chatRoomId -> SET {memberId_01, memberId_02, ...}
     @Bean
     public RedisTemplate<Long, Long> LongLongRedisTemplate() {
         RedisTemplate<Long, Long> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new Jackson2JsonRedisSerializer<>(Long.class));
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Long.class));
-        return redisTemplate;
-    }
-
-    @Bean
-    public RedisTemplate<String, Integer> StringIntegerRedisTemplate() {
-        RedisTemplate<String, Integer> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Integer.class));
         return redisTemplate;
     }
 

@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 public class ChatMessageRes extends MessageRes {
     private Long memberId;
     private String message;
-    private int unreadCnt;
     private LocalDateTime createdAt;
+    private int unreadCnt;
 
-    private ChatMessageRes(MessageType messageType, Long memberId, String message, int unreadCnt, LocalDateTime createdAt) {
+    private ChatMessageRes(MessageType messageType, Long memberId, String message, LocalDateTime createdAt, int unreadCnt) {
         super(messageType);
         this.memberId = memberId;
         this.message = message;
@@ -21,13 +21,13 @@ public class ChatMessageRes extends MessageRes {
         this.createdAt = createdAt;
     }
 
-    public static ChatMessageRes createRes(MessageType messageType, ChatMessage chatMessage) {
+    public static ChatMessageRes createRes(MessageType messageType, ChatMessage chatMessage, int unreadCnt) {
         return new ChatMessageRes(
                 messageType,
                 chatMessage.getMemberId(),
                 chatMessage.getMessage(),
-                chatMessage.getUnreadCnt(),
-                chatMessage.getCreatedAt()
+                chatMessage.getCreatedAt(),
+                unreadCnt
         );
     }
 }

@@ -26,8 +26,6 @@ public class ChatMessage {
 
     private String message;
 
-    private int unreadCnt;
-
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

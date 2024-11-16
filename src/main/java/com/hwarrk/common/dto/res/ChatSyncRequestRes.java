@@ -4,7 +4,7 @@ import com.hwarrk.common.constant.MessageType;
 import lombok.Getter;
 
 @Getter
-class ChatSyncRequestRes extends MessageRes {
+public class ChatSyncRequestRes extends MessageRes {
 
     private ChatSyncRequestRes(MessageType messageType) {
         super(messageType);

@@ -2,44 +2,35 @@ package com.hwarrk.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class RedisChatUtil {
-    private final RedisTemplate<Long, Long> memberChatRoomMap;
-    private final RedisTemplate<String, Integer> activeCntInChatRoom;
 
-    static final String prefix = "chat-room-";
+    private final RedisTemplate<Long, Long> chatRoom2Members;
 
-    public void setMemberInChatRoom(Long memberId, Long chatRoomId) {
-        ValueOperations<Long, Long> valueOperations = memberChatRoomMap.opsForValue();
-        valueOperations.set(memberId, chatRoomId);
+    public void addChatRoom2Member(Long chatRoomId, Long memberId) {
+        SetOperations<Long, Long> ops = chatRoom2Members.opsForSet();
+        ops.add(chatRoomId, memberId);
     }
 
-    public Long getChatRoomId(Long memberId) {
-        ValueOperations<Long, Long> valueOperations = memberChatRoomMap.opsForValue();
-        return valueOperations.get(memberId);
+    public Set<Long> getOnlineMembers(Long chatRoomId) {
+        SetOperations<Long, Long> ops = chatRoom2Members.opsForSet();
+        return ops.members(chatRoomId);
     }
 
-    public void deleteMemberInChatRoom(Long memberId) {
-        memberChatRoomMap.delete(memberId);
+    public int getOnlineMemberCntInChatRoom(Long chatRoomId) {
+        SetOperations<Long, Long> ops = chatRoom2Members.opsForSet();
+        return ops.members(chatRoomId).size();
     }
 
-    public void incrementActiveCnt(Long key) {
-        ValueOperations<String, Integer> valueOperations = activeCntInChatRoom.opsForValue();
-        valueOperations.increment(prefix + key);
-    }
-
-    public void decrementActiveCnt(Long key) {
-        ValueOperations<String, Integer> valueOperations = activeCntInChatRoom.opsForValue();
-        if (valueOperations.decrement(prefix + key) <= 0)
-            activeCntInChatRoom.delete(prefix + key);
-    }
-
-    public Integer getActiveCntInChatRoom(Long key) {
-        ValueOperations<String, Integer> valueOperations = activeCntInChatRoom.opsForValue();
-        return valueOperations.get(prefix + key);
+    public void removeChatRoom2Member(Long chatRoomId, Long memberId) {
+        SetOperations<Long, Long> ops = chatRoom2Members.opsForSet();
+        ops.remove(chatRoomId, memberId);
     }
 }

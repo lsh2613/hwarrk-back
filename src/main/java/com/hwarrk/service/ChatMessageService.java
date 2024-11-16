@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Transactional
@@ -38,7 +39,6 @@ public class ChatMessageService {
     private final StompHeaderAccessorUtil stompHeaderAccessorUtil;
 
     private static final String ROUTING_KEY_PREFIX = "room.";
-    private static final int MAX_CHAT_ROOM_MEMBER = 2;
 
     public void sendMessage(ChatMessageReq req, StompHeaderAccessor accessor) {
         Long memberId = stompHeaderAccessorUtil.getMemberIdInSession(accessor);
@@ -47,12 +47,23 @@ public class ChatMessageService {
         Long chatRoomId = stompHeaderAccessorUtil.getChatRoomIdInSession(accessor);
         ChatRoom chatRoom = entityFacade.getChatRoom(chatRoomId);
 
-        int unreadCnt = calculateUnreadCnt(req, chatRoom);
+        int unreadCnt = calculateUnreadCnt(chatRoom);
 
-        ChatMessage chatMessage = req.createChatMessage(chatRoom.getId(), member.getId(), unreadCnt);
+        ChatMessage chatMessage = req.createChatMessage(chatRoom.getId(), member.getId());
         chatMessageRepository.save(chatMessage);
 
-        sendToChatRoom(chatRoomId, chatMessage);
+        sendMessage(chatRoomId, chatMessage, unreadCnt);
+    }
+
+    private int calculateUnreadCnt(ChatRoom chatRoom) {
+        int onlineMemberCnt = redisChatUtil.getOnlineMemberCntInChatRoom(chatRoom.getId());
+        int unreadCnt = chatRoom.getChatRoomMemberCnt() - onlineMemberCnt;
+        return unreadCnt;
+    }
+
+    private void sendMessage(Long chatRoomId, ChatMessage chatMessage, int unreadCnt) {
+        MessageRes messageRes = MessageRes.createRes(MessageType.CHAT_MESSAGE, chatMessage, unreadCnt);
+        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
     }
 
     public List<MessageRes> getChatMessages(Long memberId, Long chatRoomId) {
@@ -62,10 +73,18 @@ public class ChatMessageService {
         if (!chatRoom.isChatRoomMember(member))
             throw new GeneralHandler(ErrorStatus.NOT_CHAT_ROOM_MEMBER);
 
+        Set<Long> onlineMembersInChatRoom = redisChatUtil.getOnlineMembers(chatRoomId);
+
         List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomIdOrderByCreatedAtAsc(chatRoom.getId());
-        return chatMessages.stream()
-                .map(chatMessage -> MessageRes.createRes(MessageType.CHAT_MESSAGE, chatMessage))
+
+        List<MessageRes> messageResList = chatMessages.stream()
+                .map(chatMessage -> {
+                    int unreadCnt = chatRoom.getUnreadCnt(onlineMembersInChatRoom, chatMessage.getCreatedAt());
+                    return MessageRes.createRes(MessageType.CHAT_MESSAGE, chatMessage, unreadCnt);
+                })
                 .toList();
+
+        return messageResList;
     }
 
     public void handleConnectMessage(StompHeaderAccessor accessor) {
@@ -77,9 +96,28 @@ public class ChatMessageService {
 
         chatRoom.getChatRoomMember(member.getId()); // 예외처리 용도
 
-        enterChatRoom(member.getId(), chatRoom.getId());
-
+        enterChatRoom(chatRoom.getId(), member.getId());
         readUnreadMessages(chatRoom, member.getId());
+    }
+
+    private void enterChatRoom(Long chatRoomId, Long memberId) {
+        redisChatUtil.addChatRoom2Member(chatRoomId, memberId);
+    }
+
+    private void readUnreadMessages(ChatRoom chatRoom, Long memberId) {
+        ChatRoomMember chatRoomMember = chatRoom.getChatRoomMember(memberId);
+        LocalDateTime lastEntryTime = chatRoomMember.getLastEntryTime();
+
+        boolean existsUnreadMessage = chatMessageRepository.existsByChatRoomIdAndCreatedAtAfter(chatRoom.getId(), lastEntryTime);
+        boolean existsOnlineAnotherMember = redisChatUtil.getOnlineMemberCntInChatRoom(chatRoom.getId()) > 1;
+
+        if (existsUnreadMessage && existsOnlineAnotherMember)
+            sendChatSyncRequestMessage(chatRoom.getId());
+    }
+
+    private void sendChatSyncRequestMessage(Long chatRoomId) {
+        MessageRes messageRes = MessageRes.createRes(MessageType.CHAT_SYNC_REQUEST);
+        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
     }
 
     public void handleDisconnectMessage(StompHeaderAccessor accessor) {
@@ -95,43 +133,7 @@ public class ChatMessageService {
         exitChatRoom(member.getId(), chatRoom.getId());
     }
 
-    private void sendToChatRoom(Long chatRoomId, ChatMessage chatMessage) {
-        MessageRes messageRes = MessageRes.createRes(MessageType.CHAT_MESSAGE, chatMessage);
-        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
+    private void exitChatRoom(Long chatRoomId, Long memberId) {
+        redisChatUtil.removeChatRoom2Member(chatRoomId, memberId);
     }
-
-    private int calculateUnreadCnt(ChatMessageReq req, ChatRoom chatRoom) {
-        int activeCntInChatRoom = redisChatUtil.getActiveCntInChatRoom(req.chatRoomId());
-        return chatRoom.getChatRoomMemberCnt() - activeCntInChatRoom;
-    }
-
-    private void readUnreadMessages(ChatRoom chatRoom, Long memberId) {
-        ChatRoomMember chatRoomMember = chatRoom.getChatRoomMember(memberId);
-
-        LocalDateTime lastEntryTime = chatRoomMember.getLastEntryTime();
-
-        boolean isModified = chatMessageRepositoryCustom.decreaseUnreadCount(chatRoom.getId(), lastEntryTime) > 0 ? true : false;
-        boolean isActiveAllChatRoomMember = redisChatUtil.getActiveCntInChatRoom(chatRoom.getId()) == MAX_CHAT_ROOM_MEMBER;
-
-        if (isModified && isActiveAllChatRoomMember) {
-            sendChatSyncRequestMessage(chatRoom.getId());
-        }
-    }
-
-    private void enterChatRoom(Long memberId, Long chatRoomId) {
-        redisChatUtil.setMemberInChatRoom(memberId, chatRoomId);
-        redisChatUtil.incrementActiveCnt(chatRoomId);
-    }
-
-    private void exitChatRoom(Long memberId, Long chatRoomId) {
-        redisChatUtil.deleteMemberInChatRoom(memberId);
-        redisChatUtil.decrementActiveCnt(chatRoomId);
-    }
-
-    private void sendChatSyncRequestMessage(Long chatRoomId) {
-        MessageRes messageRes = MessageRes.createRes(MessageType.CHAT_SYNC_REQUEST);
-        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
-    }
-
-
 }

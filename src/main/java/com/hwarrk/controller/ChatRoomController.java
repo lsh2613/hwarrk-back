@@ -1,17 +1,26 @@
 package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
+import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.dto.res.ChatRoomCreateRes;
 import com.hwarrk.common.dto.res.ChatRoomRes;
+import com.hwarrk.entity.ChatRoom;
+import com.hwarrk.entity.ChatRoomMember;
+import com.hwarrk.entity.Member;
+import com.hwarrk.repository.ChatRoomRepository;
+import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "채팅 방")
 @RestController
@@ -38,4 +47,26 @@ public class ChatRoomController {
         return CustomApiResponse.onSuccess(chatRoomService.getChatRooms(loginId));
     }
 
+    private final MemberRepository memberRepository;
+    private final ChatRoomRepository chatRoomRepository;
+
+    @GetMapping("/init")
+    public ResponseEntity<Map<String, Long>> init() {
+        Member roomMaker = new Member("방장", "s1", OauthProvider.KAKAO);
+        Member guest = new Member("게스트", "s2", OauthProvider.KAKAO);
+        memberRepository.save(roomMaker);
+        memberRepository.save(guest);
+
+        ChatRoom chatRoom = ChatRoom.emptyChatRoom();
+        chatRoom.addChatRoomMember(new ChatRoomMember(chatRoom, roomMaker));
+        chatRoom.addChatRoomMember(new ChatRoomMember(chatRoom, guest));
+        chatRoomRepository.save(chatRoom);
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("chatRoomId", chatRoom.getId());
+        response.put("roomMakerId", roomMaker.getId());
+        response.put("guestId", guest.getId());
+
+        return ResponseEntity.ok(response);
+    }
 }
