@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,6 +51,8 @@ public class ChatRoom extends BaseEntity {
     }
 
     public int getChatRoomMemberCnt() {
+        if (Optional.ofNullable(chatRoomMembers).isEmpty())
+            return 0;
         return chatRoomMembers.size();
     }
 
@@ -64,4 +68,20 @@ public class ChatRoom extends BaseEntity {
                 .anyMatch(chatRoomMember -> chatRoomMember.getMember().equals(member));
     }
 
+    public int getUnreadCnt(Set<Long> onlineMembers, LocalDateTime messageCreatedAt) {
+        List<LocalDateTime> lastEntryTimes = getLastEntryTimesExcludingOnlineMembers(onlineMembers);
+
+        int unreadMemberCount = (int) lastEntryTimes.stream()
+                .filter(time -> time.isAfter(messageCreatedAt))
+                .count();
+
+        return getChatRoomMemberCnt() - onlineMembers.size() - unreadMemberCount;
+    }
+
+    private List<LocalDateTime> getLastEntryTimesExcludingOnlineMembers(Set<Long> onlineMemberIds) {
+        return chatRoomMembers.stream()
+                .filter(chatRoomMember -> !onlineMemberIds.contains(chatRoomMember.getMember().getId()))
+                .map(ChatRoomMember::getLastEntryTime)
+                .toList();
+    }
 }

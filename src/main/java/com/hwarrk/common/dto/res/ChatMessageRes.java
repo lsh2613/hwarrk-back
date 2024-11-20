@@ -8,26 +8,21 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ChatMessageRes extends MessageRes {
+    static private final MessageType messageType = MessageType.CHAT_MESSAGE;
     private Long memberId;
     private String message;
-    private int unreadCnt;
     private LocalDateTime createdAt;
+    private int unreadCnt;
 
-    private ChatMessageRes(MessageType messageType, Long memberId, String message, int unreadCnt, LocalDateTime createdAt) {
+    private ChatMessageRes(Long memberId, String message, LocalDateTime createdAt, int unreadCnt) {
         super(messageType);
         this.memberId = memberId;
         this.message = message;
-        this.unreadCnt = unreadCnt;
         this.createdAt = createdAt;
+        this.unreadCnt = unreadCnt;
     }
 
-    public static ChatMessageRes createRes(MessageType messageType, ChatMessage chatMessage) {
-        return new ChatMessageRes(
-                messageType,
-                chatMessage.getMemberId(),
-                chatMessage.getMessage(),
-                chatMessage.getUnreadCnt(),
-                chatMessage.getCreatedAt()
-        );
+    public static MessageRes createRes(ChatMessage chatMessage, int unreadCnt) {
+        return new ChatMessageRes(chatMessage.getMemberId(), chatMessage.getMessage(), chatMessage.getCreatedAt(), unreadCnt);
     }
 }

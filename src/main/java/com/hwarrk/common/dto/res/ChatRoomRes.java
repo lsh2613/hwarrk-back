@@ -10,15 +10,15 @@ import java.util.Optional;
 public record ChatRoomRes(
     Long chatRoomId,
     String nickname,
-    int unreadCnt,
+    int unreadMessageCnt,
     String lastMessage,
     LocalDateTime createdAt
 ) {
-    public static ChatRoomRes createRes(Long chatRoomId, String nickname, int unreadCnt, Optional<ChatMessage> latestMessage) {
+    public static ChatRoomRes createRes(Long chatRoomId, String nickname, int unreadMessageCnt, Optional<ChatMessage> latestMessage) {
         return ChatRoomRes.builder()
                 .chatRoomId(chatRoomId)
                 .nickname(nickname)
-                .unreadCnt(unreadCnt)
+                .unreadMessageCnt(unreadMessageCnt)
                 .lastMessage(latestMessage.map(ChatMessage::getMessage).orElse(null))
                 .createdAt(latestMessage.map(ChatMessage::getCreatedAt).orElse(null))
                 .build();

@@ -1,17 +1,26 @@
 package com.hwarrk.controller;
 
 import com.hwarrk.common.apiPayload.CustomApiResponse;
+import com.hwarrk.common.constant.OauthProvider;
 import com.hwarrk.common.dto.res.ChatRoomCreateRes;
 import com.hwarrk.common.dto.res.ChatRoomRes;
+import com.hwarrk.entity.ChatRoom;
+import com.hwarrk.entity.ChatRoomMember;
+import com.hwarrk.entity.Member;
+import com.hwarrk.repository.ChatRoomRepository;
+import com.hwarrk.repository.MemberRepository;
 import com.hwarrk.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "채팅 방")
 @RestController
@@ -37,5 +46,4 @@ public class ChatRoomController {
     public CustomApiResponse<List<ChatRoomRes>> getChatRooms(@AuthenticationPrincipal Long loginId) {
         return CustomApiResponse.onSuccess(chatRoomService.getChatRooms(loginId));
     }
-
 }

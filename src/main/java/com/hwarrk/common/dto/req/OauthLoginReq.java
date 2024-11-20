@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OauthLoginReq {
     @NotNull
-    @Schema(name = "소셜 로그인 제공자", examples = {"KAKAO", "GOOGLE", "APPLE"})
+    @Schema(description = "소셜 로그인 제공자", examples = {"KAKAO", "GOOGLE", "APPLE"})
     private OauthProvider oauthProvider;
 
     @NotBlank
