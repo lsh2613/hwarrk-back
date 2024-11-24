@@ -39,7 +39,7 @@ public class PostLikeController {
     @Operation(summary = "나의 구인글 찜목록 조회")
     @GetMapping
     public CustomApiResponse getMyLikedPostCards(@AuthenticationPrincipal Long loginId,
-                                                 @RequestParam Long lastPostLikeId,
+                                                 @RequestParam(required = false) Long lastPostLikeId,
                                                  @PageableDefault Pageable pageable) {
         SliceRes res = postLikeService.getMyLikedPostCards(loginId, lastPostLikeId, pageable);
         return CustomApiResponse.onSuccess(res);

@@ -26,7 +26,7 @@ public class NotificationController {
     @Operation(summary = "모든 알림 조회", description = "알림마다 이동해야 되는 페이지가 존재. 각 알림에는 NotificationBindingType에 맞는 bindingId가 반환")
     @GetMapping
     public CustomApiResponse<SliceRes<NotificationRes>> getNotifications(@AuthenticationPrincipal Long loginId,
-                                                                         @RequestParam Long lastNotificationId,
+                                                                         @RequestParam(required = false) Long lastNotificationId,
                                                                          @PageableDefault Pageable pageable) {
         SliceRes<NotificationRes> res = notificationService.getNotifications(loginId, lastNotificationId, pageable);
         return CustomApiResponse.onSuccess(res);
