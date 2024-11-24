@@ -41,7 +41,7 @@ public class MemberLikeController {
     @Operation(summary = "유저 찜목록 조회")
     @GetMapping
     public CustomApiResponse<SliceRes<MemberCardRes>> getMyLikedMemberCards(@AuthenticationPrincipal Long loginId,
-                                                                            @RequestParam Long lastMemberLikeId,
+                                                                            @RequestParam(required = false) Long lastMemberLikeId,
                                                                             @PageableDefault Pageable pageable) {
         SliceRes<MemberCardRes> res = memberLikeService.getMyLikedMemberCards(loginId, lastMemberLikeId, pageable);
         return CustomApiResponse.onSuccess(res);
