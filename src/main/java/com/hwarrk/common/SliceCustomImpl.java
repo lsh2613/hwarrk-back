@@ -24,7 +24,7 @@ public class SliceCustomImpl {
             content.remove(pageable.getPageSize());
         }
         this.content = content;
-        this.lastElementId = PageUtil.getLastElement(target).getId();
+        this.lastElementId = target.isEmpty() ? null : PageUtil.getLastElement(target).getId();
     }
 
     public boolean hasNext() {
